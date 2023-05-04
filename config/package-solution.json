@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "scw-admin-client-side-solution",
+    "id": "2448996b-0040-4203-aae9-6b8c55c9b2c3",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.17.1"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "SCW-Admin description"
+      },
+      "longDescription": {
+        "default": "SCW-Admin description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "scw-admin Feature",
+        "description": "The feature that activates elements of the scw-admin solution.",
+        "id": "a17619a8-9e91-48c2-8a67-f99014bb3bed",
+        "version": "1.0.0.0"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/scw-admin.sppkg"
+  }
+}
