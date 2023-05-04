@@ -1,42 +1,56 @@
 import * as React from 'react';
-import styles from './ScwAdmin.module.scss';
+// import styles from './ScwAdmin.module.scss';
 import { IScwAdminProps } from './IScwAdminProps';
-import { IScwAdminState } from './IScwAdminState';
+// import { IScwAdminState } from './IScwAdminState';
 import { getSP } from '../../../pnpjsConfig';
 import { SPFI } from '@pnp/sp';
+import { useEffect, useState  } from 'react';
 
+export interface ISCWList {
+  ID: number;
 
-
-
-
-
-export default class ScwAdmin extends React.Component<IScwAdminProps, IScwAdminState> {
-  public _sp:SPFI = getSP(this.props.context);
-
-
-  constructor(props:IScwAdminProps) {
-    super(props);
-
-    this.state = {
-     
-    }
-  }
-
-
-
-  public render(): React.ReactElement<IScwAdminProps> {
-   
-    const items =  this._sp.web.lists.getByTitle("Request")
-
-    console.log("items", items)
-
-    return (
-      <>
-        <div className={styles.welcome}>Hello</div>
-      </>
-    );
-
-   
-
-  }
 }
+
+
+
+
+const ScwAdmin = (props: IScwAdminProps) => {
+
+  const LIST_NAME = 'Request';
+  const _sp:SPFI = getSP(props.context);
+
+  const [requestItems, setRequestItems] = useState<ISCWList []>([])
+  
+  const getRequestItems = async () => {
+
+    console.log('context', props.context);
+
+    const items = _sp.web.lists.getByTitle(LIST_NAME).items();
+
+    console.log("Items", items);
+
+    setRequestItems((await items).map((item) => {
+
+      return {
+        ID: item.id,
+        Title: item.Title
+      }
+
+    }))
+  }
+
+
+  useEffect(() => {
+
+    getRequestItems();
+    
+  }, [])
+
+  return (
+    <div>{JSON.stringify(requestItems, null, 2)}</div>
+  )
+}
+
+export default ScwAdmin
+
+
