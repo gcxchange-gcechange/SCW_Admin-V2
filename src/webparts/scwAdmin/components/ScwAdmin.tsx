@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
@@ -10,8 +11,25 @@ import { SPFI } from '@pnp/sp';
 import '@pnp/sp/items';
 import "@pnp/sp/items/get-all";
 import { useEffect, useState  } from 'react';
-import { DetailsList, DetailsListLayoutMode, DetailsRow, IColumn, IDetailsColumnStyles, IDetailsListProps, IDetailsRowStyles} from 'office-ui-fabric-react';
+import { DetailsList, 
+  DetailsListLayoutMode, 
+  DetailsRow, 
+  IColumn, 
+  IDetailsColumnRenderTooltipProps, 
+  IDetailsColumnStyles, 
+  IDetailsHeaderProps, 
+  IDetailsListProps, 
+  IDetailsRowStyles, 
+  IRenderFunction, 
+  IScrollablePaneStyles, 
+  ScrollablePane, 
+  ScrollbarVisibility,  
+  Sticky,  
+  StickyPositionType,  
+  TooltipHost, 
+  mergeStyleSets } from 'office-ui-fabric-react';
 import { PagedItemCollection } from '@pnp/sp/items';
+// import { Pagination } from "@pnp/spfx-controls-react/lib/pagination";
 
 export interface ISCWList {
   id: number;
@@ -32,9 +50,11 @@ const ScwAdmin = (props: IScwAdminProps) => {
   const _sp:SPFI = getSP(props.context);
   // const BATCH_SIZE = 10;
 
-  const [requestItems, setRequestItems] = useState< ISCWList [] >( [] )
+  const [requestItems, setRequestItems] = useState< ISCWList [] >( [] );
+  const [ pageNumber, setPageNumber ] = useState< number >(0);
 
   const columns: IColumn[] = [
+    { key: 'Col0', name: 'ID', fieldName: 'id', minWidth: 100},
     { key: 'Col1', name: 'Space Name', fieldName: 'spaceName', minWidth: 100, maxWidth: 400, isResizable: true },
     { key: 'Col2', name: 'Reason', fieldName: 'businessJustification', minWidth: 100, maxWidth: 400, isResizable: true },
     { key: 'Col3', name: 'Template', fieldName: 'template', minWidth: 100 },
@@ -48,6 +68,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
   const getRequestItems = async () => {
 
     let pagedItems: any[] = [];
+    let pageNumber: number = 0;
     let items: PagedItemCollection<any[]> = undefined;
 
     do {
@@ -56,22 +77,27 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
       if ( items.results.length > 0 ) {
         console.log("we got results");
+        pageNumber ++;
+        console.log("PN", pageNumber)
         pagedItems = pagedItems.concat(items.results);
       }
     } while (items.hasNext);  
-    
-      setRequestItems((pagedItems).map((item) => {
-    
-        return {
-          id: item.ID,
-          spaceName: item.SpaceName,
-          businessJustification: item.BusinessJustification,
-          created: new Date(item.Created).toLocaleDateString("en-CA"),
-          status: item.Status
 
-        }
+    setPageNumber(pageNumber);
+    
+    setRequestItems((pagedItems).map((item) => {
+    
+      return {
+        id: item.ID,
+        spaceName: item.SpaceName,
+        businessJustification: item.BusinessJustification,
+        created: new Date(item.Created).toLocaleDateString("en-CA"),
+        status: item.Status
 
-      }))
+      }
+
+    }))
+     
   };
     
   
@@ -80,10 +106,11 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
     getRequestItems();
 
-  }, [])
+  }, [pageNumber])
 
   const headerStyle: Partial<IDetailsColumnStyles> = {
     cellTitle: {
+      position:  'sticky',
       fontSize: 14,
       fontWeight: 600
     }
@@ -102,20 +129,61 @@ const ScwAdmin = (props: IScwAdminProps) => {
     return null;
   };
 
- console.log("state",requestItems);
+
+
+  const onRenderDetailsHeader: IRenderFunction<IDetailsHeaderProps> = (props, defaultRender) => {
+    if (!props) {
+      return null;
+    }
+    const onRenderColumnHeaderTooltip: IRenderFunction<IDetailsColumnRenderTooltipProps> = tooltipHostProps => (
+      <TooltipHost {...tooltipHostProps} />
+    );
+    return (
+      <Sticky stickyPosition={StickyPositionType.Header} isScrollSynced>
+        {defaultRender?.({
+          ...props,
+          onRenderColumnHeaderTooltip,
+        })}
+      </Sticky>
+    );
+  }
+
+
+
+  const scrollStyles = mergeStyleSets ({
+    wrapper: {
+      height: '40vh',
+      position: 'relative',
+      backgroundColor: 'white',
+      margin:'10px'
+    },
+   root: {
+    height: '40vh',
+    position: 'relative',
+   }
+  })
+
+  const scrollablePaneStyles: Partial<IScrollablePaneStyles> = { root: scrollStyles.root };
+
   return (
     <>
-    <div>HELLO</div>
-    <div className={styles.container} data-is-scrollable>
-      {/* <ScrollablePane scrollbarVisibility= { ScrollbarVisibility.auto}> */}
-        <DetailsList 
-          styles={ headerStyle }
-          items={ requestItems }
-          columns ={ columns }
-          layoutMode={ DetailsListLayoutMode.justified }
-          onRenderRow={ _onRenderRow }
-        />
-      {/* </ScrollablePane> */}
+    <div className={styles.container}>
+      <h1>Total Items {requestItems.length}</h1>
+    
+       
+      <div className={styles.wrapper } data-is-scrollable="true">
+        <ScrollablePane scrollbarVisibility= { ScrollbarVisibility.auto} styles= { scrollablePaneStyles} >
+          <DetailsList 
+            styles={ headerStyle }
+            items={ requestItems }
+            columns ={ columns }
+            layoutMode={ DetailsListLayoutMode.justified }
+            onRenderRow={ _onRenderRow }
+            isHeaderVisible={true}
+            onRenderDetailsHeader={ onRenderDetailsHeader}
+          />
+        </ScrollablePane>
+      </div>
     </div>
       
       
