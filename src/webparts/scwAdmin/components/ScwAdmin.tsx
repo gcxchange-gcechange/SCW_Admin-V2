@@ -7,8 +7,11 @@ import { IScwAdminProps } from './IScwAdminProps';
 // import { IScwAdminState } from './IScwAdminState';
 import { getSP } from '../../../pnpjsConfig';
 import { SPFI } from '@pnp/sp';
+import '@pnp/sp/items';
+import "@pnp/sp/items/get-all";
 import { useEffect, useState  } from 'react';
-import { DetailsList, DetailsListLayoutMode, DetailsRow, IColumn, IDetailsColumnStyles, IDetailsListProps, IDetailsRowStyles, ScrollablePane, ScrollbarVisibility } from 'office-ui-fabric-react';
+import { DetailsList, DetailsListLayoutMode, DetailsRow, IColumn, IDetailsColumnStyles, IDetailsListProps, IDetailsRowStyles} from 'office-ui-fabric-react';
+import { PagedItemCollection } from '@pnp/sp/items';
 
 export interface ISCWList {
   id: number;
@@ -27,7 +30,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
   const LIST_NAME = 'Request';
   // let webUrl = 'https://devgcx.sharepoint.com/teams/App-SCW2';
   const _sp:SPFI = getSP(props.context);
-  const BATCH_SIZE = 10;
+  // const BATCH_SIZE = 10;
 
   const [requestItems, setRequestItems] = useState< ISCWList [] >( [] )
 
@@ -44,38 +47,32 @@ const ScwAdmin = (props: IScwAdminProps) => {
   
   const getRequestItems = async () => {
 
-    const list = await _sp.web.lists.getByTitle(LIST_NAME).items();
-    console.log("list",list)
+    let pagedItems: any[] = [];
+    let items: PagedItemCollection<any[]> = undefined;
 
-      let allItems:any[] = [];
-      let currentPage = 0;
-      let hasNextPage = true;
-    
-      while (hasNextPage) {
-        const batch = await _sp.web.lists.getByTitle(LIST_NAME).items.select().top(BATCH_SIZE).skip(currentPage * BATCH_SIZE).getPaged();
-    
-        allItems = allItems.concat(batch.results);
+    do {
+      if(!items) items = await _sp.web.lists.getByTitle(LIST_NAME).items.top(10).getPaged();
+      else items = await items.getNext();
 
-        currentPage++;
-
-        hasNextPage = batch.hasNext;
+      if ( items.results.length > 0 ) {
+        console.log("we got results");
+        pagedItems = pagedItems.concat(items.results);
       }
-
-      // setRequestItems(allItems)
-
-      setRequestItems((await list).map((item) => {
-  
+    } while (items.hasNext);  
+    
+      setRequestItems((pagedItems).map((item) => {
+    
         return {
           id: item.ID,
           spaceName: item.SpaceName,
           businessJustification: item.BusinessJustification,
           created: new Date(item.Created).toLocaleDateString("en-CA"),
           status: item.Status
-  
+
         }
-  
+
       }))
-    }
+  };
     
   
 
@@ -105,11 +102,12 @@ const ScwAdmin = (props: IScwAdminProps) => {
     return null;
   };
 
- 
+ console.log("state",requestItems);
   return (
     <>
+    <div>HELLO</div>
     <div className={styles.container} data-is-scrollable>
-      <ScrollablePane scrollbarVisibility= { ScrollbarVisibility.auto}>
+      {/* <ScrollablePane scrollbarVisibility= { ScrollbarVisibility.auto}> */}
         <DetailsList 
           styles={ headerStyle }
           items={ requestItems }
@@ -117,7 +115,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
           layoutMode={ DetailsListLayoutMode.justified }
           onRenderRow={ _onRenderRow }
         />
-      </ScrollablePane>
+      {/* </ScrollablePane> */}
     </div>
       
       
