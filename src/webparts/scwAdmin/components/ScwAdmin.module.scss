@@ -2,10 +2,23 @@
 
 .scwAdmin {
 
+  :global {
+    #workbenchPageContent,
+    .CanvasComponent.LCS .CanvasZone {
+      max-width: 80% !important;
+      font-size: 18px;
+    }
+  }
+
+
   .container {
-    max-width: 1440px;
-    margin: 0px auto;
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 25px 50px 0 rgba(0, 0, 0, 0.1);
+    margin: 0px;
+   
+  }
+
+  .wrapper {
+    height: 40vh;
+    position: relative;
   }
   
 }
