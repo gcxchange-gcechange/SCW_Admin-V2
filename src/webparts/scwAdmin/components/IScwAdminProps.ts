@@ -5,5 +5,5 @@ export interface IScwAdminProps {
   isDarkTheme: boolean;
   environmentMessage: string;
   hasTeamsContext: boolean;
-  context: WebPartContext
+  context: WebPartContext;
 }

@@ -29,7 +29,7 @@ import { DetailsList,
   TooltipHost, 
   mergeStyleSets } from 'office-ui-fabric-react';
 import { PagedItemCollection } from '@pnp/sp/items';
-// import { Pagination } from "@pnp/spfx-controls-react/lib/pagination";
+import ItemFormDetails from './ItemFormDetails';
 
 export interface ISCWList {
   id: number;
@@ -50,8 +50,10 @@ const ScwAdmin = (props: IScwAdminProps) => {
   const _sp:SPFI = getSP(props.context);
   // const BATCH_SIZE = 10;
 
-  const [requestItems, setRequestItems] = useState< ISCWList [] >( [] );
+  const [requestList, setRequestList] = useState< ISCWList [] >( [] );
   const [ pageNumber, setPageNumber ] = useState< number >(0);
+  const [selectedRowData, setSelectedRowData] = useState<[]>([]);
+  
 
   const columns: IColumn[] = [
     { key: 'Col0', name: 'ID', fieldName: 'id', minWidth: 100},
@@ -65,7 +67,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
 
   
-  const getRequestItems = async () => {
+  const getList = async () => {
 
     let pagedItems: any[] = [];
     let pageNumber: number = 0;
@@ -76,16 +78,16 @@ const ScwAdmin = (props: IScwAdminProps) => {
       else items = await items.getNext();
 
       if ( items.results.length > 0 ) {
-        console.log("we got results");
+        // console.log("we got results");
         pageNumber ++;
-        console.log("PN", pageNumber)
+        // console.log("PN", pageNumber)
         pagedItems = pagedItems.concat(items.results);
       }
     } while (items.hasNext);  
 
     setPageNumber(pageNumber);
     
-    setRequestItems((pagedItems).map((item) => {
+    setRequestList((pagedItems).map((item) => {
     
       return {
         id: item.ID,
@@ -104,7 +106,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
   useEffect(() => {
 
-    getRequestItems();
+    getList();
 
   }, [pageNumber])
 
@@ -149,6 +151,23 @@ const ScwAdmin = (props: IScwAdminProps) => {
   }
 
 
+  const onItemInvoked = (item: any) => {
+    console.log("item", item)
+    setSelectedRowData((item).map((item:any) => {
+    
+      return {
+        id: item.ID,
+        spaceName: item.SpaceName,
+        businessJustification: item.BusinessJustification,
+
+      }
+
+    }))
+
+    console.log("selected",selectedRowData);
+  }
+
+
 
   const scrollStyles = mergeStyleSets ({
     wrapper: {
@@ -163,27 +182,34 @@ const ScwAdmin = (props: IScwAdminProps) => {
    }
   })
 
+
+
   const scrollablePaneStyles: Partial<IScrollablePaneStyles> = { root: scrollStyles.root };
 
   return (
     <>
     <div className={styles.container}>
-      <h1>Total Items {requestItems.length}</h1>
+      <h1>Total Items {requestList.length}</h1>
     
        
       <div className={styles.wrapper } data-is-scrollable="true">
         <ScrollablePane scrollbarVisibility= { ScrollbarVisibility.auto} styles= { scrollablePaneStyles} >
           <DetailsList 
             styles={ headerStyle }
-            items={ requestItems }
+            items={ requestList }
             columns ={ columns }
             layoutMode={ DetailsListLayoutMode.justified }
             onRenderRow={ _onRenderRow }
             isHeaderVisible={true}
             onRenderDetailsHeader={ onRenderDetailsHeader}
+            onItemInvoked={onItemInvoked}
           />
         </ScrollablePane>
       </div>
+      
+      
+      <ItemFormDetails requestList={requestList} setRequestList={[setRequestList]} />
+    
     </div>
       
       
