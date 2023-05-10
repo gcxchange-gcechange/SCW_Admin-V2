@@ -20,8 +20,10 @@ import { DetailsList,
   IDetailsHeaderProps, 
   IDetailsListProps, 
   IDetailsRowStyles, 
+  IIconProps, 
   IRenderFunction, 
   IScrollablePaneStyles, 
+  IconButton, 
   ScrollablePane, 
   ScrollbarVisibility,  
   Sticky,  
@@ -34,13 +36,23 @@ import ItemFormDetails from './ItemFormDetails';
 export interface ISCWList {
   id: number;
   spaceName: string;
+  spaceNameFr: string;
+  spaceDescription: string;
+  spaceDescriptionFR: string;
   businessJustification: string;
+  requesterEmail: string;
+  requesterName: string;
+  members: string;
+  owner1: string;
   created: string;
-  // template: string;
+  template: string;
   status: string;
-  // date: string;
+  siteUrl: string;
+ 
 
 }
+
+
 
 
 const ScwAdmin = (props: IScwAdminProps) => {
@@ -52,7 +64,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
   const [requestList, setRequestList] = useState< ISCWList [] >( [] );
   const [ pageNumber, setPageNumber ] = useState< number >(0);
-  const [selectedRowData, setSelectedRowData] = useState<[]>([]);
+  const [selectedRowData, setSelectedRowData] = useState<any>();
   
 
   const columns: IColumn[] = [
@@ -88,14 +100,21 @@ const ScwAdmin = (props: IScwAdminProps) => {
     setPageNumber(pageNumber);
     
     setRequestList((pagedItems).map((item) => {
-    
       return {
         id: item.ID,
-        spaceName: item.SpaceName,
+        spaceName: item.Title,
+        spaceNameFr: item.SpaceNameFr,
+        spaceDescription: item.SpaceDescription,
+        spaceDescriptionFR: item.SpaceDescription,
+        requesterName: item.RequesterName,
+        requesterEmail: item.RequesterEmail,
+        members: item.Members,
+        owner1: item.Owner1,
         businessJustification: item.BusinessJustification,
         created: new Date(item.Created).toLocaleDateString("en-CA"),
-        status: item.Status
-
+        status: item.Status,
+        template: item.Template,
+        siteUrl: item.SiteUrl
       }
 
     }))
@@ -152,19 +171,8 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
 
   const onItemInvoked = (item: any) => {
-    console.log("item", item)
-    setSelectedRowData((item).map((item:any) => {
-    
-      return {
-        id: item.ID,
-        spaceName: item.SpaceName,
-        businessJustification: item.BusinessJustification,
 
-      }
-
-    }))
-
-    console.log("selected",selectedRowData);
+    setSelectedRowData(item);
   }
 
 
@@ -176,22 +184,26 @@ const ScwAdmin = (props: IScwAdminProps) => {
       backgroundColor: 'white',
       margin:'10px'
     },
-   root: {
-    height: '40vh',
-    position: 'relative',
-   }
-  })
+    root: {
+      height: '40vh',
+      position: 'relative',
+    }
+  });
 
 
 
   const scrollablePaneStyles: Partial<IScrollablePaneStyles> = { root: scrollStyles.root };
 
+  const arrowIcon:IIconProps = {iconName: 'NavigateBack'}
+
+
+
   return (
     <>
     <div className={styles.container}>
+      { !selectedRowData &&
+      <>
       <h1>Total Items {requestList.length}</h1>
-    
-       
       <div className={styles.wrapper } data-is-scrollable="true">
         <ScrollablePane scrollbarVisibility= { ScrollbarVisibility.auto} styles= { scrollablePaneStyles} >
           <DetailsList 
@@ -206,9 +218,18 @@ const ScwAdmin = (props: IScwAdminProps) => {
           />
         </ScrollablePane>
       </div>
+      </>
+      }
+
       
+      { selectedRowData &&
+        <>
+          <IconButton iconProps={arrowIcon} style={{float:'right'}}>Back to list</IconButton>
+          <ItemFormDetails  selectedRowData={selectedRowData}/>
+        </>
+      }
       
-      <ItemFormDetails requestList={requestList} setRequestList={[setRequestList]} />
+    
     
     </div>
       
