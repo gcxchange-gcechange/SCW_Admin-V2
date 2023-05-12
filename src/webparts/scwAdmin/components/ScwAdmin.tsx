@@ -11,7 +11,7 @@ import { SPFI } from '@pnp/sp';
 import '@pnp/sp/items';
 import "@pnp/sp/items/get-all";
 import { useEffect, useState  } from 'react';
-import { DetailsList, 
+import { ActionButton, DetailsList, 
   DetailsListLayoutMode, 
   DetailsRow, 
   IColumn, 
@@ -23,15 +23,20 @@ import { DetailsList,
   IIconProps, 
   IRenderFunction, 
   IScrollablePaneStyles, 
-  IconButton, 
+  IStackStyles, 
+  IStackTokens, 
+  // IconButton, 
+  PrimaryButton, 
   ScrollablePane, 
   ScrollbarVisibility,  
+  Stack,  
   Sticky,  
   StickyPositionType,  
   TooltipHost, 
   mergeStyleSets } from 'office-ui-fabric-react';
 import { PagedItemCollection } from '@pnp/sp/items';
 import ItemFormDetails from './ItemFormDetails';
+import Confirmation from './Confirmation';
 
 export interface ISCWList {
   id: number;
@@ -65,10 +70,13 @@ const ScwAdmin = (props: IScwAdminProps) => {
   const [requestList, setRequestList] = useState< ISCWList [] >( [] );
   const [ pageNumber, setPageNumber ] = useState< number >(0);
   const [selectedRowData, setSelectedRowData] = useState<any>();
+  const [step, setCurrentStep] = useState<number>(1);
+  const [checked, setChecked ] = useState<boolean>(false);
+  const [selectedButton, setSelectedButton ] = useState<string>(null);
   
 
   const columns: IColumn[] = [
-    { key: 'Col0', name: 'ID', fieldName: 'id', minWidth: 100},
+    { key: 'Col0', name: 'ID', fieldName: 'id', minWidth: 20},
     { key: 'Col1', name: 'Space Name', fieldName: 'spaceName', minWidth: 100, maxWidth: 400, isResizable: true },
     { key: 'Col2', name: 'Reason', fieldName: 'businessJustification', minWidth: 100, maxWidth: 400, isResizable: true },
     { key: 'Col3', name: 'Template', fieldName: 'template', minWidth: 100 },
@@ -77,10 +85,20 @@ const ScwAdmin = (props: IScwAdminProps) => {
   ];
   
 
+ const goToNextStep = (step:any):void => {
+    const nextPage = step + 1;
+    console.log("NP", nextPage);
+    setCurrentStep(nextPage);
+ }
 
+ const goToPreviousStep = (step:any):void => {
+  const previousPage = step - 1;
+  console.log("previous", previousPage);
+  setCurrentStep(previousPage);
+}
   
   const getList = async () => {
-
+    console.log("step", step)
     let pagedItems: any[] = [];
     let pageNumber: number = 0;
     let items: PagedItemCollection<any[]> = undefined;
@@ -114,7 +132,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
         created: new Date(item.Created).toLocaleDateString("en-CA"),
         status: item.Status,
         template: item.Template,
-        siteUrl: item.SiteUrl
+        siteUrl: item.SiteUrl,
       }
 
     }))
@@ -171,7 +189,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
 
   const onItemInvoked = (item: any) => {
-
+    goToNextStep(step)
     setSelectedRowData(item);
   }
 
@@ -194,16 +212,63 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
   const scrollablePaneStyles: Partial<IScrollablePaneStyles> = { root: scrollStyles.root };
 
-  const arrowIcon:IIconProps = {iconName: 'NavigateBack'}
+  const arrowIcon:IIconProps = {iconName: 'NavigateBack'};
+  const acceptIcon: IIconProps = { iconName: 'Accept'};
 
 
+  // useEffect(() => {
+   
+  // }, [])
+  
+
+  const handleApproveRejectButton = (event: any ):void => {
+    const selectedBtnName: string = event.target.textContent;
+    console.log("ev", selectedBtnName);
+      
+      setSelectedButton(selectedBtnName)
+   
+     if ( selectedBtnName === 'Approve') {
+       console.log("accept")
+       setChecked((prev) => !prev)
+     } else if (selectedBtnName === "Reject") {
+       console.log("reject")
+       setChecked((prev) => !prev)
+     }
+
+     goToNextStep(step)
+     
+   }
+
+
+  
+
+
+
+  const handleOnChangeComments = (value: string):void => {
+      console.log("value", value);
+
+    setSelectedRowData({
+      ...selectedRowData,
+      comment: value
+    })
+    
+    console.log("state", selectedRowData)
+  }
+
+  const sectionStackTokens: IStackTokens = { childrenGap: 10 };
+  const stackStyles: IStackStyles = {
+    root: {
+      marginTop:'18px'
+    },
+  };
 
   return (
     <>
     <div className={styles.container}>
-      { !selectedRowData &&
+      { step === 1 &&
       <>
-      <h1>Total Items {requestList.length}</h1>
+      <h2>SCW Approvals</h2>
+      <h3>Total Items {requestList.length}</h3>
       <div className={styles.wrapper } data-is-scrollable="true">
         <ScrollablePane scrollbarVisibility= { ScrollbarVisibility.auto} styles= { scrollablePaneStyles} >
           <DetailsList 
@@ -222,11 +287,31 @@ const ScwAdmin = (props: IScwAdminProps) => {
       }
 
       
-      { selectedRowData &&
+      { selectedRowData && step === 2 &&
         <>
-          <IconButton iconProps={arrowIcon} style={{float:'right'}}>Back to list</IconButton>
+          <ActionButton text="Back to list" iconProps={arrowIcon} style={{float:'right'}} onClick={()=> goToPreviousStep(step)}/>
           <ItemFormDetails  selectedRowData={selectedRowData}/>
+            { selectedRowData.status === 'Submitted' ?
+                <Stack horizontal horizontalAlign='center' tokens={sectionStackTokens} styles={stackStyles}>
+                    <PrimaryButton id={'btn_1'} text={'Approve'} onClick={ handleApproveRejectButton } iconProps={ checked && selectedButton === 'Approve'  ? acceptIcon : null }/>
+                    <PrimaryButton id={'btn_2'} text={'Reject'} onClick={ handleApproveRejectButton }  iconProps={ checked && selectedButton === 'Reject' ? acceptIcon : null }/>
+                </Stack>
+                : 
+                null
+            } 
         </>
+      }
+
+      { step === 3 &&
+        <>        
+        <Confirmation selectedRowData={ selectedRowData } handleOnChangeComments={handleOnChangeComments}/>
+        <Stack horizontal horizontalAlign='center' tokens={sectionStackTokens}  styles={stackStyles}>
+          <PrimaryButton text={'Back'} onClick={() => goToPreviousStep(step)}/>
+          <PrimaryButton text={'Confirm'} />
+        </Stack>
+
+        </>
+
       }
       
     
