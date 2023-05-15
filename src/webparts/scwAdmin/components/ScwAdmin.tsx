@@ -11,7 +11,7 @@ import { SPFI } from '@pnp/sp';
 import '@pnp/sp/items';
 import "@pnp/sp/items/get-all";
 import { useEffect, useState  } from 'react';
-import { ActionButton, DetailsList, 
+import { ActionButton,  DetailsList, 
   DetailsListLayoutMode, 
   DetailsRow, 
   IColumn, 
@@ -37,6 +37,7 @@ import { ActionButton, DetailsList,
 import { PagedItemCollection } from '@pnp/sp/items';
 import ItemFormDetails from './ItemFormDetails';
 import Confirmation from './Confirmation';
+import { getTheme } from '@fluentui/react/lib/Styling';
 
 export interface ISCWList {
   id: number;
@@ -68,7 +69,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
   // const BATCH_SIZE = 10;
 
   const [requestList, setRequestList] = useState< ISCWList [] >( [] );
-  const [ pageNumber, setPageNumber ] = useState< number >(0);
+  // const [ pageNumber, setPageNumber ] = useState< number >(0);
   const [selectedRowData, setSelectedRowData] = useState<any>();
   const [step, setCurrentStep] = useState<number>(1);
   const [checked, setChecked ] = useState<boolean>(false);
@@ -91,16 +92,20 @@ const ScwAdmin = (props: IScwAdminProps) => {
     setCurrentStep(nextPage);
  }
 
- const goToPreviousStep = (step:any):void => {
-  const previousPage = step - 1;
-  console.log("previous", previousPage);
-  setCurrentStep(previousPage);
-}
+  const goToPreviousStep = (step:any):void => {
+    const previousPage = step - 1;
+    console.log("previous", previousPage);
+    setSelectedRowData({
+      ...selectedRowData,
+      status: 'Submitted'
+    })
+    setCurrentStep(previousPage);
+  }
   
   const getList = async () => {
     console.log("step", step)
     let pagedItems: any[] = [];
-    let pageNumber: number = 0;
+    // let pageNumber: number = 0;
     let items: PagedItemCollection<any[]> = undefined;
 
     do {
@@ -109,13 +114,13 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
       if ( items.results.length > 0 ) {
         // console.log("we got results");
-        pageNumber ++;
+        // pageNumber ++;
         // console.log("PN", pageNumber)
         pagedItems = pagedItems.concat(items.results);
       }
     } while (items.hasNext);  
 
-    setPageNumber(pageNumber);
+    // setPageNumber(pageNumber);
     
     setRequestList((pagedItems).map((item) => {
       return {
@@ -145,7 +150,9 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
     getList();
 
-  }, [pageNumber])
+  }, [])
+
+  const theme = getTheme();
 
   const headerStyle: Partial<IDetailsColumnStyles> = {
     cellTitle: {
@@ -160,7 +167,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
     if (props) {
       if (props.itemIndex % 2 === 0) {
         // Every other row renders with a different background color
-        customStyles.root = { backgroundColor: 'pink' };
+        customStyles.root = { backgroundColor: `${theme}` };
       }
 
       return <DetailsRow {...props} styles={customStyles} />;
@@ -224,8 +231,24 @@ const ScwAdmin = (props: IScwAdminProps) => {
   const handleApproveRejectButton = (event: any ):void => {
     const selectedBtnName: string = event.target.textContent;
     console.log("ev", selectedBtnName);
-      
-      setSelectedButton(selectedBtnName)
+ 
+    setSelectedButton(selectedBtnName);
+    
+    if( selectedBtnName === 'Approve') {
+      setSelectedRowData({
+        ...selectedRowData,
+        status: 'Approved'
+      })
+    }
+    else if ( selectedBtnName === 'Reject' ) {
+      setSelectedRowData({
+        ...selectedRowData,
+        status: 'Rejected'
+      })
+    }
+     
+
+      console.log("4",selectedRowData);
    
      if ( selectedBtnName === 'Approve') {
        console.log("accept")
@@ -239,8 +262,6 @@ const ScwAdmin = (props: IScwAdminProps) => {
      
    }
 
-
-  
 
 
 
@@ -256,11 +277,14 @@ const ScwAdmin = (props: IScwAdminProps) => {
   }
 
   const sectionStackTokens: IStackTokens = { childrenGap: 10 };
+
   const stackStyles: IStackStyles = {
     root: {
       marginTop:'18px'
     },
   };
+  
+
 
   return (
     <>
