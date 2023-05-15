@@ -33,6 +33,7 @@ export default class ScwAdminWebPart extends BaseClientSideWebPart<IScwAdminWebP
         environmentMessage: this._environmentMessage,
         hasTeamsContext: !!this.context.sdks.microsoftTeams,
         context: this.context,
+
       }
     );
 
