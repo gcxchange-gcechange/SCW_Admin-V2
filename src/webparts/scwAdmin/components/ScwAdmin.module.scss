@@ -21,17 +21,57 @@
     position: relative;
   }
 
-
-  :global {
-    .ms-TextFied.is-active.ms-TextField--underlined.root-277{
-      border-bottom: fuchsia;
-    }
-  }
-
-  .formContainer {
-    margin-top: 20px!important;
-    margin-bottom: 20px!important;
-  }
-  
 }
+
+:global {
+  .ms-TextFied.is-active.ms-TextField--underlined.root-277{
+    border-bottom: fuchsia;
+  }
+}
+
+
+.formContainer {
+  margin-top: 10px!important;
+  border-top: 2px solid rgb(117, 116, 116);
+  border-bottom: 2px solid darkgray;
+  padding-bottom: 20px;
+  padding-top: 20px;
+  background-color: #e8e8e8;
+}
+
+.asteriks {
+  color: red;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+
+
+:global {
+  .ms-Label::after {
+    display: none;
+  }
+}
+
+// .ms-Label::before {
+//       content: "*";
+//       display: inline-block;
+//       margin-right: 4px;
+//       margin-left: -10px;
+//       font-size: 16px;
+//       color: red; 
+// }
+
+/* Override the disabled color for Fluent UI TextField */
+:global {
+
+  .ms-TextField.is-disabled .ms-TextField-wrapper {
+    background-color: #f4f4f4; /* Set your desired background color */
+    border-color: #f4f4f4; /* Set your desired border color */
+    color: #e90bb9; /* Set your desired text color */
+  }
+}
+
+ 
+
 
