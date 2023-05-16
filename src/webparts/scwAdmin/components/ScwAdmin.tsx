@@ -36,7 +36,7 @@ import { ActionButton,  DetailsList,
   mergeStyleSets } from 'office-ui-fabric-react';
 import { PagedItemCollection } from '@pnp/sp/items';
 import ItemFormDetails from './ItemFormDetails';
-import Confirmation from './Confirmation';
+// import Confirmation from './Confirmation';
 import { getTheme } from '@fluentui/react/lib/Styling';
 
 export interface ISCWList {
@@ -63,7 +63,7 @@ export interface ISCWList {
 
 const ScwAdmin = (props: IScwAdminProps) => {
 
-  const LIST_NAME = 'Request';
+  const LIST_NAME: string = 'Request';
   // let webUrl = 'https://devgcx.sharepoint.com/teams/App-SCW2';
   const _sp:SPFI = getSP(props.context);
   // const BATCH_SIZE = 10;
@@ -109,7 +109,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
     let items: PagedItemCollection<any[]> = undefined;
 
     do {
-      if(!items) items = await _sp.web.lists.getByTitle(LIST_NAME).items.top(10).getPaged();
+      if(!items) items = await _sp.web.lists.getByTitle(LIST_NAME).items.top(10).orderBy("Created", false).getPaged();
       else items = await items.getNext();
 
       if ( items.results.length > 0 ) {
@@ -239,24 +239,22 @@ const ScwAdmin = (props: IScwAdminProps) => {
         ...selectedRowData,
         status: 'Approved'
       })
+
+      setChecked((prev) => !prev)
     }
     else if ( selectedBtnName === 'Reject' ) {
       setSelectedRowData({
         ...selectedRowData,
         status: 'Rejected'
+        
       })
+
+      setChecked((prev) => !prev)
     }
      
 
       console.log("4",selectedRowData);
-   
-     if ( selectedBtnName === 'Approve') {
-       console.log("accept")
-       setChecked((prev) => !prev)
-     } else if (selectedBtnName === "Reject") {
-       console.log("reject")
-       setChecked((prev) => !prev)
-     }
+  
 
      goToNextStep(step)
      
@@ -265,7 +263,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
 
 
-  const handleOnChangeComments = (value: string):void => {
+  const confirmationComments = (value: string):void => {
       console.log("value", value);
 
     setSelectedRowData({
@@ -276,6 +274,11 @@ const ScwAdmin = (props: IScwAdminProps) => {
     console.log("state", selectedRowData)
   }
 
+  
+  const onConfirm = ():void  => {
+    console.log("hello")
+  }
+  
   const sectionStackTokens: IStackTokens = { childrenGap: 10 };
 
   const stackStyles: IStackStyles = {
@@ -283,7 +286,6 @@ const ScwAdmin = (props: IScwAdminProps) => {
       marginTop:'18px'
     },
   };
-  
 
 
   return (
@@ -314,7 +316,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
       { selectedRowData && step === 2 &&
         <>
           <ActionButton text="Back to list" iconProps={arrowIcon} style={{float:'right'}} onClick={()=> goToPreviousStep(step)}/>
-          <ItemFormDetails  selectedRowData={selectedRowData}/>
+          <ItemFormDetails  selectedRowData={selectedRowData} confirmationComments={confirmationComments} context= {props.context}/>
             { selectedRowData.status === 'Submitted' ?
                 <Stack horizontal horizontalAlign='center' tokens={sectionStackTokens} styles={stackStyles}>
                     <PrimaryButton id={'btn_1'} text={'Approve'} onClick={ handleApproveRejectButton } iconProps={ checked && selectedButton === 'Approve'  ? acceptIcon : null }/>
@@ -323,21 +325,23 @@ const ScwAdmin = (props: IScwAdminProps) => {
                 : 
                 null
             } 
+            <PrimaryButton text={'Back'} onClick={() => goToPreviousStep(step)}/>
+            <PrimaryButton text={'Confirm'} onClick={onConfirm}/>
         </>
       }
+      
 
-      { step === 3 &&
+      {/* { step === 3 &&
         <>        
-        <Confirmation selectedRowData={ selectedRowData } handleOnChangeComments={handleOnChangeComments}/>
+        <Confirmation selectedRowData={ selectedRowData } confirmationComments={confirmationComments}/>
         <Stack horizontal horizontalAlign='center' tokens={sectionStackTokens}  styles={stackStyles}>
           <PrimaryButton text={'Back'} onClick={() => goToPreviousStep(step)}/>
-          <PrimaryButton text={'Confirm'} />
+          <PrimaryButton text={'Confirm'} onClick={onConfirm}/>
         </Stack>
 
         </>
 
-      }
-      
+      } */}
     
     
     </div>
