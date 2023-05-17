@@ -8,5 +8,6 @@ export interface IScwAdminState {
     context?: WebPartContext;
     selectedRowData: any;
     confirmationComments?:(value: string) => void;
+    decisionChoiceCallback?:(option: string) => void;
 
 }
