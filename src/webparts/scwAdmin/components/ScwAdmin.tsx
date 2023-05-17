@@ -5,30 +5,30 @@
 import * as React from 'react';
 import styles from './ScwAdmin.module.scss';
 import { IScwAdminProps } from './IScwAdminProps';
-// import { IScwAdminState } from './IScwAdminState';
 import { getSP } from '../../../pnpjsConfig';
 import { SPFI } from '@pnp/sp';
 import '@pnp/sp/items';
 import "@pnp/sp/items/get-all";
 import { useEffect, useState  } from 'react';
-import { ActionButton,  DetailsList, 
+import { DefaultButton,  DetailsList, 
   DetailsListLayoutMode, 
   DetailsRow, 
+  IButtonStyles, 
   IColumn, 
   IDetailsColumnRenderTooltipProps, 
   IDetailsColumnStyles, 
   IDetailsHeaderProps, 
   IDetailsListProps, 
   IDetailsRowStyles, 
-  IIconProps, 
   IRenderFunction, 
   IScrollablePaneStyles, 
   IStackStyles, 
   IStackTokens, 
-  // IconButton, 
   PrimaryButton, 
   ScrollablePane, 
   ScrollbarVisibility,  
+  Spinner,  
+  SpinnerSize,  
   Stack,  
   Sticky,  
   StickyPositionType,  
@@ -36,8 +36,9 @@ import { ActionButton,  DetailsList,
   mergeStyleSets } from 'office-ui-fabric-react';
 import { PagedItemCollection } from '@pnp/sp/items';
 import ItemFormDetails from './ItemFormDetails';
-// import Confirmation from './Confirmation';
 import { getTheme } from '@fluentui/react/lib/Styling';
+import { HttpClientResponse, IHttpClientOptions, AadHttpClient }  from "@microsoft/sp-http";
+import Complete from './Complete';
 
 export interface ISCWList {
   id: number;
@@ -64,21 +65,21 @@ export interface ISCWList {
 const ScwAdmin = (props: IScwAdminProps) => {
 
   const LIST_NAME: string = 'Request';
-  // let webUrl = 'https://devgcx.sharepoint.com/teams/App-SCW2';
   const _sp:SPFI = getSP(props.context);
-  // const BATCH_SIZE = 10;
+  const BATCH_SIZE = 10;
 
   const [requestList, setRequestList] = useState< ISCWList [] >( [] );
-  // const [ pageNumber, setPageNumber ] = useState< number >(0);
   const [selectedRowData, setSelectedRowData] = useState<any>();
   const [step, setCurrentStep] = useState<number>(1);
-  const [checked, setChecked ] = useState<boolean>(false);
-  const [selectedButton, setSelectedButton ] = useState<string>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+    // const [ pageNumber, setPageNumber ] = useState< number >(0);
+  // const [checked, setChecked ] = useState<boolean>(false);
+  // const [selectedButton, setSelectedButton ] = useState<string>(null);
   
 
   const columns: IColumn[] = [
-    { key: 'Col0', name: 'ID', fieldName: 'id', minWidth: 20},
-    { key: 'Col1', name: 'Space Name', fieldName: 'spaceName', minWidth: 100, maxWidth: 400, isResizable: true },
+    { key: 'Col0', name: 'Community Id', fieldName: 'id', minWidth: 20},
+    { key: 'Col1', name: 'Community Name', fieldName: 'spaceName', minWidth: 100, maxWidth: 400, isResizable: true },
     { key: 'Col2', name: 'Reason', fieldName: 'businessJustification', minWidth: 100, maxWidth: 400, isResizable: true },
     { key: 'Col3', name: 'Template', fieldName: 'template', minWidth: 100 },
     { key: 'Col4', name: 'Status', fieldName: 'status', minWidth: 100 },
@@ -109,7 +110,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
     let items: PagedItemCollection<any[]> = undefined;
 
     do {
-      if(!items) items = await _sp.web.lists.getByTitle(LIST_NAME).items.top(10).orderBy("Created", false).getPaged();
+      if(!items) items = await _sp.web.lists.getByTitle(LIST_NAME).items.top(BATCH_SIZE).orderBy("Created", false).orderBy("Status",false).getPaged();
       else items = await items.getNext();
 
       if ( items.results.length > 0 ) {
@@ -219,46 +220,65 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
   const scrollablePaneStyles: Partial<IScrollablePaneStyles> = { root: scrollStyles.root };
 
-  const arrowIcon:IIconProps = {iconName: 'NavigateBack'};
-  const acceptIcon: IIconProps = { iconName: 'Accept'};
+  // const arrowIcon:IIconProps = {iconName: 'NavigateBack'};
+  // const acceptIcon: IIconProps = { iconName: 'Accept'};
 
 
-  // useEffect(() => {
-   
-  // }, [])
+  const buttonStyle: Partial<IButtonStyles> = {
+    root: {backgroundColor: '#c0c0cc', color: '#004DB8' }
+  }
+
+
+
+  const decisionChoiceCallback = (option: string): void => {
+    console.log("O",option);
+    if (option === 'A') {
+      setSelectedRowData({
+        ...selectedRowData,
+        decisionStatus: 'Approved'
+      })
+    }
+    else if(option ==='B') {
+      setSelectedRowData({
+        ...selectedRowData,
+        decisionStatus: 'Rejected'
+      })
+    }
+
+  }
   
 
-  const handleApproveRejectButton = (event: any ):void => {
-    const selectedBtnName: string = event.target.textContent;
-    console.log("ev", selectedBtnName);
+  // const handleApproveRejectButton = (event: any ):void => {
+  //   const selectedBtnName: string = event.target.textContent;
+  //   console.log("ev", selectedBtnName);
  
-    setSelectedButton(selectedBtnName);
+  //   setSelectedButton(selectedBtnName);
     
-    if( selectedBtnName === 'Approve') {
-      setSelectedRowData({
-        ...selectedRowData,
-        status: 'Approved'
-      })
+  //   if( selectedBtnName === 'Approve') {
+  //     setSelectedRowData({
+  //       ...selectedRowData,
+  //       status: 'Approved'
+  //     })
 
-      setChecked((prev) => !prev)
-    }
-    else if ( selectedBtnName === 'Reject' ) {
-      setSelectedRowData({
-        ...selectedRowData,
-        status: 'Rejected'
+  //     setChecked((prev) => !prev)
+  //   }
+  //   else if ( selectedBtnName === 'Reject' ) {
+  //     setSelectedRowData({
+  //       ...selectedRowData,
+  //       status: 'Rejected'
         
-      })
+  //     })
 
-      setChecked((prev) => !prev)
-    }
+  //     setChecked((prev) => !prev)
+  //   }
      
 
-      console.log("4",selectedRowData);
+  //     console.log("4",selectedRowData);
   
 
-     goToNextStep(step)
+  //    goToNextStep(step)
      
-   }
+  //  }
 
 
 
@@ -268,7 +288,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
     setSelectedRowData({
       ...selectedRowData,
-      comment: value
+      decisionComment: value
     })
     
     console.log("state", selectedRowData)
@@ -276,7 +296,38 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
   
   const onConfirm = ():void  => {
-    console.log("hello")
+
+    const functionUrl: string = 'https://appsvc-fnc-dev-scw-list-dotnet001.azurewebsites.net/api/CreateQueue';
+
+    const requestHeaders: Headers = new Headers();
+        requestHeaders.append("Content-type", "application/json");
+        requestHeaders.append("Cache-Control", "no-cache");
+        const postOptions: IHttpClientOptions = {
+            headers: requestHeaders,
+            body: `
+                {
+                  "Id": "${selectedRowData.id}",
+                  "Status": "${selectedRowData.decisionStatus}", 
+                  "Comment": "${selectedRowData.decisionComment}"    
+                }`
+        };
+
+        setIsLoading((prev) => !prev)
+
+        props.context.aadHttpClientFactory.getClient('ffbdb74a-7e0c-48a2-b460-2265ae3eb634')
+          .then((client: AadHttpClient) => {
+            client
+              .post(functionUrl, AadHttpClient.configurations.v1, postOptions)
+              .then((response: HttpClientResponse) => {
+                console.log(`Status code:`, response.status);
+                console.log('respond is ', response.ok);
+              });
+
+          })
+
+          setIsLoading((prev) => !prev)
+          goToNextStep(step)
+    
   }
   
   const sectionStackTokens: IStackTokens = { childrenGap: 10 };
@@ -291,6 +342,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
   return (
     <>
     <div className={styles.container}>
+      
       { step === 1 &&
       <>
       <h2>SCW Approvals</h2>
@@ -313,22 +365,37 @@ const ScwAdmin = (props: IScwAdminProps) => {
       }
 
       
-      { selectedRowData && step === 2 &&
+      { isLoading ? 
+        (<Spinner size={SpinnerSize.large} />) : selectedRowData && step === 2 &&
         <>
-          <ActionButton text="Back to list" iconProps={arrowIcon} style={{float:'right'}} onClick={()=> goToPreviousStep(step)}/>
-          <ItemFormDetails  selectedRowData={selectedRowData} confirmationComments={confirmationComments} context= {props.context}/>
-            { selectedRowData.status === 'Submitted' ?
+          {/* <ActionButton text="Back to list" iconProps={arrowIcon} style={{float:'right'}} onClick={()=> goToPreviousStep(step)}/> */}
+          <ItemFormDetails  selectedRowData={selectedRowData} confirmationComments={confirmationComments} context= {props.context} decisionChoiceCallback={decisionChoiceCallback}/>
+            {/* { selectedRowData.status === 'Submitted' ?
                 <Stack horizontal horizontalAlign='center' tokens={sectionStackTokens} styles={stackStyles}>
                     <PrimaryButton id={'btn_1'} text={'Approve'} onClick={ handleApproveRejectButton } iconProps={ checked && selectedButton === 'Approve'  ? acceptIcon : null }/>
                     <PrimaryButton id={'btn_2'} text={'Reject'} onClick={ handleApproveRejectButton }  iconProps={ checked && selectedButton === 'Reject' ? acceptIcon : null }/>
                 </Stack>
                 : 
                 null
-            } 
-            <PrimaryButton text={'Back'} onClick={() => goToPreviousStep(step)}/>
-            <PrimaryButton text={'Confirm'} onClick={onConfirm}/>
+            }  */}
+            <Stack horizontal horizontalAlign="center" tokens={sectionStackTokens} styles={stackStyles}>
+              
+              <DefaultButton styles={buttonStyle} text={selectedRowData.status === 'Submitted' ? 'Previous': 'Back to Communities ListPage'} onClick={() => goToPreviousStep(step)}/>
+              
+              {
+                selectedRowData.status === "Submitted" &&
+                  <PrimaryButton text={'Submit decision'} onClick={onConfirm}/>
+              }
+            </Stack>
         </>
+        
       }
+
+      { step === 3 && 
+      
+          <Complete/>
+      }
+     
       
 
       {/* { step === 3 &&
