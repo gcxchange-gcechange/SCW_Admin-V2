@@ -17,7 +17,7 @@ const Confirmation: React.FunctionComponent<IScwAdminState> = (props) => {
             console.log("inout", inputData);
             // console.log("commt", commentInput.current);
         
-        props.handleOnChangeComments(inputData)
+        props.confirmationComments(inputData)
          
     }
 
@@ -27,7 +27,8 @@ const Confirmation: React.FunctionComponent<IScwAdminState> = (props) => {
 
     return (
         <>
-        <h2>Confirm</h2>
+        <h2>Confirmation</h2>
+        <h3>Status: {props.selectedRowData.status}</h3>
         <TextField label="Comment (optional)" placeholder= "Type a comment to send to the requestor" multiline autoAdjustHeight onChange={handleOnChange} defaultValue={props.selectedRowData.comment}/>
         </>
     )
