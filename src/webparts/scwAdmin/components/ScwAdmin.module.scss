@@ -12,8 +12,8 @@
 
 
   .container {
-    margin: 0px;
-   
+    margin: 0px auto;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 25px 50px 0 rgba(0, 0, 0, 0.1);
   }
 
   .wrapper {
@@ -52,6 +52,37 @@
   }
 }
 
+
+.cancelIcon {
+  color: white;
+  background-color: transparent;
+   
+}
+
+.cancelIcon:hover{
+  background-color: transparent;
+  color: white;
+ 
+}
+
+.close{
+  color: #FF510F;
+  background-color: white;
+  border: none;
+  font-size: 18px;
+
+  &:hover {
+      background-color: white;
+      color: #FF510F;
+      font-weight: bolder;
+      border:none; 
+  }
+}
+
+.horizontalLine {
+  border-bottom: 1px solid #605E5C;
+  width: 100%;
+}
 
  
 
