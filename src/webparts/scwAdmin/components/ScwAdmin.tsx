@@ -72,14 +72,16 @@ const ScwAdmin = (props: IScwAdminProps) => {
   const [selectedRowData, setSelectedRowData] = useState<any>();
   const [step, setCurrentStep] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  // const [close, setClose] = useState<boolean>(false);
+  const [showModal, setShowModal] = useState<boolean>(false);
     // const [ pageNumber, setPageNumber ] = useState< number >(0);
   // const [checked, setChecked ] = useState<boolean>(false);
   // const [selectedButton, setSelectedButton ] = useState<string>(null);
   
 
   const columns: IColumn[] = [
-    { key: 'Col0', name: 'Community Id', fieldName: 'id', minWidth: 20},
-    { key: 'Col1', name: 'Community Name', fieldName: 'spaceName', minWidth: 100, maxWidth: 400, isResizable: true },
+    { key: 'Col0', name: 'Id', fieldName: 'id', minWidth: 20},
+    { key: 'Col1', name: 'Community Name', fieldName: 'spaceName', minWidth: 200, maxWidth: 400, isResizable: true },
     { key: 'Col2', name: 'Reason', fieldName: 'businessJustification', minWidth: 100, maxWidth: 400, isResizable: true },
     { key: 'Col3', name: 'Template', fieldName: 'template', minWidth: 100 },
     { key: 'Col4', name: 'Status', fieldName: 'status', minWidth: 100 },
@@ -312,7 +314,8 @@ const ScwAdmin = (props: IScwAdminProps) => {
                 }`
         };
 
-        setIsLoading((prev) => !prev)
+        setIsLoading((prev) => !prev);
+        
 
         props.context.aadHttpClientFactory.getClient('ffbdb74a-7e0c-48a2-b460-2265ae3eb634')
           .then((client: AadHttpClient) => {
@@ -326,8 +329,17 @@ const ScwAdmin = (props: IScwAdminProps) => {
           })
 
           setIsLoading((prev) => !prev)
-          goToNextStep(step)
+
+          console.log("Modal", showModal)
+          setShowModal((prev) => !prev);
     
+  }
+
+  const closeModal = ():void => {
+    // setClose(true);
+    setShowModal(false);
+
+    goToPreviousStep(step)
   }
   
   const sectionStackTokens: IStackTokens = { childrenGap: 10 };
@@ -365,7 +377,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
       }
 
       
-      { isLoading ? 
+      { isLoading === true ? 
         (<Spinner size={SpinnerSize.large} />) : selectedRowData && step === 2 &&
         <>
           {/* <ActionButton text="Back to list" iconProps={arrowIcon} style={{float:'right'}} onClick={()=> goToPreviousStep(step)}/> */}
@@ -380,21 +392,20 @@ const ScwAdmin = (props: IScwAdminProps) => {
             }  */}
             <Stack horizontal horizontalAlign="center" tokens={sectionStackTokens} styles={stackStyles}>
               
-              <DefaultButton styles={buttonStyle} text={selectedRowData.status === 'Submitted' ? 'Previous': 'Back to Communities ListPage'} onClick={() => goToPreviousStep(step)}/>
+              <DefaultButton styles={buttonStyle} text={selectedRowData.status === 'Submitted' ? 'Previous': 'Back to Communities List Page'} onClick={() => goToPreviousStep(step)}/>
               
               {
                 selectedRowData.status === "Submitted" &&
                   <PrimaryButton text={'Submit decision'} onClick={onConfirm}/>
               }
             </Stack>
+            {showModal && <Complete data={ selectedRowData.id } status={ selectedRowData.decisionStatus }  showModal={showModal} onClose={closeModal}/>}
         </>
-        
       }
 
-      { step === 3 && 
-      
-          <Complete/>
-      }
+      {/* { step === 3 &&   
+            <Complete data={ selectedRowData.id } /> 
+      } */}
      
       
 
