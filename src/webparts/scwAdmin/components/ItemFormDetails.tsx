@@ -111,10 +111,11 @@ const ItemFormDetails: React.FunctionComponent<IScwAdminState> = (props) => {
                     personSelectionLimit={3}
                     groupName={""} // Leave this blank in case you want to filter from all users
                     disabled={true}
-                    defaultSelectedUsers={selectedRowData.members.split(',')}
+                    defaultSelectedUsers={selectedRowData.owner1.split(',')} 
                     showHiddenInUI={false}
                     principalTypes={[PrincipalType.User]}
                 />
+
             </div>
             {   selectedRowData.status === 'Submitted' &&
                 <>
