@@ -97,12 +97,14 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
   const goToPreviousStep = (step:any):void => {
     const previousPage = step - 1;
-    console.log("previous", previousPage);
-    setSelectedRowData({
-      ...selectedRowData,
-      status: 'Submitted'
-    })
+    
+    // setSelectedRowData({
+    //   ...selectedRowData,
+    //   status: 'Submitted'
+    // })
     setCurrentStep(previousPage);
+
+    console.log("previous", previousPage);
   }
   
   const getList = async () => {
@@ -151,9 +153,10 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
   useEffect(() => {
 
-    getList();
+      getList();
 
-  }, [])
+
+  }, [step])
 
   const theme = getTheme();
 
@@ -227,7 +230,8 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
 
   const buttonStyle: Partial<IButtonStyles> = {
-    root: {backgroundColor: '#c0c0cc', color: '#004DB8' }
+    root: {backgroundColor: '#c0c0cc', color: '#004DB8', borderColor: '#c0c0cc'},
+    rootHovered: { backgroundColor: '#c0c0cc' }
   }
 
 
@@ -336,10 +340,14 @@ const ScwAdmin = (props: IScwAdminProps) => {
   }
 
   const closeModal = ():void => {
-    // setClose(true);
-    setShowModal(false);
 
-    goToPreviousStep(step)
+    const backToList = step - 1;
+    setCurrentStep(backToList)
+    setShowModal(false);
+ 
+    console.log('stateon CLose', selectedRowData);
+    console.log('steponClose', step);
+    
   }
   
   const sectionStackTokens: IStackTokens = { childrenGap: 10 };
