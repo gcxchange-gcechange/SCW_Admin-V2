@@ -1,6 +1,6 @@
 import * as React from "react";
 import styles from "./ScwAdmin.module.scss";
-import { IStackTokens, Icon, IconButton, Modal, PrimaryButton, Stack } from "office-ui-fabric-react";
+import { IStackTokens, Icon, IconButton, Modal, PrimaryButton, Stack, StackItem } from "office-ui-fabric-react";
 
 
 interface ICompleteProps {
@@ -43,43 +43,50 @@ const Complete: React.FunctionComponent<ICompleteProps> = ({ data, status, showM
       };
 
  
-    console.log('props3',data);
+    console.log('props3',PermissionStatus);
 
     const spacingTokens: IStackTokens = {
         childrenGap: '15px',
-        padding: '5px',
+        padding: '15px',
       };
 
-      console.log("status",status);
+
+
+
+    
     return (
         <>
             <Modal
-                isOpen={showModal}
-                onDismiss={onClose}
-                isBlocking={ true}
+                isOpen={ showModal }
+                onDismiss={ onClose }
+                isBlocking={ true }
                 styles={{
                 main: modalStyle.main,
                 }}
             >
-                <div style={modalStyle.header}>
-                    <h2>Community creation ID # {data}</h2>
+                <div style={ modalStyle.header }>
+                    <h2>Community creation ID#{ data }</h2>
                     <IconButton
-                        className={styles.cancelIcon}
-                        iconProps={{iconName: "Cancel"}}
+                        className={ styles.cancelIcon }
+                        iconProps={{iconName: "Cancel" }}
+                        onClick={onClose}
                     />
                 </div>
                     <div style={modalStyle.footer}>
                         <Stack>
                             <Stack horizontal horizontalAlign="center" tokens={spacingTokens}>
                                 <Stack.Item  align="center">
-                                    { status === "Accepted" ?
-                                        <Icon  style={{color: 'green'}} iconName="SkypeCircleCheck"/> 
+                                    { status === "Approved" ?
+                                        <Icon style={{color: '#1da51d', fontSize: '20px'}} iconName="SkypeCircleCheck"/> 
                                         :
-                                        <Icon style={{color: 'red'}} iconName="StatusErrorFull"/>
+                                        <Icon style={{color: 'red', fontSize: '20px'}} iconName="StatusErrorFull"/>
                                     }
-                                    <span>Community ID#{data} created</span>
                                 </Stack.Item>
+                                <StackItem>
+                                    <span>Community ID#{data} {status === "Approved" ? `created` : `rejected`}</span>
+                                </StackItem>
                             </Stack>
+
                             <Stack.Item>
                                 <hr className={styles.horizontalLine} />
                             </Stack.Item>

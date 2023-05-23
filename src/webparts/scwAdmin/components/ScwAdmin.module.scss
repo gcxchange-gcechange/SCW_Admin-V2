@@ -56,12 +56,15 @@
 .cancelIcon {
   color: white;
   background-color: transparent;
+  font-size: 20px!important;
+  font-weight: bolder!important;
    
 }
 
 .cancelIcon:hover{
   background-color: transparent;
   color: white;
+  
  
 }
 
@@ -84,6 +87,10 @@
   width: 100%;
 }
 
+.checkIcon {
+  font-size: 20px;
+  color: #1da51d;
+}
  
 
 
