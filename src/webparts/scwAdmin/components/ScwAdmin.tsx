@@ -66,7 +66,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
   const LIST_NAME: string = 'Request';
   const _sp:SPFI = getSP(props.context);
-  const BATCH_SIZE = 10;
+  const BATCH_SIZE = 100;
 
   const [requestList, setRequestList] = useState< ISCWList [] >( [] );
   const [selectedRowData, setSelectedRowData] = useState<any>();
@@ -83,8 +83,8 @@ const ScwAdmin = (props: IScwAdminProps) => {
     { key: 'Col0', name: 'Id', fieldName: 'id', minWidth: 20},
     { key: 'Col1', name: 'Community Name', fieldName: 'spaceName', minWidth: 200, maxWidth: 400, isResizable: true },
     { key: 'Col2', name: 'Reason', fieldName: 'businessJustification', minWidth: 100, maxWidth: 400, isResizable: true },
-    { key: 'Col3', name: 'Template', fieldName: 'template', minWidth: 100 },
-    { key: 'Col4', name: 'Status', fieldName: 'status', minWidth: 100 },
+    { key: 'Col3', name: 'Template', fieldName: 'template', minWidth: 80 },
+    { key: 'Col4', name: 'Status', fieldName: 'status', minWidth: 80 },
     { key: 'Col5', name: 'Created Date', fieldName: 'created', minWidth: 100 },
   ];
   
@@ -97,11 +97,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
   const goToPreviousStep = (step:any):void => {
     const previousPage = step - 1;
-    
-    // setSelectedRowData({
-    //   ...selectedRowData,
-    //   status: 'Submitted'
-    // })
+  
     setCurrentStep(previousPage);
 
     console.log("previous", previousPage);
@@ -114,7 +110,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
     let items: PagedItemCollection<any[]> = undefined;
 
     do {
-      if(!items) items = await _sp.web.lists.getByTitle(LIST_NAME).items.top(BATCH_SIZE).orderBy("Created", false).orderBy("Status",false).getPaged();
+      if(!items) items = await _sp.web.lists.getByTitle(LIST_NAME).items.top(BATCH_SIZE).orderBy("Created", false).getPaged();
       else items = await items.getNext();
 
       if ( items.results.length > 0 ) {
@@ -141,7 +137,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
         businessJustification: item.BusinessJustification,
         created: new Date(item.Created).toLocaleDateString("en-CA"),
         status: item.Status,
-        template: item.Template,
+        template: item.TemplateTitle,
         siteUrl: item.SiteUrl,
       }
 
@@ -152,7 +148,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
   
 
   useEffect(() => {
-
+    
       getList();
 
 
@@ -292,6 +288,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
   const confirmationComments = (value: string):void => {
       console.log("value", value);
 
+
     setSelectedRowData({
       ...selectedRowData,
       decisionComment: value
@@ -336,16 +333,15 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
           console.log("Modal", showModal)
           setShowModal((prev) => !prev);
+         
     
   }
 
   const closeModal = ():void => {
 
-    const backToList = step - 1;
-    setCurrentStep(backToList)
     setShowModal(false);
- 
-    console.log('stateon CLose', selectedRowData);
+    setCurrentStep(step - 1);
+    console.log('stateon CLose', requestList);
     console.log('steponClose', step);
     
   }
@@ -386,10 +382,10 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
       
       { isLoading === true ? 
-        (<Spinner size={SpinnerSize.large} />) : selectedRowData && step === 2 &&
+        (<Spinner size={SpinnerSize.large} />) : step === 2 &&
         <>
           {/* <ActionButton text="Back to list" iconProps={arrowIcon} style={{float:'right'}} onClick={()=> goToPreviousStep(step)}/> */}
-          <ItemFormDetails  selectedRowData={selectedRowData} confirmationComments={confirmationComments} context= {props.context} decisionChoiceCallback={decisionChoiceCallback}/>
+          <ItemFormDetails  selectedRowData={selectedRowData} confirmationComments={confirmationComments} context= {props.context} decisionChoiceCallback={decisionChoiceCallback} requestList={requestList}/>
             {/* { selectedRowData.status === 'Submitted' ?
                 <Stack horizontal horizontalAlign='center' tokens={sectionStackTokens} styles={stackStyles}>
                     <PrimaryButton id={'btn_1'} text={'Approve'} onClick={ handleApproveRejectButton } iconProps={ checked && selectedButton === 'Approve'  ? acceptIcon : null }/>
