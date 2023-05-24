@@ -1,9 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { TextField } from "office-ui-fabric-react";
 import * as React from "react";
-import { IScwAdminState } from "./IScwAdminState";
+// import { IScwAdminState } from "./IScwAdminState";
 
+interface IConfirmationProps {
+    selectedRowData: any;
+    confirmationComments?:(value: string) => void;
 
-const Confirmation: React.FunctionComponent<IScwAdminState> = (props) => {
+}
+
+const Confirmation: React.FunctionComponent<IConfirmationProps> = (props) => {
 
     console.log("3", props);
 
@@ -14,7 +20,7 @@ const Confirmation: React.FunctionComponent<IScwAdminState> = (props) => {
     //    commentInput.current = event.target.value
         const inputData = event.target.value;
         
-            console.log("inout", inputData);
+            console.log("input", inputData);
             // console.log("commt", commentInput.current);
         
         props.confirmationComments(inputData)
