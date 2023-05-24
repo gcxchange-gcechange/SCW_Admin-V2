@@ -5,10 +5,8 @@ import { IStackTokens, Icon, IconButton, Modal, PrimaryButton, Stack, StackItem 
 
 interface ICompleteProps {
     data: string;
-    // close: boolean;
     status: string;
     showModal: boolean;
-    // openModal?: () => void;
     onClose?:() => void;
 }
 
