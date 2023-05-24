@@ -1,17 +1,28 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ITextFieldStyles, TextField } from 'office-ui-fabric-react/lib/TextField';
 import * as React from 'react';
-import { IScwAdminState } from './IScwAdminState';
 import { ChoiceGroup, IChoiceGroupOption,  IStackProps, IStackStyles, Icon, Stack, mergeStyleSets } from 'office-ui-fabric-react';
 import styles from './ScwAdmin.module.scss';
 import { PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker";
+import { WebPartContext } from '@microsoft/sp-webpart-base';
 
 
-const ItemFormDetails: React.FunctionComponent<IScwAdminState> = (props) => {
+interface IItemFormDetailsProps {
+    selectedRowData: any;
+    context?: WebPartContext;
+    requestList: any[];
+    confirmationComments?:(value: string) => void;
+    decisionChoiceCallback?:(option: string) => void;
+}
+
+
+const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) => {
 
     console.log(props)
     
-    const { selectedRowData } = props;
+    const { selectedRowData, requestList } = props;
+    
+    
 
     const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>):void  => {
 
@@ -48,40 +59,51 @@ const ItemFormDetails: React.FunctionComponent<IScwAdminState> = (props) => {
 
  
     const customFieldStyles = mergeStyleSets ({
-        wrapper: { borderBottom: 'none', outline: 'transparent'},
-        field: { borderBottom: 'none'},
-        fieldGroup:{ borderColor: 'none', boxShadow: 'none', outlineColor:'transparent'},
-        subComponentStyles: { label: {root: { width: '190px', borderBottom: 'none'}}},
-        prefix: {font: '18px', paddingRight: '0px', paddingTop: '6px', background: 'none'}
+        wrapper: { borderBottom: 'none', outlineColor: 'transparent' },
+        field: { borderBottom: 'none', color: 'fuscia'},
+        fieldGroup:{ borderColor: 'transparent', boxShadow: 'none', outlineColor:'transparent'},
+        subComponentStyles: { label: {root: { width: '190px', color: 'black'}}},
+        prefix: {font: '18px', paddingRight: '0px', paddingTop: '6px', background: 'rgb(243, 242, 241)'}
 
       });
+
+    const selectedItem: any[] = [];
+
+        requestList.map((item) => {
+            
+            if (item.id === selectedRowData.id ) {
+                selectedItem.push(item);
+            }
+        });
     
 
     const renderIcon = (): any => {
-
-
-        if (selectedRowData.status === 'Submitted') {
-            return <Icon style={{color: '#F7B80A'}} iconName='AlertSolid'/>
-        }
-        else if (selectedRowData.status === 'Failed') {
-            return <Icon style={{color: 'red'}}  iconName='SkypeCircleMinus'/>
-        }
-        else if (selectedRowData.status === 'Approved') {
-            return <Icon style={{color: 'green'}} iconName='SkypeCircleCheck'/>
-        }
-        else if (selectedRowData.status === 'Rejected') {
-            return <Icon style={{color: 'red'}} iconName='StatusErrorFull'/>
-        }
         
+
+        switch(selectedItem[0].status ) {
+            case "Submitted":
+                return <Icon style={{color: '#F7B80A'}} iconName='AlertSolid'/>;
+             
+            case 'Approved':
+                return <Icon style={{color: 'green'}} iconName='SkypeCircleCheck'/>;
+           
+            case  'Rejected':
+                return <Icon style={{color: 'red'}} iconName='StatusErrorFull'/>;
+            
+            case 'Failed':
+                return <Icon style={{color: 'red'}}  iconName='SkypeCircleMinus'/>;
+            default:
+
+        }
         
     }
+
 
     const decisionOptions: IChoiceGroupOption[] = [
         { key: 'A', text: 'Approve community creation' },
         { key: 'B', text: 'Reject community creation' },
       ];
 
-   
 
 
     return (
@@ -91,10 +113,10 @@ const ItemFormDetails: React.FunctionComponent<IScwAdminState> = (props) => {
             <div>
                 <Stack horizontal styles={stackStyles}>
                     <Stack  {...columnProps}>
-                        <TextField label="Request id:" styles= {customFieldStyles} underlined readOnly defaultValue={selectedRowData.id} />
-                        <TextField label="Status:" styles= {customFieldStyles} underlined readOnly prefix={renderIcon()} defaultValue={selectedRowData.status}/>
-                        <TextField label="Requester email:" styles= {customFieldStyles} underlined readOnly defaultValue={selectedRowData.requesterEmail} />
-                        <TextField label="Community sharepoint url:" styles= {customFieldStyles} underlined readOnly defaultValue={selectedRowData.siteUrl} />
+                        <TextField label="Request id:" styles= {customFieldStyles} underlined disabled defaultValue={selectedRowData.id} />
+                        <TextField label="Status:" styles= {customFieldStyles} underlined disabled prefix={renderIcon()} defaultValue={selectedItem[0].status}/>
+                        <TextField label="Requester email:" styles= {customFieldStyles} underlined disabled defaultValue={selectedRowData.requesterEmail} />
+                        <TextField label="Community sharepoint url:" styles= {customFieldStyles} underlined disabled defaultValue={selectedRowData.siteUrl} />
                     </Stack>
                 </Stack>
             </div>
@@ -117,15 +139,14 @@ const ItemFormDetails: React.FunctionComponent<IScwAdminState> = (props) => {
                 />
 
             </div>
-            {   selectedRowData.status === 'Submitted' &&
+            {   selectedItem[0].status === 'Submitted' &&
                 <>
                     <div style={{paddingBottom: '18px'}}>
-                    <Stack horizontal verticalAlign='center'>
-                        <span className={styles.asteriks}>&#42;</span>
-                        <h3>Community creation decision</h3>
-                    </Stack>
-                    <ChoiceGroup id='choiceDecision' options={decisionOptions} onChange={onSelectedKey}/>
-                                    
+                        <Stack horizontal verticalAlign='center'>
+                            <span className={styles.asteriks}>&#42;</span>
+                            <h3>Community creation decision</h3>
+                        </Stack>
+                        <ChoiceGroup id='choiceDecision' options={decisionOptions} onChange={onSelectedKey}/>                
                     </div>
  
                     <div>
