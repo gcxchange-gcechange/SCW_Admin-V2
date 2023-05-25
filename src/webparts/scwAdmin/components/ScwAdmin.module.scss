@@ -12,7 +12,9 @@
 
 
   .container {
+    padding:10px;
     margin: 0px auto;
+    border: 1px solid lightgrey;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 25px 50px 0 rgba(0, 0, 0, 0.1);
   }
 
@@ -22,13 +24,6 @@
   }
 
 }
-
-:global {
-  .ms-TextFied.is-active.ms-TextField-underlined.root-277{
-    border-bottom: fuchsia;
-  }
-}
-
 
 .formContainer {
   margin-top: 10px!important;
