@@ -24,6 +24,7 @@ import { DefaultButton,  DetailsList,
   IScrollablePaneStyles, 
   IStackStyles, 
   IStackTokens, 
+  Icon, 
   PrimaryButton, 
   ScrollablePane, 
   ScrollbarVisibility,  
@@ -55,12 +56,10 @@ export interface ISCWList {
   template: string;
   status: string;
   siteUrl: string;
+  comment: string;
  
 
 }
-
-
-
 
 const ScwAdmin = (props: IScwAdminProps) => {
 
@@ -72,20 +71,63 @@ const ScwAdmin = (props: IScwAdminProps) => {
   const [selectedRowData, setSelectedRowData] = useState<any>();
   const [step, setCurrentStep] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  // const [close, setClose] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
-    // const [ pageNumber, setPageNumber ] = useState< number >(0);
-  // const [checked, setChecked ] = useState<boolean>(false);
-  // const [selectedButton, setSelectedButton ] = useState<string>(null);
+
   
 
   const columns: IColumn[] = [
-    { key: 'Col0', name: 'Id', fieldName: 'id', minWidth: 20},
-    { key: 'Col1', name: 'Community Name', fieldName: 'spaceName', minWidth: 200, maxWidth: 400, isResizable: true },
-    { key: 'Col2', name: 'Reason', fieldName: 'businessJustification', minWidth: 100, maxWidth: 400, isResizable: true },
-    { key: 'Col3', name: 'Template', fieldName: 'template', minWidth: 80 },
-    { key: 'Col4', name: 'Status', fieldName: 'status', minWidth: 80 },
-    { key: 'Col5', name: 'Created Date', fieldName: 'created', minWidth: 100 },
+    { key: 'Col0', name: 'Community Id', fieldName: 'id', minWidth: 100, maxWidth: 120},
+    { key: 'Col1', name: 'Community Name', fieldName: 'spaceName', minWidth: 210, maxWidth: 350,  flexGrow: 1, isResizable: true },
+    { key: 'Col2', name: 'Template', fieldName: 'template', minWidth: 70, maxWidth: 90},
+    { key: 'Col3', name: 'Status', fieldName: 'status', minWidth: 80, maxWidth: 100, 
+      onRender: (item) => {
+
+        switch(item.status ) {
+          case "Submitted":
+              return (    
+                <>  
+                <span>
+                  <Icon style={{color: '#F7B80A', paddingRight:'5px'}} iconName='AlertSolid'/> 
+                  </span>
+              {item.status}
+              </>
+              );
+              
+          case 'Approved':
+              return (
+                <>
+                  <span>
+                    <Icon style={{color: 'green', paddingRight:'5px'}} iconName='SkypeCircleCheck'/>
+                  </span>
+                  {item.status}
+                </>
+              );
+         
+          case  'Rejected':
+              return (
+              <>
+              <span>
+                <Icon style={{color: 'red', paddingRight:'5px'}} iconName='StatusErrorFull'/>
+              </span> 
+              {item.status} 
+              </>
+              );
+          
+          case 'Failed':
+              return (
+                <>
+                  <span>
+                  <Icon style={{color: 'red', paddingRight:'5px'}}  iconName='SkypeCircleMinus'/>
+                  </span>
+                  {item.status}
+                </>
+              )  ;
+          default:
+
+        }
+      }
+   },
+    { key: 'Col4', name: 'Created Date', fieldName: 'created', minWidth: 70, maxWidth: 90 },
   ];
   
 
@@ -106,7 +148,6 @@ const ScwAdmin = (props: IScwAdminProps) => {
   const getList = async () => {
     console.log("step", step)
     let pagedItems: any[] = [];
-    // let pageNumber: number = 0;
     let items: PagedItemCollection<any[]> = undefined;
 
     do {
@@ -114,14 +155,10 @@ const ScwAdmin = (props: IScwAdminProps) => {
       else items = await items.getNext();
 
       if ( items.results.length > 0 ) {
-        // console.log("we got results");
-        // pageNumber ++;
-        // console.log("PN", pageNumber)
         pagedItems = pagedItems.concat(items.results);
       }
     } while (items.hasNext);  
 
-    // setPageNumber(pageNumber);
     
     setRequestList((pagedItems).map((item) => {
       return {
@@ -139,12 +176,12 @@ const ScwAdmin = (props: IScwAdminProps) => {
         status: item.Status,
         template: item.TemplateTitle,
         siteUrl: item.SiteUrl,
+        comment: item.Comment
       }
 
     }))
      
-  };
-    
+  };   
   
 
   useEffect(() => {
@@ -221,10 +258,6 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
   const scrollablePaneStyles: Partial<IScrollablePaneStyles> = { root: scrollStyles.root };
 
-  // const arrowIcon:IIconProps = {iconName: 'NavigateBack'};
-  // const acceptIcon: IIconProps = { iconName: 'Accept'};
-
-
   const buttonStyle: Partial<IButtonStyles> = {
     root: {backgroundColor: '#c0c0cc', color: '#004DB8', borderColor: '#c0c0cc'},
     rootHovered: { backgroundColor: '#c0c0cc' }
@@ -248,46 +281,8 @@ const ScwAdmin = (props: IScwAdminProps) => {
     }
 
   }
-  
-
-  // const handleApproveRejectButton = (event: any ):void => {
-  //   const selectedBtnName: string = event.target.textContent;
-  //   console.log("ev", selectedBtnName);
- 
-  //   setSelectedButton(selectedBtnName);
-    
-  //   if( selectedBtnName === 'Approve') {
-  //     setSelectedRowData({
-  //       ...selectedRowData,
-  //       status: 'Approved'
-  //     })
-
-  //     setChecked((prev) => !prev)
-  //   }
-  //   else if ( selectedBtnName === 'Reject' ) {
-  //     setSelectedRowData({
-  //       ...selectedRowData,
-  //       status: 'Rejected'
-        
-  //     })
-
-  //     setChecked((prev) => !prev)
-  //   }
-     
-
-  //     console.log("4",selectedRowData);
-  
-
-  //    goToNextStep(step)
-     
-  //  }
-
-
-
 
   const confirmationComments = (value: string):void => {
-      console.log("value", value);
-
 
     setSelectedRowData({
       ...selectedRowData,
@@ -301,6 +296,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
   const onConfirm = ():void  => {
 
     const functionUrl: string = 'https://appsvc-fnc-dev-scw-list-dotnet001.azurewebsites.net/api/CreateQueue';
+
 
     const requestHeaders: Headers = new Headers();
         requestHeaders.append("Content-type", "application/json");
@@ -330,8 +326,6 @@ const ScwAdmin = (props: IScwAdminProps) => {
           })
 
           setIsLoading((prev) => !prev)
-
-          console.log("Modal", showModal)
           setShowModal((prev) => !prev);
          
     
@@ -341,8 +335,6 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
     setShowModal(false);
     setCurrentStep(step - 1);
-    console.log('stateon CLose', requestList);
-    console.log('steponClose', step);
     
   }
   
@@ -361,22 +353,22 @@ const ScwAdmin = (props: IScwAdminProps) => {
       
       { step === 1 &&
       <>
-      <h2>SCW Approvals</h2>
-      <h3>Total Items {requestList.length}</h3>
-      <div className={styles.wrapper } data-is-scrollable="true">
-        <ScrollablePane scrollbarVisibility= { ScrollbarVisibility.auto} styles= { scrollablePaneStyles} >
-          <DetailsList 
-            styles={ headerStyle }
-            items={ requestList }
-            columns ={ columns }
-            layoutMode={ DetailsListLayoutMode.justified }
-            onRenderRow={ _onRenderRow }
-            isHeaderVisible={true}
-            onRenderDetailsHeader={ onRenderDetailsHeader}
-            onItemInvoked={onItemInvoked}
-          />
-        </ScrollablePane>
-      </div>
+        <h2>SCW Approvals</h2>
+        <h3>Total Items {requestList.length}</h3>
+        {/* <div className={styles.wrapper } data-is-scrollable="true"> */}
+          <ScrollablePane scrollbarVisibility= { ScrollbarVisibility.auto} styles= { scrollablePaneStyles} >
+            <DetailsList 
+              styles={ headerStyle }
+              items={ requestList }
+              columns ={ columns }
+              layoutMode={ DetailsListLayoutMode.justified }
+              onRenderRow={ _onRenderRow }
+              isHeaderVisible={true}
+              onRenderDetailsHeader={ onRenderDetailsHeader}
+              onItemInvoked={onItemInvoked}
+            />
+          </ScrollablePane>
+        {/* </div> */}
       </>
       }
 
@@ -384,16 +376,8 @@ const ScwAdmin = (props: IScwAdminProps) => {
       { isLoading === true ? 
         (<Spinner size={SpinnerSize.large} />) : step === 2 &&
         <>
-          {/* <ActionButton text="Back to list" iconProps={arrowIcon} style={{float:'right'}} onClick={()=> goToPreviousStep(step)}/> */}
           <ItemFormDetails  selectedRowData={selectedRowData} confirmationComments={confirmationComments} context= {props.context} decisionChoiceCallback={decisionChoiceCallback} requestList={requestList}/>
-            {/* { selectedRowData.status === 'Submitted' ?
-                <Stack horizontal horizontalAlign='center' tokens={sectionStackTokens} styles={stackStyles}>
-                    <PrimaryButton id={'btn_1'} text={'Approve'} onClick={ handleApproveRejectButton } iconProps={ checked && selectedButton === 'Approve'  ? acceptIcon : null }/>
-                    <PrimaryButton id={'btn_2'} text={'Reject'} onClick={ handleApproveRejectButton }  iconProps={ checked && selectedButton === 'Reject' ? acceptIcon : null }/>
-                </Stack>
-                : 
-                null
-            }  */}
+            
             <Stack horizontal horizontalAlign="center" tokens={sectionStackTokens} styles={stackStyles}>
               
               <DefaultButton styles={buttonStyle} text={selectedRowData.status === 'Submitted' ? 'Previous': 'Back to Communities List Page'} onClick={() => goToPreviousStep(step)}/>
@@ -403,29 +387,13 @@ const ScwAdmin = (props: IScwAdminProps) => {
                   <PrimaryButton text={'Submit decision'} onClick={onConfirm}/>
               }
             </Stack>
-            {showModal && <Complete data={ selectedRowData.id } status={ selectedRowData.decisionStatus }  showModal={showModal} onClose={closeModal}/>}
         </>
       }
+      { showModal && 
+       <Complete data={ selectedRowData.id } status={ selectedRowData.decisionStatus }  showModal={showModal} onClose={closeModal}/> 
+      }
 
-      {/* { step === 3 &&   
-            <Complete data={ selectedRowData.id } /> 
-      } */}
-     
-      
-
-      {/* { step === 3 &&
-        <>        
-        <Confirmation selectedRowData={ selectedRowData } confirmationComments={confirmationComments}/>
-        <Stack horizontal horizontalAlign='center' tokens={sectionStackTokens}  styles={stackStyles}>
-          <PrimaryButton text={'Back'} onClick={() => goToPreviousStep(step)}/>
-          <PrimaryButton text={'Confirm'} onClick={onConfirm}/>
-        </Stack>
-
-        </>
-
-      } */}
-    
-    
+  
     </div>
       
       

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ITextFieldStyles, TextField } from 'office-ui-fabric-react/lib/TextField';
 import * as React from 'react';
@@ -18,19 +19,12 @@ interface IItemFormDetailsProps {
 
 const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) => {
 
-    console.log(props)
     
-    const { selectedRowData, requestList } = props;
-    
-    
+    const { selectedRowData, requestList } = props;  
 
     const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>):void  => {
 
-        //    commentInput.current = event.target.value
             const inputData = event.target.value;
-            
-                console.log("input", inputData);
-                // console.log("commt", commentInput.current);
             
             props.confirmationComments(inputData)
              
@@ -46,7 +40,6 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
     const stackStyles: Partial<IStackStyles> = { root: { width: 800} };
 
     const columnProps: Partial<IStackProps> = {
-    // tokens: { childrenGap: 10 },
     styles: { root: {width: '80%', paddingLeft: '0px'}},
     };
 
@@ -54,12 +47,11 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
     const textFieldBackground: Partial<ITextFieldStyles> = {
         field: {backgroundColor: 'rgb(218, 218, 218, 0.29)'},
         fieldGroup: {borderColor: 'rgb(218, 218, 218, 0.29)'}
-        // subComponentStyles: { label: {color:  '#e8e8e8'}}
     }
 
  
     const customFieldStyles = mergeStyleSets ({
-        wrapper: { borderBottom: 'none', outlineColor: 'transparent' },
+        wrapper: { borderBottom: 'none', outlineColor: 'transparent', marginBottom: '10px' },
         field: { borderBottom: 'none', color: 'fuscia'},
         fieldGroup:{ borderColor: 'transparent', boxShadow: 'none', outlineColor:'transparent'},
         subComponentStyles: { label: {root: { width: '190px', color: 'black'}}},
@@ -76,6 +68,16 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
             }
         });
     
+    let comment = '';
+
+    const decisionComments = ():void => {
+        if (selectedItem[0].comment !== undefined || null) {
+            comment = selectedItem[0].comment.split(/<div\b[^>]*>(.*?)<\/div>/gi)[1];
+        }
+    
+    }
+    console.log(decisionComments)
+
 
     const renderIcon = (): any => {
         
@@ -104,8 +106,7 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
         { key: 'B', text: 'Reject community creation' },
       ];
 
-
-
+ 
     return (
         <>
             
@@ -122,10 +123,10 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
             </div>
              
             <div className={styles.formContainer}>
-                <TextField styles={textFieldBackground} label="Community purpose" readOnly defaultValue={ selectedRowData.businessJustification } rows={3}/>
-                <TextField styles={textFieldBackground} label="English community name" readOnly defaultValue={selectedRowData.spaceName} rows={2} />
-                <TextField styles={textFieldBackground} label="French community name" readOnly defaultValue={selectedRowData.spaceName}  rows={2}  />         
-                <TextField styles={textFieldBackground} label="English description" readOnly defaultValue={selectedRowData.spaceDescription} />
+                <TextField styles={textFieldBackground} label="Community purpose" readOnly defaultValue={ selectedRowData.businessJustification } multiline rows={5}/>
+                <TextField styles={textFieldBackground} label="English community name" readOnly defaultValue={selectedRowData.spaceName} multiline rows={2}/>
+                <TextField styles={textFieldBackground} label="French community name" readOnly defaultValue={selectedRowData.spaceName} multiline rows={2}/>         
+                <TextField styles={textFieldBackground} label="English description" readOnly defaultValue={selectedRowData.spaceDescription}  />
                 <TextField styles={textFieldBackground} label="French description" readOnly defaultValue={selectedRowData.spaceDescriptionFR} />
                 <PeoplePicker
                     context={props.context}
@@ -137,6 +138,10 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
                     showHiddenInUI={false}
                     principalTypes={[PrincipalType.User]}
                 />
+                { selectedItem[0].status !== 'Submitted' && 
+                
+                    <TextField styles={textFieldBackground} label="Decision comments"  multiline autoAdjustHeight readOnly defaultValue={comment}/>
+                }
 
             </div>
             {   selectedItem[0].status === 'Submitted' &&
@@ -150,7 +155,7 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
                     </div>
  
                     <div>
-                        <TextField label="Decision comments (optional)" placeholder= "Type a comment to send to the requestor" multiline autoAdjustHeight onChange={handleOnChange} defaultValue={props.selectedRowData.comment}/>
+                        <TextField label="Decision comments (optional)" placeholder= "Type a comment to send to the requestor" multiline autoAdjustHeight onChange={handleOnChange} defaultValue={props.selectedRowData.decisionComments}/>
                     </div>
                 </>      
             }
