@@ -48,12 +48,12 @@ const Complete: React.FunctionComponent<ICompleteProps> = ({ data, status, showM
         padding: '15px',
       };
 
-
-
-
+    console.log("statys", status)
     
     return (
         <>
+
+        
             <Modal
                 isOpen={ showModal }
                 onDismiss={ onClose }
@@ -63,7 +63,12 @@ const Complete: React.FunctionComponent<ICompleteProps> = ({ data, status, showM
                 }}
             >
                 <div style={ modalStyle.header }>
+                   {status === undefined ?
+                    <h2>Did you forget something?</h2>
+                    :
                     <h2>Community creation ID#{ data }</h2>
+                   }
+                    
                     <IconButton
                         className={ styles.cancelIcon }
                         iconProps={{iconName: "Cancel" }}
@@ -71,17 +76,23 @@ const Complete: React.FunctionComponent<ICompleteProps> = ({ data, status, showM
                     />
                 </div>
                     <div style={modalStyle.footer}>
+                       
                         <Stack>
                             <Stack horizontal horizontalAlign="center" tokens={spacingTokens}>
                                 <Stack.Item  align="center">
-                                    { status === "Approved" ?
-                                        <Icon style={{color: '#1da51d', fontSize: '20px'}} iconName="SkypeCircleCheck"/> 
-                                        :
-                                        <Icon style={{color: 'red', fontSize: '20px'}} iconName="StatusErrorFull"/>
-                                    }
+                                {status === "Approved" ? (
+                                    <Icon style={{color: '#1da51d', fontSize: '20px'}} iconName="SkypeCircleCheck"/>
+                                    ) : status === "rejected" ? (
+                                    <Icon style={{color: 'blue', fontSize: '20px'}} iconName="StatusCircleQuestionMark"/>
+                                    ) : null
+                                } 
                                 </Stack.Item>
                                 <StackItem>
+                                    { status === undefined ?
+                                     <span>You must select a <strong>Communty creation decision</strong> before proceeding</span>
+                                    :
                                     <span>Community ID#{data} {status === "Approved" ? `created` : `rejected`}</span>
+                                    } 
                                 </StackItem>
                             </Stack>
 
@@ -99,7 +110,7 @@ const Complete: React.FunctionComponent<ICompleteProps> = ({ data, status, showM
                         </Stack>
                         
                     </div>
-            </Modal>
+            </Modal>  
         </>
     )
 }

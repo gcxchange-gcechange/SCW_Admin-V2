@@ -40,6 +40,7 @@ import ItemFormDetails from './ItemFormDetails';
 import { getTheme } from '@fluentui/react/lib/Styling';
 import { HttpClientResponse, IHttpClientOptions, AadHttpClient }  from "@microsoft/sp-http";
 import Complete from './Complete';
+import ErrorModal from './ErrorModal';
 
 export interface ISCWList {
   id: number;
@@ -72,23 +73,25 @@ const ScwAdmin = (props: IScwAdminProps) => {
   const [step, setCurrentStep] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [isError, setIsError] = useState<number>(0
+    );
 
   
 
   const columns: IColumn[] = [
-    { key: 'Col0', name: 'Community Id', fieldName: 'id', minWidth: 100, maxWidth: 120},
-    { key: 'Col1', name: 'Community Name', fieldName: 'spaceName', minWidth: 210, maxWidth: 350,  flexGrow: 1, isResizable: true },
-    { key: 'Col2', name: 'Template', fieldName: 'template', minWidth: 70, maxWidth: 90},
-    { key: 'Col3', name: 'Status', fieldName: 'status', minWidth: 80, maxWidth: 100, 
+    { key: 'Col0', name: 'ID', fieldName: 'id', minWidth: 40, maxWidth: 80},
+    { key: 'Col1', name: 'Community Name', fieldName: 'spaceName', minWidth: 210, maxWidth: 400,  flexGrow: 1, isResizable: true },
+    { key: 'Col2', name: 'Template', fieldName: 'template', minWidth: 100, maxWidth: 120},
+    { key: 'Col3', name: 'Status', fieldName: 'status', minWidth: 100, maxWidth: 120, 
       onRender: (item) => {
 
         switch(item.status ) {
           case "Submitted":
               return (    
                 <>  
-                <span>
-                  <Icon style={{color: '#F7B80A', paddingRight:'5px'}} iconName='AlertSolid'/> 
-                  </span>
+                <span className={styles.iconStyle}>
+                  <Icon iconName='SkypeCircleClock'/> 
+                </span>
               {item.status}
               </>
               );
@@ -96,8 +99,8 @@ const ScwAdmin = (props: IScwAdminProps) => {
           case 'Approved':
               return (
                 <>
-                  <span>
-                    <Icon style={{color: 'green', paddingRight:'5px'}} iconName='SkypeCircleCheck'/>
+                  <span className={styles.iconStyle}>
+                    <Icon className={styles.approved} iconName='SkypeCircleCheck'/>
                   </span>
                   {item.status}
                 </>
@@ -106,8 +109,8 @@ const ScwAdmin = (props: IScwAdminProps) => {
           case  'Rejected':
               return (
               <>
-              <span>
-                <Icon style={{color: 'red', paddingRight:'5px'}} iconName='StatusErrorFull'/>
+              <span className={styles.iconStyle}>
+                <Icon className={styles.rejected} iconName='StatusErrorFull'/>
               </span> 
               {item.status} 
               </>
@@ -116,10 +119,12 @@ const ScwAdmin = (props: IScwAdminProps) => {
           case 'Failed':
               return (
                 <>
-                  <span>
-                  <Icon style={{color: 'red', paddingRight:'5px'}}  iconName='SkypeCircleMinus'/>
+                  <span className={ styles.iconStyle }>
+                  <Icon className={ styles.failed } iconName='IncidentTriangle'/>
                   </span>
+                  <span style={{color: 'red'}}>
                   {item.status}
+                  </span>
                 </>
               )  ;
           default:
@@ -133,7 +138,6 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
  const goToNextStep = (step:any):void => {
     const nextPage = step + 1;
-    console.log("NP", nextPage);
     setCurrentStep(nextPage);
  }
 
@@ -142,11 +146,10 @@ const ScwAdmin = (props: IScwAdminProps) => {
   
     setCurrentStep(previousPage);
 
-    console.log("previous", previousPage);
   }
   
   const getList = async () => {
-    console.log("step", step)
+    
     let pagedItems: any[] = [];
     let items: PagedItemCollection<any[]> = undefined;
 
@@ -186,6 +189,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
   useEffect(() => {
     
+
       getList();
 
 
@@ -266,7 +270,8 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
 
   const decisionChoiceCallback = (option: string): void => {
-    console.log("O",option);
+    console.log("O",option)
+
     if (option === 'A') {
       setSelectedRowData({
         ...selectedRowData,
@@ -277,6 +282,11 @@ const ScwAdmin = (props: IScwAdminProps) => {
       setSelectedRowData({
         ...selectedRowData,
         decisionStatus: 'Rejected'
+      })
+    } else {
+      setSelectedRowData({
+        ...selectedRowData,
+        decisionStatus: null
       })
     }
 
@@ -294,47 +304,71 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
   
   const onConfirm = ():void  => {
+    
+    console.log("data",selectedRowData);
 
-    const functionUrl: string = 'https://appsvc-fnc-dev-scw-list-dotnet001.azurewebsites.net/api/CreateQueue';
+    if (selectedRowData.decisionStatus !== undefined ) {
+      const functionUrl: string = 'https://appsvc-fnc-dev-scw-list-dotnet001.azurewebsites.net/api/CreateQueu';
 
 
-    const requestHeaders: Headers = new Headers();
-        requestHeaders.append("Content-type", "application/json");
-        requestHeaders.append("Cache-Control", "no-cache");
-        const postOptions: IHttpClientOptions = {
-            headers: requestHeaders,
-            body: `
-                {
-                  "Id": "${selectedRowData.id}",
-                  "Status": "${selectedRowData.decisionStatus}", 
-                  "Comment": "${selectedRowData.decisionComment}"    
-                }`
-        };
-
-        setIsLoading((prev) => !prev);
-        
-
-        props.context.aadHttpClientFactory.getClient('ffbdb74a-7e0c-48a2-b460-2265ae3eb634')
-          .then((client: AadHttpClient) => {
-            client
-              .post(functionUrl, AadHttpClient.configurations.v1, postOptions)
-              .then((response: HttpClientResponse) => {
-                console.log(`Status code:`, response.status);
-                console.log('respond is ', response.ok);
+      const requestHeaders: Headers = new Headers();
+          requestHeaders.append("Content-type", "application/json");
+          requestHeaders.append("Cache-Control", "no-cache");
+          const postOptions: IHttpClientOptions = {
+              headers: requestHeaders,
+              body: `
+                  {
+                    "Id": "${selectedRowData.id}",
+                    "Status": "${selectedRowData.decisionStatus}", 
+                    "Comment": "${selectedRowData.decisionComment}"    
+                  }`
+          };
+          
+           setIsLoading(true); 
+  
+            props.context.aadHttpClientFactory.getClient('ffbdb74a-7e0c-48a2-b460-2265ae3eb634')
+              .then((client: AadHttpClient) => {
+                client
+                  .post(functionUrl, AadHttpClient.configurations.v1, postOptions)
+                  .then((response: HttpClientResponse) => {
+                    console.log(`RESPONSE:`, response);
+                    console.log(`Status code:`, response.status);
+                      console.log('response is ', response.ok);
+                    if (response.status === 200 ) {  
+                      setIsLoading(false);
+                      setIsError(response.status);
+                      setShowModal((prev) => !prev);
+                    } else {
+                      setIsLoading(false);
+                      setIsError(response.status);
+                      setShowModal(true);
+                    }
+                    
+                  })
+                  
+                  
+              })
+              
+              .catch((response: any) => {
+                      
+                const errMsg: string = `HELLO WARNING - error when calling URL ${functionUrl}. ERROR = ${response.message}`;
+                console.log("err is: ", errMsg);
               });
-
-          })
-
-          setIsLoading((prev) => !prev)
-          setShowModal((prev) => !prev);
-         
+    }
+     else {
+      setShowModal((prev) => !prev);
+     }
+                
     
   }
 
   const closeModal = ():void => {
-
+    console.log("closeData",selectedRowData);
     setShowModal(false);
-    setCurrentStep(step - 1);
+
+    if(selectedRowData.decisionStatus){
+      setCurrentStep(step - 1);
+    }
     
   }
   
@@ -353,7 +387,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
       
       { step === 1 &&
       <>
-        <h2>SCW Approvals</h2>
+        <h2>SCW communities requests</h2>
         <h3>Total Items {requestList.length}</h3>
         {/* <div className={styles.wrapper } data-is-scrollable="true"> */}
           <ScrollablePane scrollbarVisibility= { ScrollbarVisibility.auto} styles= { scrollablePaneStyles} >
@@ -373,8 +407,10 @@ const ScwAdmin = (props: IScwAdminProps) => {
       }
 
       
-      { isLoading === true ? 
-        (<Spinner size={SpinnerSize.large} />) : step === 2 &&
+      { isLoading === true ?
+        (<Spinner size={SpinnerSize.large} />) 
+
+        : step === 2 &&
         <>
           <ItemFormDetails  selectedRowData={selectedRowData} confirmationComments={confirmationComments} context= {props.context} decisionChoiceCallback={decisionChoiceCallback} requestList={requestList}/>
             
@@ -388,6 +424,9 @@ const ScwAdmin = (props: IScwAdminProps) => {
               }
             </Stack>
         </>
+      }
+      {isError === 400 &&
+        <ErrorModal showModal={showModal} onClose={closeModal} isError={isError} />
       }
       { showModal && 
        <Complete data={ selectedRowData.id } status={ selectedRowData.decisionStatus }  showModal={showModal} onClose={closeModal}/> 
