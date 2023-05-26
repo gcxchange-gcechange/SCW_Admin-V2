@@ -2,6 +2,8 @@
 
 .scwAdmin {
 
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 25px 50px 0 rgba(0, 0, 0, 0.1);
+
   :global {
     #workbenchPageContent,
     .CanvasComponent.LCS .CanvasZone {
@@ -85,6 +87,28 @@
 .checkIcon {
   font-size: 20px;
   color: #1da51d;
+}
+
+.iconStyle {
+  font-size: 16px;
+  padding-right: 5px;
+
+  .approved {
+    color: #1da51d;
+  }
+
+  // .submitted {
+  //   color: #F7B80A;
+  // }
+
+  .rejected {
+    color: #ff2200;
+  }
+
+  .failed {
+    color: #F7B80A;
+  }
+
 }
  
 

@@ -70,13 +70,18 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
     
     let comment = '';
 
-    const decisionComments = ():void => {
-        if (selectedItem[0].comment !== undefined || null) {
+    const decisionComments = (): string => {
+        if (selectedItem[0].comment !== undefined || selectedItem[0].comment !== null) { 
             comment = selectedItem[0].comment.split(/<div\b[^>]*>(.*?)<\/div>/gi)[1];
+        } else {
+            comment = 'N/A';
         }
-    
+
+        return comment; 
     }
-    console.log(decisionComments)
+    
+   
+   
 
 
     const renderIcon = (): any => {
@@ -84,16 +89,16 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
 
         switch(selectedItem[0].status ) {
             case "Submitted":
-                return <Icon style={{color: '#F7B80A'}} iconName='AlertSolid'/>;
+                return <span className={styles.iconStyle}><Icon iconName='SkypeCircleClock'/></span>;
              
             case 'Approved':
-                return <Icon style={{color: 'green'}} iconName='SkypeCircleCheck'/>;
+                return <span className={styles.iconStyle}><Icon className={styles.approved} iconName='SkypeCircleCheck'/></span>;
            
             case  'Rejected':
                 return <Icon style={{color: 'red'}} iconName='StatusErrorFull'/>;
             
             case 'Failed':
-                return <Icon style={{color: 'red'}}  iconName='SkypeCircleMinus'/>;
+                return <Icon style={{color: '#F7B80A'}}  iconName='IncidentTriangle'/>;
             default:
 
         }
@@ -116,8 +121,11 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
                     <Stack  {...columnProps}>
                         <TextField label="Request id:" styles= {customFieldStyles} underlined disabled defaultValue={selectedRowData.id} />
                         <TextField label="Status:" styles= {customFieldStyles} underlined disabled prefix={renderIcon()} defaultValue={selectedItem[0].status}/>
+                        { selectedItem[0].status !== 'Submitted' && 
+                            <TextField styles={textFieldBackground} label="Decision comments"  multiline autoAdjustHeight readOnly defaultValue={decisionComments()}/>
+                        }
                         <TextField label="Requester email:" styles= {customFieldStyles} underlined disabled defaultValue={selectedRowData.requesterEmail} />
-                        <TextField label="Community sharepoint url:" styles= {customFieldStyles} underlined disabled defaultValue={selectedRowData.siteUrl} />
+                        <TextField label="Community sharepoint url:" styles= {customFieldStyles} underlined disabled defaultValue={selectedRowData.siteUrl ? selectedRowData.siteUrl : "Not yet"} />
                     </Stack>
                 </Stack>
             </div>
@@ -138,10 +146,6 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
                     showHiddenInUI={false}
                     principalTypes={[PrincipalType.User]}
                 />
-                { selectedItem[0].status !== 'Submitted' && 
-                
-                    <TextField styles={textFieldBackground} label="Decision comments"  multiline autoAdjustHeight readOnly defaultValue={comment}/>
-                }
 
             </div>
             {   selectedItem[0].status === 'Submitted' &&
@@ -151,7 +155,7 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
                             <span className={styles.asteriks}>&#42;</span>
                             <h3>Community creation decision</h3>
                         </Stack>
-                        <ChoiceGroup id='choiceDecision' options={decisionOptions} onChange={onSelectedKey}/>                
+                        <ChoiceGroup required id='choiceDecision' options={decisionOptions} onChange={onSelectedKey}/>                
                     </div>
  
                     <div>
