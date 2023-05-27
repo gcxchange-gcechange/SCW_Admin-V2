@@ -74,7 +74,7 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
         if (selectedItem[0].comment !== undefined || selectedItem[0].comment !== null) { 
             comment = selectedItem[0].comment.split(/<div\b[^>]*>(.*?)<\/div>/gi)[1];
         } else {
-            comment = 'N/A';
+            comment =''
         }
 
         return comment; 
@@ -95,10 +95,10 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
                 return <span className={styles.iconStyle}><Icon className={styles.approved} iconName='SkypeCircleCheck'/></span>;
            
             case  'Rejected':
-                return <Icon style={{color: 'red'}} iconName='StatusErrorFull'/>;
+                return <span className={styles.iconStyle}><Icon className={styles.rejected} iconName='StatusErrorFull'/> </span>;
             
             case 'Failed':
-                return <Icon style={{color: '#F7B80A'}}  iconName='IncidentTriangle'/>;
+                return <span className={styles.iconStyle}><Icon className={styles.failed}  iconName='IncidentTriangle'/> </span>;
             default:
 
         }
@@ -122,7 +122,7 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
                         <TextField label="Request id:" styles= {customFieldStyles} underlined disabled defaultValue={selectedRowData.id} />
                         <TextField label="Status:" styles= {customFieldStyles} underlined disabled prefix={renderIcon()} defaultValue={selectedItem[0].status}/>
                         { selectedItem[0].status !== 'Submitted' && 
-                            <TextField styles={textFieldBackground} label="Decision comments"  multiline autoAdjustHeight readOnly defaultValue={decisionComments()}/>
+                            <TextField styles= {customFieldStyles} label="Decision comments" underlined multiline autoAdjustHeight disabled defaultValue={decisionComments()}/>
                         }
                         <TextField label="Requester email:" styles= {customFieldStyles} underlined disabled defaultValue={selectedRowData.requesterEmail} />
                         <TextField label="Community sharepoint url:" styles= {customFieldStyles} underlined disabled defaultValue={selectedRowData.siteUrl ? selectedRowData.siteUrl : "Not yet"} />
@@ -142,7 +142,7 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
                     personSelectionLimit={3}
                     groupName={""} // Leave this blank in case you want to filter from all users
                     disabled={true}
-                    defaultSelectedUsers={selectedRowData.owner1.split(',')} 
+                    defaultSelectedUsers={selectedRowData.owner1} 
                     showHiddenInUI={false}
                     principalTypes={[PrincipalType.User]}
                 />
