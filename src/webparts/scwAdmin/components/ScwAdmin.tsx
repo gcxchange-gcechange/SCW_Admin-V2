@@ -40,7 +40,6 @@ import ItemFormDetails from './ItemFormDetails';
 import { getTheme } from '@fluentui/react/lib/Styling';
 import { HttpClientResponse, IHttpClientOptions, AadHttpClient }  from "@microsoft/sp-http";
 import Complete from './Complete';
-import ErrorModal from './ErrorModal';
 
 export interface ISCWList {
   id: number;
@@ -308,7 +307,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
     console.log("data",selectedRowData);
 
     if (selectedRowData.decisionStatus !== undefined ) {
-      const functionUrl: string = 'https://appsvc-fnc-dev-scw-list-dotnet001.azurewebsites.net/api/CreateQueu';
+      const functionUrl: string = 'https://appsvc-fnc-dev-scw-list-dotnet001.azurewebsites.net/api/CreateQueue';
 
 
       const requestHeaders: Headers = new Headers();
@@ -344,9 +343,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
                       setShowModal(true);
                     }
                     
-                  })
-                  
-                  
+                  })   
               })
               
               .catch((response: any) => {
@@ -425,11 +422,8 @@ const ScwAdmin = (props: IScwAdminProps) => {
             </Stack>
         </>
       }
-      {isError === 400 &&
-        <ErrorModal showModal={showModal} onClose={closeModal} isError={isError} />
-      }
       { showModal && 
-       <Complete data={ selectedRowData.id } status={ selectedRowData.decisionStatus }  showModal={showModal} onClose={closeModal}/> 
+       <Complete data={ selectedRowData.id } status={ selectedRowData.decisionStatus }  showModal={showModal} onClose={closeModal} isError={isError} /> 
       }
 
   

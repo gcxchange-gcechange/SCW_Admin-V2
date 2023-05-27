@@ -4,13 +4,14 @@ import { IStackTokens, Icon, IconButton, Modal, PrimaryButton, Stack, StackItem 
 
 
 interface ICompleteProps {
+    isError: number;
     data: string;
     status: string;
     showModal: boolean;
     onClose?:() => void;
 }
 
-const Complete: React.FunctionComponent<ICompleteProps> = ({ data, status, showModal, onClose }) => {
+const Complete: React.FunctionComponent<ICompleteProps> = ({ data, status, showModal, onClose, isError }) => {
 
    
 
@@ -33,27 +34,45 @@ const Complete: React.FunctionComponent<ICompleteProps> = ({ data, status, showM
           alignItems: "center",
           justifyContent: "space-between",
         },
+        errorHeader: {
+            backgroundColor: "#E6676B",
+            color: "white",
+            paddingTop: "10px",
+            paddingBottom: "10px",
+            paddingLeft: "30px",
+            paddingRight: "30px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          },
         footer: {
           padding: "10px",
           marginLeft: "60px",
           marginRight: "60px"
         },
+        icon: {
+            fontSize: '25px',
+            color: '#F7B80A',
+            paddingRight: '10px'
+        }
+
       };
 
  
-    console.log('props3',PermissionStatus);
+
 
     const spacingTokens: IStackTokens = {
         childrenGap: '15px',
         padding: '15px',
       };
 
-    console.log("statys", status)
+    console.log("statys", status);
+    console.log("Errors", isError);
     
     return (
         <>
 
-        
+        { isError === 200 ?
             <Modal
                 isOpen={ showModal }
                 onDismiss={ onClose }
@@ -110,7 +129,38 @@ const Complete: React.FunctionComponent<ICompleteProps> = ({ data, status, showM
                         </Stack>
                         
                     </div>
-            </Modal>  
+            </Modal> 
+            :
+                <Modal
+                isOpen={ showModal }
+                onDismiss={ onClose }
+                isBlocking={ true }
+                styles={{
+                main: modalStyle.main,
+                }}
+            >
+                <div style={ modalStyle.errorHeader }>
+                    
+                    <h2>Error</h2>
+                    <IconButton
+                        className={ styles.cancelIcon }
+                        iconProps={{iconName: "Cancel" }}
+                        onClick={onClose}
+                    />
+                </div>
+                    <div style={modalStyle.footer}>
+                       <Stack horizontal horizontalAlign="center">
+                            <Stack.Item align='center'>
+                                <Icon style={ modalStyle.icon } iconName='IncidentTriangle'/>
+                            </Stack.Item>
+                            <StackItem>
+                                <p style={{fontSize: '20px'}}><strong>Something went wrong!</strong></p> 
+                            </StackItem>
+                       </Stack>   
+                        
+                    </div>
+            </Modal>
+            } 
         </>
     )
 }
