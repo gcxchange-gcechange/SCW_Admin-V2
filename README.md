@@ -6,9 +6,18 @@ Short summary on functionality and used technologies.
 
 [picture of the solution in action, if possible]
 
-## Used SharePoint Framework Version
+## Used SharePoint Framework Version / Version de SharePoint utilis�e
 
 ![version](https://img.shields.io/badge/version-1.17.1-green.svg)
+
+
+
+![version](https://img.shields.io/badge/version-1.17.1-green.svg)
+
+## Used node version / Version de node utilis�e
+
+![version](https://img.shields.io/badge/version-16.14.0-green.svg)
+## 
 
 ## Applies to
 
@@ -25,7 +34,7 @@ Short summary on functionality and used technologies.
 
 | Solution    | Author(s)                                               |
 | ----------- | ------------------------------------------------------- |
-| folder name | Author details (name, company, twitter alias with link) |
+| SCW         |gabmore38 |
 
 ## Version history
 
@@ -52,17 +61,11 @@ Short summary on functionality and used technologies.
 
 ## Features
 
-Description of the extension that expands upon high-level summary above.
+- When a request is submitted for the creation of a community space. We retrieve the information the user submitted using PNP Lists.
+- Then information is then reviewed using Fluent UI TextField componenents in disabled format.
+- Once the information is reviewed the user can approve or reject the request using a choice button and comments are also entered.
+- When the user submits the decision an API call using Azure is used to send the information and update the list.
 
-This extension illustrates the following concepts:
-
-- topic 1
-- topic 2
-- topic 3
-
-> Notice that better pictures and documentation will increase the sample usage and the value you are providing for others. Thanks for your submissions advance.
-
-> Share your web part with others through Microsoft 365 Patterns and Practices program to get visibility and exposure. More details on the community, open-source projects and other activities from http://aka.ms/m365pnp.
 
 ## References
 
