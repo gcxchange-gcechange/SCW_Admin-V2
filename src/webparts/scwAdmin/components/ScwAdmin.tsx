@@ -264,8 +264,9 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
   const buttonStyle: Partial<IButtonStyles> = {
     root: {backgroundColor: '#c0c0cc', color: '#004DB8', borderColor: '#c0c0cc'},
-    rootHovered: { backgroundColor: '#c0c0cc' }
-  }
+    rootHovered: { backgroundColor: '#c0c0cc' },
+    rootFocused: { backgrounColor: '#c0c0cc!important'}
+  } 
 
 
 
@@ -414,13 +415,17 @@ const ScwAdmin = (props: IScwAdminProps) => {
           <ItemFormDetails  selectedRowData={selectedRowData} confirmationComments={confirmationComments} context= {props.context} decisionChoiceCallback={decisionChoiceCallback} requestList={requestList}/>
             
             <Stack horizontal horizontalAlign="center" tokens={sectionStackTokens} styles={stackStyles}>
+
+            { selectedRowData.status === "Submitted" 
+              ?
+              <>
+              <DefaultButton styles={buttonStyle} text='Previous' onClick={() => goToPreviousStep(step)}/> 
+              <PrimaryButton text={'Submit decision'} onClick={onConfirm}/>
+              </>
+              :
+              <PrimaryButton text="Back to Communities List Page" onClick={() => goToPreviousStep(step)}/>
+            }
               
-              <DefaultButton styles={buttonStyle} text={selectedRowData.status === 'Submitted' ? 'Previous': 'Back to Communities List Page'} onClick={() => goToPreviousStep(step)}/>
-              
-              {
-                selectedRowData.status === "Submitted" &&
-                  <PrimaryButton text={'Submit decision'} onClick={onConfirm}/>
-              }
             </Stack>
         </>
       }
