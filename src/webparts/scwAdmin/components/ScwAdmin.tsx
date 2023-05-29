@@ -41,6 +41,7 @@ import { getTheme } from '@fluentui/react/lib/Styling';
 import { HttpClientResponse, IHttpClientOptions, AadHttpClient }  from "@microsoft/sp-http";
 import Complete from './Complete';
 
+
 export interface ISCWList {
   id: number;
   spaceName: string;
@@ -166,7 +167,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
       return {
         id: item.ID,
         spaceName: item.Title,
-        spaceNameFr: item.SpaceNameFr,
+        spaceNameFr: item.SpaceNameFR,
         spaceDescription: item.SpaceDescription,
         spaceDescriptionFR: item.SpaceDescription,
         requesterName: item.RequesterName,
@@ -298,13 +299,13 @@ const ScwAdmin = (props: IScwAdminProps) => {
       decisionComment: value
     })
     
-    console.log("state", selectedRowData)
+
   }
 
   
   const onConfirm = ():void  => {
     
-    console.log("data",selectedRowData);
+ 
 
     if (selectedRowData.decisionStatus !== undefined ) {
       const functionUrl: string = 'https://appsvc-fnc-dev-scw-list-dotnet001.azurewebsites.net/api/CreateQueue';
@@ -380,6 +381,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
   return (
     <>
+     
     <div className={styles.container}>
       
       { step === 1 &&
@@ -403,7 +405,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
       </>
       }
 
-      
+
       { isLoading === true ?
         (<Spinner size={SpinnerSize.large} />) 
 
@@ -423,7 +425,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
         </>
       }
       { showModal && 
-       <Complete data={ selectedRowData.id } status={ selectedRowData.decisionStatus }  showModal={showModal} onClose={closeModal} isError={isError} /> 
+       <Complete data={ selectedRowData.id } spaceName={selectedRowData.spaceName} spaceNameFr={ selectedRowData.spaceNameFr } status={ selectedRowData.decisionStatus }  showModal={showModal} onClose={closeModal} isError={isError} /> 
       }
 
   

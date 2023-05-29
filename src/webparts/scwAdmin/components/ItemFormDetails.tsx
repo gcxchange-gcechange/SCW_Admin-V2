@@ -133,7 +133,7 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
             <div className={styles.formContainer}>
                 <TextField styles={textFieldBackground} label="Community purpose" readOnly defaultValue={ selectedRowData.businessJustification } multiline rows={5}/>
                 <TextField styles={textFieldBackground} label="English community name" readOnly defaultValue={selectedRowData.spaceName} multiline rows={2}/>
-                <TextField styles={textFieldBackground} label="French community name" readOnly defaultValue={selectedRowData.spaceName} multiline rows={2}/>         
+                <TextField styles={textFieldBackground} label="French community name" readOnly defaultValue={selectedRowData.spaceNameFr} multiline rows={2}/>         
                 <TextField styles={textFieldBackground} label="English description" readOnly defaultValue={selectedRowData.spaceDescription}  />
                 <TextField styles={textFieldBackground} label="French description" readOnly defaultValue={selectedRowData.spaceDescriptionFR} />
                 <PeoplePicker

@@ -8,10 +8,12 @@ interface ICompleteProps {
     data: string;
     status: string;
     showModal: boolean;
+    spaceName: string;
+    spaceNameFr: string;
     onClose?:() => void;
 }
 
-const Complete: React.FunctionComponent<ICompleteProps> = ({ data, status, showModal, onClose, isError }) => {
+const Complete: React.FunctionComponent<ICompleteProps> = ({ data, status, showModal, onClose, isError, spaceName, spaceNameFr }) => {
 
    
 
@@ -67,8 +69,11 @@ const Complete: React.FunctionComponent<ICompleteProps> = ({ data, status, showM
       };
 
     console.log("statys", status);
+    console.log("data", data)
     console.log("Errors", isError);
-    
+
+    const communityName = `${spaceName} / ${spaceNameFr}`;
+    console.log("commName",communityName)
     return (
         <>
 
@@ -110,7 +115,7 @@ const Complete: React.FunctionComponent<ICompleteProps> = ({ data, status, showM
                                     { status === undefined ?
                                      <span>You must select a <strong>Communty creation decision</strong> before proceeding</span>
                                     :
-                                    <span>Community ID#{data} {status === "Approved" ? `created` : `rejected`}</span>
+                                    <span>{communityName} community (ID#{data}) {status === "Approved" ? `created` : `rejected`}</span>
                                     } 
                                 </StackItem>
                             </Stack>
