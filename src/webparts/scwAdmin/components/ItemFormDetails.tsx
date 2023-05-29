@@ -21,6 +21,7 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
 
     
     const { selectedRowData, requestList } = props;  
+    console.log("O", selectedRowData.owners);
 
     const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>):void  => {
 
@@ -142,7 +143,7 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
                     personSelectionLimit={3}
                     groupName={""} // Leave this blank in case you want to filter from all users
                     disabled={true}
-                    defaultSelectedUsers={selectedRowData.owner1} 
+                    defaultSelectedUsers={selectedRowData.owner1.split(',')} 
                     showHiddenInUI={false}
                     principalTypes={[PrincipalType.User]}
                 />

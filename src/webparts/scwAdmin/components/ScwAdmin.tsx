@@ -179,7 +179,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
         status: item.Status,
         template: item.TemplateTitle,
         siteUrl: item.SiteUrl,
-        comment: item.Comment
+        comment: item.Comment,
       }
 
     }))
