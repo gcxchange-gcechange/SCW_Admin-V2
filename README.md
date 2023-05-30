@@ -6,15 +6,12 @@ Short summary on functionality and used technologies.
 
 [picture of the solution in action, if possible]
 
-## Used SharePoint Framework Version / Version de SharePoint utilis�e
+## Used SharePoint Framework Version / Version de SharePoint utilise
 
 ![version](https://img.shields.io/badge/version-1.17.1-green.svg)
 
 
-
-![version](https://img.shields.io/badge/version-1.17.1-green.svg)
-
-## Used node version / Version de node utilis�e
+## Used node version / Version de node utilise
 
 ![version](https://img.shields.io/badge/version-16.14.0-green.svg)
 ## 
