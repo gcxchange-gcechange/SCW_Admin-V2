@@ -53,7 +53,7 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
  
     const customFieldStyles = mergeStyleSets ({
         wrapper: { borderBottom: 'none', outlineColor: 'transparent', marginBottom: '10px' },
-        field: { borderBottom: 'none', color:'black', maxWidth:'545px'},
+        field: { borderBottom: 'none', color:'black', maxWidth:'1107px'},
         fieldGroup:{ borderColor: 'transparent', boxShadow: 'none', outlineColor:'transparent'},
         subComponentStyles: { label: {root: { width: '190px', color: 'black'}}},
         prefix: {font: '18px', paddingRight: '0px', paddingTop: '6px', background: 'rgb(243, 242, 241)'}
