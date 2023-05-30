@@ -38,10 +38,10 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
     }
     
 
-    const stackStyles: Partial<IStackStyles> = { root: { width: 800} };
+    const stackStyles: Partial<IStackStyles> = { root: { width: '100%'} };
 
     const columnProps: Partial<IStackProps> = {
-    styles: { root: {width: '80%', paddingLeft: '0px'}},
+    styles: { root: {width: '100%', paddingLeft: '0px', display: 'flex'}},
     };
 
 
@@ -53,7 +53,7 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
  
     const customFieldStyles = mergeStyleSets ({
         wrapper: { borderBottom: 'none', outlineColor: 'transparent', marginBottom: '10px' },
-        field: { borderBottom: 'none', color: 'fuscia'},
+        field: { borderBottom: 'none', color:'black', maxWidth:'545px'},
         fieldGroup:{ borderColor: 'transparent', boxShadow: 'none', outlineColor:'transparent'},
         subComponentStyles: { label: {root: { width: '190px', color: 'black'}}},
         prefix: {font: '18px', paddingRight: '0px', paddingTop: '6px', background: 'rgb(243, 242, 241)'}
@@ -118,15 +118,15 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
             
             <h2>Community creation request details</h2>
             <div>
-                <Stack horizontal styles={stackStyles}>
-                    <Stack  {...columnProps}>
+                <Stack horizontal styles={stackStyles} >
+                    <Stack wrap {...columnProps}>
                         <TextField label="Request id:" styles= {customFieldStyles} underlined disabled defaultValue={selectedRowData.id} />
                         <TextField label="Status:" styles= {customFieldStyles} underlined disabled prefix={renderIcon()} defaultValue={selectedItem[0].status}/>
                         { selectedItem[0].status !== 'Submitted' && 
-                            <TextField styles= {customFieldStyles} label="Decision comments" underlined multiline autoAdjustHeight disabled defaultValue={decisionComments()}/>
+                            <TextField styles= {customFieldStyles} label="Decision comments" underlined multiline rows={5} disabled defaultValue={decisionComments()}/>
                         }
                         <TextField label="Requester email:" styles= {customFieldStyles} underlined disabled defaultValue={selectedRowData.requesterEmail} />
-                        <TextField label="Community sharepoint url:" styles= {customFieldStyles} underlined disabled defaultValue={selectedRowData.siteUrl ? selectedRowData.siteUrl : "Not yet"} />
+                        <TextField label="Community sharepoint url:" styles= {customFieldStyles} underlined disabled defaultValue={selectedRowData.siteUrl ? selectedRowData.siteUrl : "Not yet created"} />
                     </Stack>
                 </Stack>
             </div>
