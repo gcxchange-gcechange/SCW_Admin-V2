@@ -68,12 +68,11 @@ const Complete: React.FunctionComponent<ICompleteProps> = ({ data, status, showM
         padding: '15px',
       };
 
-    console.log("statys", status);
+    console.log("status", status);
     console.log("data", data)
     console.log("Errors", isError);
 
     const communityName = `${spaceName} / ${spaceNameFr}`;
-    console.log("commName",communityName)
     return (
         <>
 
@@ -106,8 +105,8 @@ const Complete: React.FunctionComponent<ICompleteProps> = ({ data, status, showM
                                 <Stack.Item  align="center">
                                 {status === "Approved" ? (
                                     <Icon style={{color: '#1da51d', fontSize: '20px'}} iconName="SkypeCircleCheck"/>
-                                    ) : status === "rejected" ? (
-                                    <Icon style={{color: 'blue', fontSize: '20px'}} iconName="StatusCircleQuestionMark"/>
+                                    ) : status === "Rejected" ? (
+                                    <Icon style={{color: '#ff2200', fontSize: '20px'}} iconName="StatusErrorFull"/>
                                     ) : null
                                 } 
                                 </Stack.Item>
