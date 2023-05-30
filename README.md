@@ -11,9 +11,6 @@ https://github.com/gcxchange-gcechange/SCW_Admin-V2/assets/62317607/8910b575-78f
 ![version](https://img.shields.io/badge/version-1.17.1-green.svg)
 
 
-
-![version](https://img.shields.io/badge/version-1.17.1-green.svg)
-
 ## Used node version / Version de node utilise
 
 ![version](https://img.shields.io/badge/version-16.14.0-green.svg)
