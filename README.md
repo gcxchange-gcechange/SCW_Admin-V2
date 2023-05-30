@@ -3,8 +3,7 @@
 ## Summary
 
 
-https://github.com/gcxchange-gcechange/SCW_Admin-V2/assets/62317607/d1f7eaf6-bcf1-44c8-8cce-cd238bd5419e
-
+https://github.com/gcxchange-gcechange/SCW_Admin-V2/assets/62317607/8910b575-78f0-40ca-a3fb-ad35e4460b8e
 
 
 ## Used SharePoint Framework Version / Version de SharePoint utilise
