@@ -2,9 +2,10 @@
 
 ## Summary
 
-Short summary on functionality and used technologies.
 
-[picture of the solution in action, if possible]
+https://github.com/gcxchange-gcechange/SCW_Admin-V2/assets/62317607/d1f7eaf6-bcf1-44c8-8cce-cd238bd5419e
+
+
 
 ## Used SharePoint Framework Version / Version de SharePoint utilis�e
 
