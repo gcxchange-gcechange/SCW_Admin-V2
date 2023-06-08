@@ -72,7 +72,7 @@ const Complete: React.FunctionComponent<ICompleteProps> = ({ data, status, showM
     console.log("data", data)
     console.log("Errors", isError);
 
-    const communityName = `${spaceName} / ${spaceNameFr}`;
+
     return (
         <>
 
@@ -101,24 +101,28 @@ const Complete: React.FunctionComponent<ICompleteProps> = ({ data, status, showM
                     <div style={modalStyle.footer}>
                        
                         <Stack>
-                            <Stack horizontal horizontalAlign="center" tokens={spacingTokens}>
+                            <Stack horizontal horizontalAlign="start" tokens={spacingTokens}>
                                 <Stack.Item  align="center">
-                                {status === "Approved" ? (
-                                    <Icon style={{color: '#1da51d', fontSize: '20px'}} iconName="SkypeCircleCheck"/>
-                                    ) : status === "Rejected" ? (
-                                    <Icon style={{color: '#ff2200', fontSize: '20px'}} iconName="StatusErrorFull"/>
-                                    ) : null
-                                } 
+                                    {status === "Approved" ? (
+                                        <Icon style={{color: '#1da51d', fontSize: '20px'}} iconName="SkypeCircleCheck"/>
+                                        ) : status === "Rejected" ? (
+                                        <Icon style={{color: '#ff2200', fontSize: '20px'}} iconName="StatusErrorFull"/>
+                                        ) : null
+                                    } 
                                 </Stack.Item>
                                 <StackItem>
                                     { status === undefined ?
-                                     <span>You must select a <strong>Communty creation decision</strong> before proceeding</span>
+                                    <span>You must select a <strong>Communty creation decision</strong> before proceeding</span>
                                     :
-                                    <span>{communityName} community (ID#{data}) {status === "Approved" ? `created` : `rejected`}</span>
+                                    <span>The following community (ID#{data}) is <strong>{status === "Approved" ? `created.` : `rejected.`}</strong></span>
                                     } 
                                 </StackItem>
+                                
                             </Stack>
-
+                            <Stack  tokens={spacingTokens}>
+                                <Stack.Item align="start"><p>{spaceName}</p></Stack.Item>
+                                <Stack.Item align="start"><p>{spaceNameFr}</p></Stack.Item>
+                            </Stack>
                             <Stack.Item>
                                 <hr className={styles.horizontalLine} />
                             </Stack.Item>
