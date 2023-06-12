@@ -119,7 +119,7 @@ const Complete: React.FunctionComponent<ICompleteProps> = ({ data, status, showM
                                 </StackItem>
                                 
                             </Stack>
-                            <Stack  tokens={spacingTokens}>
+                            <Stack  tokens={spacingTokens} style={{marginLeft: '38px'}}>
                                 <Stack.Item align="start"><p>{spaceName}</p></Stack.Item>
                                 <Stack.Item align="start"><p>{spaceNameFr}</p></Stack.Item>
                             </Stack>
