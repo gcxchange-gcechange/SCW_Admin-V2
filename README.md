@@ -2,36 +2,32 @@
 
 ## Summary
 
+This webpart allows users to approve or reject community creation requests. It displays a list of requests that have been approved, rejected, failed and pending.
+When the user selects an item from the list, the details of the request will display, along with madatory selection to approve or reject the request , as well as comments.
+
+## Features
+
+- When a request is submitted for the creation of a community space. We retrieve the information the user submitted using PNP Lists.
+- Then information is then reviewed using Fluent UI TextField componenents in disabled format.
+- Once the information is reviewed the user can approve or reject the request using a choice button and comments are also entered.
+- When the user submits the decision an API call using Azure is used to send the information and update the list.
 
 https://github.com/gcxchange-gcechange/SCW_Admin-V2/assets/62317607/8910b575-78f0-40ca-a3fb-ad35e4460b8e
 
+## Compability / Compatibilité
+![SPFx 1.17.1](https://img.shields.io/badge/SPFx-1.17.1-green.svg) 
+![Node.js v16.14.0](https://img.shields.io/badge/Node.js-v16.14.0-green.svg)
 
-## Used SharePoint Framework Version / Version de SharePoint utilise
-
-![version](https://img.shields.io/badge/version-1.17.1-green.svg)
-
-
-## Used node version / Version de node utilise
-
-![version](https://img.shields.io/badge/version-16.14.0-green.svg)
-## 
 
 ## Applies to
 
 - [SharePoint Framework](https://aka.ms/spfx)
 - [Microsoft 365 tenant](https://docs.microsoft.com/en-us/sharepoint/dev/spfx/set-up-your-developer-tenant)
 
-> Get your own free development tenant by subscribing to [Microsoft 365 developer program](http://aka.ms/o365devprogram)
 
-## Prerequisites
+## Contributors
 
-> Any special pre-requisites?
-
-## Solution
-
-| Solution    | Author(s)                                               |
-| ----------- | ------------------------------------------------------- |
-| SCW         |gabmore38 |
+- [@gabrielamoreno](https://github.com/gabmor38)
 
 ## Version history
 
@@ -53,15 +49,6 @@ https://github.com/gcxchange-gcechange/SCW_Admin-V2/assets/62317607/8910b575-78f
 - in the command-line run:
   - **npm install**
   - **gulp serve**
-
-> Include any additional steps as needed.
-
-## Features
-
-- When a request is submitted for the creation of a community space. We retrieve the information the user submitted using PNP Lists.
-- Then information is then reviewed using Fluent UI TextField componenents in disabled format.
-- Once the information is reviewed the user can approve or reject the request using a choice button and comments are also entered.
-- When the user submits the decision an API call using Azure is used to send the information and update the list.
 
 
 ## References
