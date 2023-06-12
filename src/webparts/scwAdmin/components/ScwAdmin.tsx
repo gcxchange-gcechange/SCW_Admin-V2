@@ -20,11 +20,13 @@ import { DefaultButton,  DetailsList,
   IDetailsHeaderProps, 
   IDetailsListProps, 
   IDetailsRowStyles, 
+  IIconProps, 
   IRenderFunction, 
   IScrollablePaneStyles, 
   IStackStyles, 
   IStackTokens, 
   Icon, 
+  IconButton, 
   PrimaryButton, 
   ScrollablePane, 
   ScrollbarVisibility,  
@@ -186,14 +188,14 @@ const ScwAdmin = (props: IScwAdminProps) => {
      
   };   
   
+  const reload = ():void => window.location.reload();
 
   useEffect(() => {
-    
-
+      
       getList();
 
-
-  }, [step])
+  
+  }, []);
 
   const theme = getTheme();
 
@@ -309,7 +311,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
  
 
     if (selectedRowData.decisionStatus !== undefined ) {
-      const functionUrl: string = '';
+      const functionUrl: string = 'https://appsvc-fnc-dev-scw-list-dotnet001.azurewebsites.net/api/CreateQueue';
 
 
       const requestHeaders: Headers = new Headers();
@@ -327,7 +329,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
           
            setIsLoading(true); 
   
-            props.context.aadHttpClientFactory.getClient('')
+            props.context.aadHttpClientFactory.getClient('ffbdb74a-7e0c-48a2-b460-2265ae3eb634')
               .then((client: AadHttpClient) => {
                 client
                   .post(functionUrl, AadHttpClient.configurations.v1, postOptions)
@@ -361,14 +363,18 @@ const ScwAdmin = (props: IScwAdminProps) => {
     
   }
 
-  const closeModal = ():void => {
-    console.log("closeData",selectedRowData);
-    setShowModal(false);
 
-    if(selectedRowData.decisionStatus){
-      setCurrentStep(step - 1);
-    }
-    
+
+  const closeModal = ():void => {
+    setShowModal(false);
+  
+    // if (selectedRowData.decisionStatus){
+    //   setCurrentStep(step - 1);
+    // }
+
+    reload();
+
+  
   }
   
   const sectionStackTokens: IStackTokens = { childrenGap: 10 };
@@ -379,6 +385,8 @@ const ScwAdmin = (props: IScwAdminProps) => {
     },
   };
 
+  console.log("step", step);
+  const refreshIcon: IIconProps = { iconName:'Refresh'} ;
 
   return (
     <>
@@ -387,8 +395,11 @@ const ScwAdmin = (props: IScwAdminProps) => {
       
       { step === 1 &&
       <>
-        <h2>SCW communities requests</h2>
-        <h3>Total Items {requestList.length}</h3>
+        <Stack horizontal horizontalAlign="space-between" verticalAlign="baseline">
+          <h2>SCW communities requests</h2>
+          <IconButton iconProps={refreshIcon} onClick={reload} />
+        </Stack><h3>Total Items {requestList.length}</h3>
+     
         {/* <div className={styles.wrapper } data-is-scrollable="true"> */}
           <ScrollablePane scrollbarVisibility= { ScrollbarVisibility.auto} styles= { scrollablePaneStyles} >
             <DetailsList 
@@ -403,7 +414,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
             />
           </ScrollablePane>
         {/* </div> */}
-      </>
+        </>
       }
 
 
