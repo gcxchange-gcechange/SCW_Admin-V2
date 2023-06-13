@@ -138,16 +138,14 @@ const ScwAdmin = (props: IScwAdminProps) => {
   ];
   
 
- const goToNextStep = (step:any):void => {
+  const goToNextStep = (step:any):void => {
     const nextPage = step + 1;
     setCurrentStep(nextPage);
- }
+  }
 
   const goToPreviousStep = (step:any):void => {
     const previousPage = step - 1;
-  
-    setCurrentStep(previousPage);
-
+    setCurrentStep(previousPage)
   }
   
   const getList = async () => {
@@ -188,14 +186,21 @@ const ScwAdmin = (props: IScwAdminProps) => {
      
   };   
   
-  const reload = ():void => window.location.reload();
+  const reload = ():void =>  {
+    setTimeout(() => {
+      window.location.reload();
+    }, 2000);
+
+  }
 
   useEffect(() => {
       
+    if( step === 1) {
       getList();
+    }
 
   
-  }, []);
+  }, [step]);
 
   const theme = getTheme();
 
@@ -273,7 +278,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
 
   const decisionChoiceCallback = (option: string): void => {
-    console.log("O",option)
+    console.log("Choice",option)
 
     if (option === 'A') {
       setSelectedRowData({
@@ -341,6 +346,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
                       setIsLoading(false);
                       setIsError(response.status);
                       setShowModal((prev) => !prev);
+                      setCurrentStep(prevStep => prevStep - 1)
                     } else {
                       setIsLoading(false);
                       setIsError(response.status);
@@ -367,15 +373,11 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
   const closeModal = ():void => {
     setShowModal(false);
-  
-    // if (selectedRowData.decisionStatus){
-    //   setCurrentStep(step - 1);
-    // }
 
     reload();
 
-  
   }
+
   
   const sectionStackTokens: IStackTokens = { childrenGap: 10 };
 
@@ -397,7 +399,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
       <>
         <Stack horizontal horizontalAlign="space-between" verticalAlign="baseline">
           <h2>SCW communities requests</h2>
-          <IconButton iconProps={refreshIcon} onClick={reload} />
+          <IconButton iconProps={refreshIcon} onClick={reload} style={{marginRight: '20px'}}/>
         </Stack><h3>Total Items {requestList.length}</h3>
      
         {/* <div className={styles.wrapper } data-is-scrollable="true"> */}
