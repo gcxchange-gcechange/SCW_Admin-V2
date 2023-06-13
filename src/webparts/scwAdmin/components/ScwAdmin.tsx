@@ -20,13 +20,11 @@ import { DefaultButton,  DetailsList,
   IDetailsHeaderProps, 
   IDetailsListProps, 
   IDetailsRowStyles, 
-  IIconProps, 
   IRenderFunction, 
   IScrollablePaneStyles, 
   IStackStyles, 
   IStackTokens, 
   Icon, 
-  IconButton, 
   PrimaryButton, 
   ScrollablePane, 
   ScrollbarVisibility,  
@@ -68,7 +66,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
   const LIST_NAME: string = 'Request';
   const _sp:SPFI = getSP(props.context);
-  const BATCH_SIZE = 100;
+  const BATCH_SIZE = 500;
 
   const [requestList, setRequestList] = useState< ISCWList [] >( [] );
   const [selectedRowData, setSelectedRowData] = useState<any>();
@@ -189,18 +187,18 @@ const ScwAdmin = (props: IScwAdminProps) => {
   const reload = ():void =>  {
     setTimeout(() => {
       window.location.reload();
-    }, 2000);
+    }, 3000);
 
   }
 
   useEffect(() => {
       
     if( step === 1) {
-      getList();
+        getList(); 
     }
 
   
-  }, [step]);
+  }, [requestList]);
 
   const theme = getTheme();
 
@@ -316,7 +314,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
  
 
     if (selectedRowData.decisionStatus !== undefined ) {
-      const functionUrl: string = 'https://appsvc-fnc-dev-scw-list-dotnet001.azurewebsites.net/api/CreateQueue';
+      const functionUrl: string = '';
 
 
       const requestHeaders: Headers = new Headers();
@@ -334,7 +332,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
           
            setIsLoading(true); 
   
-            props.context.aadHttpClientFactory.getClient('ffbdb74a-7e0c-48a2-b460-2265ae3eb634')
+            props.context.aadHttpClientFactory.getClient('f')
               .then((client: AadHttpClient) => {
                 client
                   .post(functionUrl, AadHttpClient.configurations.v1, postOptions)
@@ -388,7 +386,6 @@ const ScwAdmin = (props: IScwAdminProps) => {
   };
 
   console.log("step", step);
-  const refreshIcon: IIconProps = { iconName:'Refresh'} ;
 
   return (
     <>
@@ -397,10 +394,8 @@ const ScwAdmin = (props: IScwAdminProps) => {
       
       { step === 1 &&
       <>
-        <Stack horizontal horizontalAlign="space-between" verticalAlign="baseline">
           <h2>SCW communities requests</h2>
-          <IconButton iconProps={refreshIcon} onClick={reload} style={{marginRight: '20px'}}/>
-        </Stack><h3>Total Items {requestList.length}</h3>
+          <h3>Total Items {requestList.length}</h3>
      
         {/* <div className={styles.wrapper } data-is-scrollable="true"> */}
           <ScrollablePane scrollbarVisibility= { ScrollbarVisibility.auto} styles= { scrollablePaneStyles} >

@@ -72,14 +72,14 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
     let comment = '';
 
     const decisionComments = (): string => {
-        if (selectedItem[0].comment ) { 
+        if (selectedItem[0].comment) { 
             comment = selectedItem[0].comment.split(/<div\b[^>]*>(.*?)<\/div>/gi)[1];
         } else {
             comment ='N/A'
         }
 
-        if (comment === 'undefined') {
-            comment ='N/A'
+        if(comment === "undefined") {
+            comment = 'N/A'
         }
 
         return comment; 
