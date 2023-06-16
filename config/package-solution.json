@@ -27,9 +27,10 @@
     },
     "webApiPermissionRequests": [
       {
-        "resource": "dgcx_dev_appreg_scw2_list",
+        "resource": "dgcx_dev_appreg_scw2_auth",
         "scope": "user_impersonation"
       }
+      
     ],
     "features": [
       {
