@@ -68,15 +68,15 @@ const Complete: React.FunctionComponent<ICompleteProps> = ({ data, status, showM
         padding: '15px',
       };
 
-    console.log("status", status);
-    console.log("data", data)
-    console.log("Errors", isError);
+    // console.log("status", status);
+    // console.log("data", data)
+    // console.log("Errors", isError);
 
 
     return (
         <>
 
-        { isError === 200 ?
+        { isError === 200 || isError === 0 ?
             <Modal
                 isOpen={ showModal }
                 onDismiss={ onClose }
@@ -119,10 +119,14 @@ const Complete: React.FunctionComponent<ICompleteProps> = ({ data, status, showM
                                 </StackItem>
                                 
                             </Stack>
+                            { status !== undefined ?
                             <Stack  tokens={spacingTokens} style={{marginLeft: '38px'}}>
                                 <Stack.Item align="start"><p>{spaceName}</p></Stack.Item>
                                 <Stack.Item align="start"><p>{spaceNameFr}</p></Stack.Item>
                             </Stack>
+                            : 
+                            ''
+                            }
                             <Stack.Item>
                                 <hr className={styles.horizontalLine} />
                             </Stack.Item>
