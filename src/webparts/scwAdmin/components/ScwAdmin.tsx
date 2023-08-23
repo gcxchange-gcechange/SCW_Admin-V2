@@ -169,7 +169,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
         spaceName: item.Title,
         spaceNameFr: item.SpaceNameFR,
         spaceDescription: item.SpaceDescription,
-        spaceDescriptionFR: item.SpaceDescription,
+        spaceDescriptionFR: item.SpaceDescriptionFR,
         requesterName: item.RequesterName,
         requesterEmail: item.RequesterEmail,
         members: item.Members,
