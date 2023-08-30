@@ -104,6 +104,8 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
             
             case 'Failed':
                 return <span className={styles.iconStyle}><Icon className={styles.failed}  iconName='IncidentTriangle'/> </span>;
+            case 'Complete':
+                return <span className={styles.iconStyle}><Icon className={styles.completed}  iconName='VerifiedBrandSolid'/> </span>;
             default:
 
         }
