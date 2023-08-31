@@ -127,6 +127,17 @@ const ScwAdmin = (props: IScwAdminProps) => {
                   </span>
                 </>
               )  ;
+          case 'Complete':
+            return (
+              <>
+              <span className={ styles.iconStyle }>
+              <Icon className={ styles.completed } iconName='VerifiedBrandSolid'/>
+              </span>
+              <span style={{color: '#106ebe'}}>
+              {item.status}
+              </span>
+            </>
+            );
           default:
 
         }
@@ -309,7 +320,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
  
 
     if (selectedRowData.decisionStatus !== undefined ) {
-      const functionUrl: string = '';
+      const functionUrl: string = 'https://appsvc-fnc-dev-scw-list-dotnet001.azurewebsites.net/api/CreateQueue?';
 
 
       const requestHeaders: Headers = new Headers();
@@ -327,7 +338,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
           
            setIsLoading(true); 
   
-            props.context.aadHttpClientFactory.getClient('')
+            props.context.aadHttpClientFactory.getClient('3385e8cd-40a4-41f5-bd2f-68690654a54b')
               .then((client: AadHttpClient) => {
                 client
                   .post(functionUrl, AadHttpClient.configurations.v1, postOptions)
@@ -378,7 +389,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
       marginTop:'18px'
     },
   };
-
+console.log('Items', requestList)
 
   return (
     <>
