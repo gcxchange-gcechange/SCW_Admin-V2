@@ -347,7 +347,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
           
            setIsLoading(true); 
   
-            props.context.aadHttpClientFactory.getClient('3385e8cd-40a4-41f5-bd2f-68690654a54b')
+            props.context.aadHttpClientFactory.getClient('')
               .then((client: AadHttpClient) => {
                 client
                   .post(functionUrl, AadHttpClient.configurations.v1, postOptions)
@@ -406,7 +406,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
       
       { step === 1 &&
       <>
-        <h2>SCW communities requests2</h2>
+        <h2>SCW communities requests</h2>
         <h3>Total Items {requestList.length}</h3>
         {/* <div className={styles.wrapper } data-is-scrollable="true"> */}
           <ScrollablePane scrollbarVisibility= { ScrollbarVisibility.auto} styles= { scrollablePaneStyles} >
