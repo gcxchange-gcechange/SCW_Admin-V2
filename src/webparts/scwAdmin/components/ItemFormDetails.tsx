@@ -21,7 +21,6 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
 
     
     const { selectedRowData, requestList } = props;  
-    console.log("O", selectedRowData);
 
     const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>):void  => {
 
@@ -106,6 +105,8 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
             
             case 'Failed':
                 return <span className={styles.iconStyle}><Icon className={styles.failed}  iconName='IncidentTriangle'/> </span>;
+            case 'Complete':
+                return <span className={styles.iconStyle}><Icon className={styles.completed}  iconName='VerifiedBrandSolid'/> </span>;
             default:
 
         }

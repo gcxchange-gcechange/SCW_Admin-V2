@@ -127,6 +127,17 @@ const ScwAdmin = (props: IScwAdminProps) => {
                   </span>
                 </>
               )  ;
+          case 'Complete':
+            return (
+              <>
+              <span className={ styles.iconStyle }>
+              <Icon className={ styles.completed } iconName='VerifiedBrandSolid'/>
+              </span>
+              <span style={{color: '#106ebe'}}>
+              {item.status}
+              </span>
+            </>
+            );
           default:
 
         }
@@ -276,7 +287,6 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
 
   const decisionChoiceCallback = (option: string): void => {
-    console.log("O",option)
 
     if (option === 'A') {
       setSelectedRowData({
@@ -337,7 +347,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
           
            setIsLoading(true); 
   
-            props.context.aadHttpClientFactory.getClient('')
+            props.context.aadHttpClientFactory.getClient('3385e8cd-40a4-41f5-bd2f-68690654a54b')
               .then((client: AadHttpClient) => {
                 client
                   .post(functionUrl, AadHttpClient.configurations.v1, postOptions)
@@ -372,7 +382,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
   }
 
   const closeModal = ():void => {
-    console.log("closeData",selectedRowData);
+
     setShowModal(false);
 
     if(selectedRowData.decisionStatus){
@@ -388,7 +398,6 @@ const ScwAdmin = (props: IScwAdminProps) => {
       marginTop:'18px'
     },
   };
-
 
   return (
     <>
