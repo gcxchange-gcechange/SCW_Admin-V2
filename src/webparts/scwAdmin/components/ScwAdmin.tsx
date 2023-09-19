@@ -164,6 +164,11 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
     
     setRequestList((pagedItems).map((item) => {
+
+      if(item.Comment === null ) {
+        item.Comment = ''
+      }
+
       return {
         id: item.ID,
         spaceName: item.Title,
@@ -295,21 +300,26 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
   const confirmationComments = (value: string):void => {
 
-    setSelectedRowData({
-      ...selectedRowData,
-      decisionComment: value
-    })
-    
+      if (value ) {
+      setSelectedRowData({
+        ...selectedRowData,
+        comment: value
+      });
 
+    } else {
+      setSelectedRowData({
+        ...selectedRowData,
+        comment: ""
+      });
+    }
+  
   }
 
-  
   const onConfirm = ():void  => {
     
- 
 
     if (selectedRowData.decisionStatus !== undefined ) {
-      const functionUrl: string = '';
+      const functionUrl: string =  '';
 
 
       const requestHeaders: Headers = new Headers();
@@ -321,8 +331,8 @@ const ScwAdmin = (props: IScwAdminProps) => {
                   {
                     "Id": "${selectedRowData.id}",
                     "Status": "${selectedRowData.decisionStatus}", 
-                    "Comment": "${selectedRowData.decisionComment}"    
-                  }`
+                    "Comment": "${selectedRowData.comment}"    
+              }`
           };
           
            setIsLoading(true); 
@@ -387,7 +397,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
       
       { step === 1 &&
       <>
-        <h2>SCW communities requests</h2>
+        <h2>SCW communities requests2</h2>
         <h3>Total Items {requestList.length}</h3>
         {/* <div className={styles.wrapper } data-is-scrollable="true"> */}
           <ScrollablePane scrollbarVisibility= { ScrollbarVisibility.auto} styles= { scrollablePaneStyles} >

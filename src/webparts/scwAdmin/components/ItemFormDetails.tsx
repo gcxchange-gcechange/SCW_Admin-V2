@@ -21,7 +21,7 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
 
     
     const { selectedRowData, requestList } = props;  
-    console.log("O", selectedRowData.owners);
+    console.log("O", selectedRowData);
 
     const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>):void  => {
 
@@ -72,15 +72,17 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
     let comment = '';
 
     const decisionComments = (): string => {
-        if (selectedItem[0].comment) { 
-            comment = selectedItem[0].comment.split(/<div\b[^>]*>(.*?)<\/div>/gi)[1];
+        comment = selectedItem[0].comment.split(/<div\b[^>]*>(.*?)<\/div>/gi)[1];
+
+        if (selectedRowData.comment === undefined || comment === null ) { 
+ 
+            comment = 'N/A'
+         
         } else {
             comment ='N/A'
         }
 
-        if(comment === "undefined") {
-            comment = 'N/A'
-        }
+       
 
         return comment; 
     }
