@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ITextFieldStyles, TextField } from 'office-ui-fabric-react/lib/TextField';
 import * as React from 'react';
-import { ChoiceGroup, IChoiceGroupOption,  IStackProps, IStackStyles, Icon, Stack, mergeStyleSets } from 'office-ui-fabric-react';
+import { ChoiceGroup, IChoiceGroupOption,  IStackProps, IStackStyles, Icon, Label, Stack, mergeStyleSets } from 'office-ui-fabric-react';
 import styles from './ScwAdmin.module.scss';
 import { PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker";
 import { WebPartContext } from '@microsoft/sp-webpart-base';
@@ -22,11 +22,17 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
     
     const { selectedRowData, requestList } = props;  
 
-    const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>):void  => {
+    const onChangeComments = (event: React.ChangeEvent<HTMLInputElement>):void  => {
 
             const inputData = event.target.value;
-            
-            props.confirmationComments(inputData)
+            let trimmedValue = inputData.trim();
+            const invalidInput = '';
+
+            if(trimmedValue.length < 5 ) {
+                trimmedValue = invalidInput;
+            }
+
+            props.confirmationComments(trimmedValue)
              
     }
 
@@ -34,6 +40,10 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
 
         props.decisionChoiceCallback(option.key)
         
+    }
+
+    const getErrorMessage = (value: string):string => {
+        return value.length < 5 ? "Input value length must be less than 3." : "" ;
     }
     
 
@@ -67,27 +77,7 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
                 selectedItem.push(item);
             }
         });
-    
-    let comment = '';
-
-    const decisionComments = (): string => {
-        comment = selectedItem[0].comment.split(/<div\b[^>]*>(.*?)<\/div>/gi)[1];
-
-        if (selectedRowData.comment === undefined || comment === null ) { 
- 
-            comment = 'N/A'
-         
-        } else {
-            comment ='N/A'
-        }
-
-       
-
-        return comment; 
-    }
-    
-   
-   
+      
 
 
     const renderIcon = (): any => {
@@ -130,7 +120,7 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
                         <TextField label="Request id:" styles= {customFieldStyles} underlined disabled defaultValue={selectedRowData.id} />
                         <TextField label="Status:" styles= {customFieldStyles} underlined disabled prefix={renderIcon()} defaultValue={selectedItem[0].status}/>
                         { selectedItem[0].status !== 'Submitted' && 
-                            <TextField styles= {customFieldStyles} label="Decision comments" underlined multiline rows={5} disabled defaultValue={decisionComments()}/>
+                            <TextField styles= {customFieldStyles} label="Decision comments" underlined multiline rows={5} disabled defaultValue={selectedRowData.comment}/>
                         }
                         <TextField label="Requester email:" styles= {customFieldStyles} underlined disabled defaultValue={selectedRowData.requesterEmail} />
                         <TextField label="Community sharepoint url:" styles= {customFieldStyles} underlined disabled defaultValue={selectedRowData.siteUrl ? selectedRowData.siteUrl : "Not yet created"} />
@@ -165,10 +155,27 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
                         </Stack>
                         <ChoiceGroup required id='choiceDecision' options={decisionOptions} onChange={onSelectedKey}/>                
                     </div>
- 
-                    <div>
-                        <TextField label="Decision comments (optional)" placeholder= "Type a comment to send to the requestor" multiline autoAdjustHeight onChange={handleOnChange} defaultValue={props.selectedRowData.decisionComments}/>
-                    </div>
+
+                    { selectedRowData.decisionStatus === 'Approved' && (
+                        <Stack>
+                            <TextField  label="Decision comments (optional)" 
+                            placeholder= "Type a comment to send to the requestor" multiline autoAdjustHeight 
+                            onChange={onChangeComments} defaultValue={props.selectedRowData.decisionComments} />
+                        </Stack>
+                        )
+                    }
+
+                    { selectedRowData.decisionStatus === 'Rejected' && (
+               
+                        <Stack>
+                            <Label htmlFor="Decision">Decision comments </Label>
+                            <p id="Decision">Must be greater than 5 characters.</p>
+                            <TextField required placeholder= "Type a comment to send to the requestor" multiline autoAdjustHeight 
+                            onChange={onChangeComments} defaultValue={props.selectedRowData.decisionComments} onGetErrorMessage={getErrorMessage}/>
+                        </Stack>
+                        )
+                    }
+                    
                 </>      
             }
            

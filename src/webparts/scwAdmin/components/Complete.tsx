@@ -10,10 +10,11 @@ interface ICompleteProps {
     showModal: boolean;
     spaceName: string;
     spaceNameFr: string;
+    comment: string;
     onClose?:() => void;
 }
 
-const Complete: React.FunctionComponent<ICompleteProps> = ({ data, status, showModal, onClose, isError, spaceName, spaceNameFr }) => {
+const Complete: React.FunctionComponent<ICompleteProps> = ({ data, comment, status, showModal, onClose, isError, spaceName, spaceNameFr }) => {
 
    
 
@@ -68,9 +69,10 @@ const Complete: React.FunctionComponent<ICompleteProps> = ({ data, status, showM
         padding: '15px',
       };
 
-    // console.log("status", status);
-    // console.log("data", data)
-    // console.log("Errors", isError);
+    console.log("status", status);
+    console.log("comment", comment);
+    console.log("data", data);
+    console.log("Errors", isError);
 
 
     return (
@@ -86,7 +88,7 @@ const Complete: React.FunctionComponent<ICompleteProps> = ({ data, status, showM
                 }}
             >
                 <div style={ modalStyle.header }>
-                   {status === undefined ?
+                   {status === undefined || (status === "Rejected" && !comment) ?
                     <h2>Did you forget something?</h2>
                     :
                     <h2>Community creation ID#{ data }</h2>
@@ -101,26 +103,32 @@ const Complete: React.FunctionComponent<ICompleteProps> = ({ data, status, showM
                     <div style={modalStyle.footer}>
                        
                         <Stack>
-                            <Stack horizontal horizontalAlign="start" tokens={spacingTokens}>
+                            <Stack horizontal horizontalAlign="center" tokens={spacingTokens}>
                                 <Stack.Item  align="center">
                                     {status === "Approved" ? (
                                         <Icon style={{color: '#1da51d', fontSize: '20px'}} iconName="SkypeCircleCheck"/>
-                                        ) : status === "Rejected" ? (
+                                        ) : status === "Rejected" && comment !== "" ? (
                                         <Icon style={{color: '#ff2200', fontSize: '20px'}} iconName="StatusErrorFull"/>
                                         ) : null
                                     } 
                                 </Stack.Item>
-                                <StackItem>
-                                    { status === undefined ?
-                                    <span>You must select a <strong>Communty creation decision</strong> before proceeding</span>
-                                    :
-                                    <span>The following community (ID#{data}) is <strong>{status === "Approved" ? `created.` : `rejected.`}</strong></span>
-                                    } 
-                                </StackItem>
+                                <Stack.Item align="center">
+                                        {status === undefined && (
+                                        <span>You must select a <strong>Community creation decision</strong> before proceeding</span>
+                                        )}
+
+                                        {status === "Rejected" && comment === "" ? (
+                                            <span>You must add a <strong>comment</strong> before proceeding</span>
+                                        ) : status === "Approved" ? (
+                                            <span>The following community (ID#{data}) is <strong>created.</strong></span>
+                                        ) : status === "Rejected" && comment !== "" ? (
+                                            <span>The following community (ID#{data}) is <strong>rejected. </strong></span>
+                                        ) : null}
+                                </Stack.Item>
                                 
                             </Stack>
-                            { status !== undefined ?
-                            <Stack  tokens={spacingTokens} style={{marginLeft: '38px'}}>
+                            { status === "Approved" ||  (status === "Rejected" && comment !== "") ?
+                            <Stack  tokens={spacingTokens} style={{marginLeft: '20%'}}>
                                 <Stack.Item align="start"><p>{spaceName}</p></Stack.Item>
                                 <Stack.Item align="start"><p>{spaceNameFr}</p></Stack.Item>
                             </Stack>

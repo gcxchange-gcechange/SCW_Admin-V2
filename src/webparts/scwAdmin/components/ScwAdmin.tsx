@@ -310,26 +310,25 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
   const confirmationComments = (value: string):void => {
 
+    console.log("Value", value);
+
       if (value ) {
       setSelectedRowData({
         ...selectedRowData,
         comment: value
       });
 
-    } else {
-      setSelectedRowData({
-        ...selectedRowData,
-        comment: ""
-      });
-    }
+    } 
   
   }
 
   const onConfirm = ():void  => {
-    
 
-    if (selectedRowData.decisionStatus !== undefined ) {
-      const functionUrl: string =  '';
+    console.log("FINAL DATA:", selectedRowData)
+   
+
+    if (selectedRowData.decisionStatus === "Approved" || (selectedRowData.decisionStatus === "Rejected" && selectedRowData.comment !== "") ) {
+      const functionUrl: string = '';
 
 
       const requestHeaders: Headers = new Headers();
@@ -382,12 +381,12 @@ const ScwAdmin = (props: IScwAdminProps) => {
   }
 
   const closeModal = ():void => {
-
+ 
     setShowModal(false);
 
-    if(selectedRowData.decisionStatus){
-      setCurrentStep(step - 1);
-    }
+    // if (selectedRowData.decisionStatus){
+    //   setCurrentStep(step - 1);
+    // }
     
   }
   
@@ -449,7 +448,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
         </>
       }
       { showModal && 
-       <Complete data={ selectedRowData.id } spaceName={selectedRowData.spaceName} spaceNameFr={ selectedRowData.spaceNameFr } status={ selectedRowData.decisionStatus }  showModal={showModal} onClose={closeModal} isError={isError} /> 
+       <Complete data={ selectedRowData.id } spaceName={selectedRowData.spaceName} spaceNameFr={ selectedRowData.spaceNameFr } status={ selectedRowData.decisionStatus } comment={ selectedRowData.comment} showModal={showModal} onClose={closeModal} isError={isError} /> 
       }
 
   
