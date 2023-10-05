@@ -310,8 +310,6 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
   const confirmationComments = (value: string):void => {
 
-    console.log("ValueComments", value.length);
-
       if (value ) {
       setSelectedRowData({
         ...selectedRowData,
@@ -323,16 +321,11 @@ const ScwAdmin = (props: IScwAdminProps) => {
   }
 
   const onConfirm = ():void  => {
-
-
-    console.log("FINAL DATA:", selectedRowData);
-    console.log("CommentLength:",selectedRowData.comment.length);
     const isApproved = selectedRowData.decisionStatus === "Approved";
     const hasValidComment = selectedRowData.comment.length >= 5 || selectedRowData.comment === "";
     const isRejected = selectedRowData.decisionStatus === "Rejected";
     const hasNonEmptyComment = selectedRowData.comment !== "";
 
-    // if (selectedRowData.decisionStatus === "Approved" && (selectedRowData.comment.length > 5  || selectedRowData.comment === "") || (selectedRowData.decisionStatus === "Rejected" && selectedRowData.comment !== "") ) {
     if ((isApproved && (hasValidComment || selectedRowData.comment === "")) || (isRejected && hasNonEmptyComment)) {  
     
       const functionUrl: string = '';
@@ -414,7 +407,6 @@ const ScwAdmin = (props: IScwAdminProps) => {
       <>
         <h2>SCW communities requests</h2>
         <h3>Total Items {requestList.length}</h3>
-        {/* <div className={styles.wrapper } data-is-scrollable="true"> */}
           <ScrollablePane scrollbarVisibility= { ScrollbarVisibility.auto} styles= { scrollablePaneStyles} >
             <DetailsList 
               styles={ headerStyle }
@@ -427,7 +419,6 @@ const ScwAdmin = (props: IScwAdminProps) => {
               onItemInvoked={onItemInvoked}
             />
           </ScrollablePane>
-        {/* </div> */}
       </>
       }
 
