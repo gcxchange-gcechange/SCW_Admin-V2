@@ -138,6 +138,17 @@ const ScwAdmin = (props: IScwAdminProps) => {
               </span>
             </>
             );
+            case 'Site Exists':
+              return (
+                <>
+                  <span className={ styles.iconStyle }>
+                  <Icon className={ styles.failed } iconName='IncidentTriangle'/>
+                  </span>
+                  <span style={{color: 'red'}}>
+                  {item.status}
+                  </span>
+                </>
+              )  ;
           default:
 
         }
