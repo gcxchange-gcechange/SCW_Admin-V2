@@ -28,7 +28,8 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
             let trimmedValue = inputData.trim();
             const invalidInput = '';
 
-            if(trimmedValue.length < 5 ) {
+
+            if (trimmedValue.length < 5 && selectedRowData.decisionStatus === "Rejected" ) {
                 trimmedValue = invalidInput;
             }
 
@@ -43,7 +44,7 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
     }
 
     const getErrorMessage = (value: string):string => {
-        return value.length < 5 ? "Input value length must be less than 3." : "" ;
+        return value.length < 5 ? "Input value length must be greater than 5." : "" ;
     }
     
 
@@ -160,7 +161,7 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
                         <Stack>
                             <TextField  label="Decision comments (optional)" 
                             placeholder= "Type a comment to send to the requestor" multiline autoAdjustHeight 
-                            onChange={onChangeComments} defaultValue={props.selectedRowData.decisionComments} />
+                            onChange={onChangeComments} defaultValue={props.selectedRowData.decisionComments} onGetErrorMessage={getErrorMessage}/>
                         </Stack>
                         )
                     }

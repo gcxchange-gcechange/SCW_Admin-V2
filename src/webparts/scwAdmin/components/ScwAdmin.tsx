@@ -310,7 +310,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
   const confirmationComments = (value: string):void => {
 
-    console.log("Value", value);
+    console.log("ValueComments", value.length);
 
       if (value ) {
       setSelectedRowData({
@@ -324,10 +324,17 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
   const onConfirm = ():void  => {
 
-    console.log("FINAL DATA:", selectedRowData)
-   
 
-    if (selectedRowData.decisionStatus === "Approved" || (selectedRowData.decisionStatus === "Rejected" && selectedRowData.comment !== "") ) {
+    console.log("FINAL DATA:", selectedRowData);
+    console.log("CommentLength:",selectedRowData.comment.length);
+    const isApproved = selectedRowData.decisionStatus === "Approved";
+    const hasValidComment = selectedRowData.comment.length >= 5 || selectedRowData.comment === "";
+    const isRejected = selectedRowData.decisionStatus === "Rejected";
+    const hasNonEmptyComment = selectedRowData.comment !== "";
+
+    // if (selectedRowData.decisionStatus === "Approved" && (selectedRowData.comment.length > 5  || selectedRowData.comment === "") || (selectedRowData.decisionStatus === "Rejected" && selectedRowData.comment !== "") ) {
+    if ((isApproved && (hasValidComment || selectedRowData.comment === "")) || (isRejected && hasNonEmptyComment)) {  
+    
       const functionUrl: string = '';
 
 

@@ -74,6 +74,11 @@ const Complete: React.FunctionComponent<ICompleteProps> = ({ data, comment, stat
     console.log("data", data);
     console.log("Errors", isError);
 
+    const isApproved = status === "Approved";
+    const hasValidComment = comment.length >= 5 || comment === "";
+    const isRejected = status === "Rejected";
+    const hasNonEmptyComment = comment !== "";
+
 
     return (
         <>
@@ -105,7 +110,7 @@ const Complete: React.FunctionComponent<ICompleteProps> = ({ data, comment, stat
                         <Stack>
                             <Stack horizontal horizontalAlign="center" tokens={spacingTokens}>
                                 <Stack.Item  align="center">
-                                    {status === "Approved" ? (
+                                    {isApproved  && hasValidComment ? (
                                         <Icon style={{color: '#1da51d', fontSize: '20px'}} iconName="SkypeCircleCheck"/>
                                         ) : status === "Rejected" && comment !== "" ? (
                                         <Icon style={{color: '#ff2200', fontSize: '20px'}} iconName="StatusErrorFull"/>
@@ -117,17 +122,19 @@ const Complete: React.FunctionComponent<ICompleteProps> = ({ data, comment, stat
                                         <span>You must select a <strong>Community creation decision</strong> before proceeding</span>
                                         )}
 
-                                        {status === "Rejected" && comment === "" ? (
+                                        {isRejected && comment === "" ? (
                                             <span>You must add a <strong>comment</strong> before proceeding</span>
-                                        ) : status === "Approved" ? (
+                                        ) : isApproved && !hasValidComment ? (
+                                            <span>You must add a <strong>comment</strong> before proceeding</span>
+                                        ) : isApproved && hasValidComment ? (
                                             <span>The following community (ID#{data}) is <strong>created.</strong></span>
-                                        ) : status === "Rejected" && comment !== "" ? (
+                                        ) : status === "Rejected" && hasNonEmptyComment ? (
                                             <span>The following community (ID#{data}) is <strong>rejected. </strong></span>
                                         ) : null}
                                 </Stack.Item>
                                 
                             </Stack>
-                            { status === "Approved" ||  (status === "Rejected" && comment !== "") ?
+                            { isApproved && (comment.length > 5  || comment === "") ||  (status === "Rejected" && comment !== "") ?
                             <Stack  tokens={spacingTokens} style={{marginLeft: '20%'}}>
                                 <Stack.Item align="start"><p>{spaceName}</p></Stack.Item>
                                 <Stack.Item align="start"><p>{spaceNameFr}</p></Stack.Item>
