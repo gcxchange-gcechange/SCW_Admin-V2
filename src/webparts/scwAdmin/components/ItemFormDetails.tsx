@@ -162,7 +162,7 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
                     { selectedRowData.decisionStatus === 'Approved' && (
                         <Stack>
                             <TextField  label="Decision comments (optional)" 
-                            placeholder= "Type a comment to send to the requestor" multiline autoAdjustHeight 
+                            placeholder= "Type a comment to send to the requestor" multiline autoAdjustHeight validateOnLoad={false}
                             onChange={onChangeComments} defaultValue={props.selectedRowData.decisionComments} onGetErrorMessage={getErrorMessage}/>
                         </Stack>
                         )
@@ -173,7 +173,7 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
                         <Stack>
                             <Label htmlFor="Decision">Decision comments </Label>
                             <p id="Decision">Must be greater than 5 characters.</p>
-                            <TextField required placeholder= "Type a comment to send to the requestor" multiline autoAdjustHeight 
+                            <TextField required placeholder= "Type a comment to send to the requestor" multiline autoAdjustHeight validateOnLoad={false}
                             onChange={onChangeComments} defaultValue={props.selectedRowData.decisionComments} onGetErrorMessage={getErrorMessage}/>
                         </Stack>
                         )
