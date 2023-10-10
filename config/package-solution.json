@@ -3,7 +3,7 @@
   "solution": {
     "name": "scw-adminV2-client-side-solution",
     "id": "2448996b-0040-4203-aae9-6b8c55c9b2c3",
-    "version": "1.0.0.0",
+    "version": "2.0.0.2",
     "includeClientSideAssets": true,
     "skipFeatureDeployment": true,
     "isDomainIsolated": false,
