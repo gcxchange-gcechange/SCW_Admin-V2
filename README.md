@@ -2,9 +2,8 @@
 
 ## Summary
 
-Short description of what the webpart do. Give the basic information and feature of the app. 
-
-_Adding a visualisation is possible. Need to keep in mind that it should only reflect what is provide in the short description. Plus, an short description of the image or animation need to be provide in the alt._
+This webpart allows users to approve or reject community creation requests. It displays a list of requests that have been approved, rejected, failed and pending.
+When the user selects an item from the list, the details of the request will display, along with madatory selection to approve or reject the request , as well as comments.
 
 ## Prerequisites
 
