@@ -11,10 +11,10 @@ When the user selects an item from the list, the details of the request will dis
 
 
 ## Prerequisites
-This web part connects to [this function app](https://github.com/gcxchange-gcechange/appsvc-fnc-dev-userstats).
+This web part connects to [this function app](https://github.com/gcxchange-gcechange/appsvc-fnc-dev-scw-sitecreation.git).
 
 ## API permission
-List of api permission that need to be approve by a sharepoint admin.
+dgcx_dev_appreg_scw2_auth - user_impersonation
 
 ## Version 
 ![SPFx 1.17.1](https://img.shields.io/badge/SPFx-1.17.1-green.svg) 
@@ -50,8 +50,6 @@ Version|Date|Comments
   - Add the webpart to your tenant app store
 - Approve the web API permissions
 - Add the Webpart to a page
-- Modify the property pane according to your requirements
-
 
 ## Disclaimer
 
