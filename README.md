@@ -4,21 +4,21 @@
 
 This webpart allows users to approve or reject community creation requests. It displays a list of requests that have been approved, rejected, failed and pending.
 When the user selects an item from the list, the details of the request will display, along with madatory selection to approve or reject the request , as well as comments.
+- When a request is submitted for the creation of a community space. We retrieve the information the user submitted using PNP Lists.
+- Then information is then reviewed using Fluent UI TextField componenents in disabled format.
+- Once the information is reviewed the user can approve or reject the request using a choice button and comments are also entered.
+- When the user submits the decision an API call using Azure is used to send the information and update the list.
+
 
 ## Prerequisites
-
 This web part connects to [this function app](https://github.com/gcxchange-gcechange/appsvc-fnc-dev-userstats).
 
 ## API permission
 List of api permission that need to be approve by a sharepoint admin.
 
 ## Version 
-
-Used SharePoint Framework Webpart or Sharepoint Framework Extension 
-
-![SPFx 1.11](https://img.shields.io/badge/SPFx-1.11-green.svg)
-
-![Node.js v10](https://img.shields.io/badge/Node.js-10.22.0-green.svg)
+![SPFx 1.17.1](https://img.shields.io/badge/SPFx-1.17.1-green.svg) 
+![Node.js](https://img.shields.io/badge/Node.js-v16.13+-green.svg)
 
 ## Applies to
 
@@ -31,8 +31,7 @@ Used SharePoint Framework Webpart or Sharepoint Framework Extension
 
 Version|Date|Comments
 -------|----|--------
-1.0|Dec 9, 2021|Initial release
-1.1|March 25, 2022|Next release
+1.0|Aug 9, 2023|Initial release
 
 ## Minimal Path to Awesome
 
