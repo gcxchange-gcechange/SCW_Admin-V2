@@ -11,7 +11,7 @@
 - If the request approved, the status field of the Request List will change from Submitted to Complete and if it is rejected, it will change into Rejected.
 
 ## Prerequisites
-The list Request should created and stored the community creation requests data by the [fuction app] (https://github.com/gcxchange-gcechange/appsvc-fnc-dev-scw-list.git) when community creation requested via the [spfx-scw web part](https://github.com/gcxchange-gcechange/appsvc-fnc-dev-scw-list.git). 
+The list Request should created and stored the community creation requests data by the [fuction app] (https://github.com/gcxchange-gcechange/appsvc-fnc-dev-scw-list.git) when community creation requested via the [spfx-scw web part](https://github.com/gcxchange-gcechange/spfx-scw). 
 This web part connects to [this function app](https://github.com/gcxchange-gcechange/appsvc-fnc-dev-scw-list.git).
 
 ## API permission
