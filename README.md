@@ -11,7 +11,7 @@ When the user selects an item from the list, the details of the request will dis
 
 
 ## Prerequisites
-This web part connects to [this function app](https://github.com/gcxchange-gcechange/appsvc-fnc-dev-scw-sitecreation.git).
+This web part connects to [this function app](https://github.com/gcxchange-gcechange/appsvc-fnc-dev-scw-list.git).
 
 ## API permission
 dgcx_dev_appreg_scw2_auth - user_impersonation
