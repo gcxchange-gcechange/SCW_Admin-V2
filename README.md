@@ -1,4 +1,4 @@
-# Name of the application
+# scw-admin
 
 ## Summary
 
