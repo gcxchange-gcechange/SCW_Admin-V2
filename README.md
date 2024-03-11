@@ -4,7 +4,7 @@
 
 - This webpart allows users to approve or reject community creation requests. 
 
-- It retrieves and displays data from the "Request" SharePoint list. This list contains community creation requests stored by [this function app](https://github.com/gcxchange-gcechange/appsvc-fnc-dev-scw-list.git) when initiated through this web part [this web part](https://github.com/gcxchange-gcechange/spfx-scw). 
+- It retrieves and displays data from the "Request" SharePoint list. This list contains community creation requests stored by [this function app](https://github.com/gcxchange-gcechange/appsvc-fnc-dev-scw-list.git) when initiated through [this web part](https://github.com/gcxchange-gcechange/spfx-scw). 
 
 - If the selected item from the list has a status value other than "Submitted," the request details will be displayed in a disabled format. Only one button link is provided to redirect back to the list of all requests. 
  
