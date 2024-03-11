@@ -3,16 +3,16 @@
 ## Summary
 
 - This webpart allows users to approve or reject community creation requests. 
-- It retrive and display the data from the SharePoint list called Request where the community creation requests data stored by the [fuction app](https://github.com/gcxchange-gcechange/appsvc-fnc-dev-scw-list.git) when community creation requested via the [spfx-scw web part](https://github.com/gcxchange-gcechange/spfx-scw). 
-- When the user selects an item from the list that has status value of submitted, the details of the request will display in disabled format, along with madatory selection to approve or reject the request, optional editable comments field and two button links to submit the decision and redirect back to the the list of all the requests.
+- It retrive and display the data from the SharePoint list called Request where the community creation requests data stored by [this fuction app](https://github.com/gcxchange-gcechange/appsvc-fnc-dev-scw-list.git) when community creation requested via [this web part](https://github.com/gcxchange-gcechange/spfx-scw). 
 - When the user selects an item from the list that has status value other than submitted, the details of the request will display in disabled format, along with only one button link that redirect back to the list of all the requests. 
+- When the user selects an item from the list that has status value of submitted, the details of the request will display in disabled format, along with madatory selection to approve or reject the request, optional editable comments field and two button links to submit the decision and redirect back to the the list of all the requests. 
 - Once the information is reviewed, the user can approve or reject the request with or without comments.
-- When the user submits the decision, the [function app](https://github.com/gcxchange-gcechange/appsvc-fnc-dev-scw-list.git) will be called to update the status and comment fields of the Request list and to add a message to the queue called site creation if the decision is approved.
-- If the request approved, the status field of the SharePoint list Request List will change from Submitted to Complete and if it is rejected, it will change into Rejected.
+- When the user submits the decision, [this function app](https://github.com/gcxchange-gcechange/appsvc-fnc-dev-scw-list.git) will be called to update the status and comment fields of the SharePoint list Request and to add a message to the queue called site creation if the decision is approved.
+- If the request approved, the status field of the SharePoint list Request will change from Submitted to Complete and if it is rejected it will change into Rejected.
 
 ## Prerequisites
 - This web part connects to [this function app](https://github.com/gcxchange-gcechange/appsvc-fnc-dev-scw-list.git).
-- The SharePoint list called Request should be created and stored the community creation requests data by the [fuction app](https://github.com/gcxchange-gcechange/appsvc-fnc-dev-scw-list.git) when community creation requested via the [spfx-scw web part](https://github.com/gcxchange-gcechange/spfx-scw).
+- The SharePoint list called Request should be created and stored the community creation requests data by [this fuction app](https://github.com/gcxchange-gcechange/appsvc-fnc-dev-scw-list.git) when community creation requested via [this web part](https://github.com/gcxchange-gcechange/spfx-scw).
 - The SharePoint list Request mentioned above should be in the same SharePoint site where this webpart is placed.
 
 ## API permission
