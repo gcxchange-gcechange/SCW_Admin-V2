@@ -349,7 +349,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
     if ((isApproved && (hasValidComment || selectedRowData.comment === "")) || (isRejected && hasNonEmptyComment)) {  
     
-      const functionUrl: string = 'https://appsvc-fnc-dev-scw-list-dotnet001.azurewebsites.net/api/CreateQueue';
+      const functionUrl: string = '';
 
 
       const requestHeaders: Headers = new Headers();
@@ -367,7 +367,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
           
            setIsLoading(true); 
   
-            props.context.aadHttpClientFactory.getClient('3385e8cd-40a4-41f5-bd2f-68690654a54b')
+            props.context.aadHttpClientFactory.getClient('')
               .then((client: AadHttpClient) => {
                 client
                   .post(functionUrl, AadHttpClient.configurations.v1, postOptions)
