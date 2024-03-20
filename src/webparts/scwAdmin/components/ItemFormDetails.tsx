@@ -87,10 +87,8 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
         switch(selectedItem[0].status ) {
             case "Submitted":
                 return <span className={styles.iconStyle}><Icon iconName='SkypeCircleClock'/></span>;
-             
             case 'Approved':
                 return <span className={styles.iconStyle}><Icon className={styles.approved} iconName='SkypeCircleCheck'/></span>;
-           
             case  'Rejected':
                 return <span className={styles.iconStyle}><Icon className={styles.rejected} iconName='StatusErrorFull'/> </span>;
             
@@ -98,14 +96,13 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
                 return <span className={styles.iconStyle}><Icon className={styles.failed}  iconName='IncidentTriangle'/> </span>;
             case 'Complete':
                 return <span className={styles.iconStyle}><Icon className={styles.completed}  iconName='VerifiedBrandSolid'/> </span>;
-             case 'Site Exists':
+            case 'Site Exists':
+                return <span className={styles.iconStyle}><Icon className={styles.failed}  iconName='IncidentTriangle'/> </span>;
+            case 'No Owner':
                 return <span className={styles.iconStyle}><Icon className={styles.failed}  iconName='IncidentTriangle'/> </span>;
             default:
-
         }
-        
     }
-
 
     const decisionOptions: IChoiceGroupOption[] = [
         { key: 'A', text: 'Approve community creation' },

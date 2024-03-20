@@ -148,9 +148,19 @@ const ScwAdmin = (props: IScwAdminProps) => {
                   {item.status}
                   </span>
                 </>
-              )  ;
+              );
+              case 'No Owner':
+                return (
+                  <>
+                    <span className={ styles.iconStyle }>
+                    <Icon className={ styles.failed } iconName='IncidentTriangle'/>
+                    </span>
+                    <span style={{color: 'red'}}>
+                    {item.status}
+                    </span>
+                  </>
+                );
           default:
-
         }
       }
    },
@@ -339,7 +349,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
     if ((isApproved && (hasValidComment || selectedRowData.comment === "")) || (isRejected && hasNonEmptyComment)) {  
     
-      const functionUrl: string = '';
+      const functionUrl: string = 'https://appsvc-fnc-dev-scw-list-dotnet001.azurewebsites.net/api/CreateQueue';
 
 
       const requestHeaders: Headers = new Headers();
@@ -357,7 +367,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
           
            setIsLoading(true); 
   
-            props.context.aadHttpClientFactory.getClient('')
+            props.context.aadHttpClientFactory.getClient('3385e8cd-40a4-41f5-bd2f-68690654a54b')
               .then((client: AadHttpClient) => {
                 client
                   .post(functionUrl, AadHttpClient.configurations.v1, postOptions)
