@@ -148,9 +148,19 @@ const ScwAdmin = (props: IScwAdminProps) => {
                   {item.status}
                   </span>
                 </>
-              )  ;
+              );
+              case 'No Owner':
+                return (
+                  <>
+                    <span className={ styles.iconStyle }>
+                    <Icon className={ styles.failed } iconName='IncidentTriangle'/>
+                    </span>
+                    <span style={{color: 'red'}}>
+                    {item.status}
+                    </span>
+                  </>
+                );
           default:
-
         }
       }
    },
