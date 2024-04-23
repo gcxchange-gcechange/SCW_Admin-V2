@@ -66,15 +66,15 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
   const LIST_NAME: string = 'Request';
   const _sp:SPFI = getSP(props.context);
-  const BATCH_SIZE = 900;
+  const BATCH_SIZE = 1000;
 
   const [requestList, setRequestList] = useState< ISCWList [] >( [] );
   const [selectedRowData, setSelectedRowData] = useState<any>();
   const [step, setCurrentStep] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [isError, setIsError] = useState<number>(0
-    );
+  const [isError, setIsError] = useState<number>(0);
+  const [searchInput, setSearchInput] = useState("");
 
   
 
@@ -201,7 +201,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
         "Status",
         "TemplateTitle",
         "SiteUrl",
-        "Comment").top(BATCH_SIZE).orderBy("Status", false).getPaged();
+        "Comment").top(BATCH_SIZE).orderBy("Status", false).orderBy("Created", false).getPaged();
       else items = await items.getNext();
       if ( items.results.length > 0 ) {
         pagedItems = pagedItems.concat(items.results);
@@ -424,6 +424,12 @@ const ScwAdmin = (props: IScwAdminProps) => {
     }
     
   }
+
+  const handleSearchInput = (event: React.ChangeEvent<HTMLInputElement> ):void => {
+    console.log("What DId I type",event.target.value)
+    setSearchInput(event.target.value.toLowerCase());
+
+  }
   
   const sectionStackTokens: IStackTokens = { childrenGap: 10 };
 
@@ -442,16 +448,31 @@ const ScwAdmin = (props: IScwAdminProps) => {
       <>
         <h2>SCW communities requests</h2>
         <h3>Total Items {requestList.length}</h3>
+          <div>
+            <input
+              type="text"
+              placeholder='Search'
+              onChange={handleSearchInput}
+              value={searchInput}
+              width={"500"}
+              height={"50"}
+            />
+          </div>
           <ScrollablePane scrollbarVisibility= { ScrollbarVisibility.auto} styles= { scrollablePaneStyles} >
             <DetailsList 
               styles={ headerStyle }
-              items={ requestList }
+              items={ searchInput ? requestList.filter(item => 
+                Object.values(item).some(val => 
+                    typeof val === 'string' && val.toLowerCase().includes(searchInput.toLowerCase())
+                )
+            ) : requestList }
               columns ={ columns }
               layoutMode={ DetailsListLayoutMode.justified }
               onRenderRow={ _onRenderRow }
               isHeaderVisible={true}
               onRenderDetailsHeader={ onRenderDetailsHeader}
               onItemInvoked={onItemInvoked}
+              
             />
           </ScrollablePane>
       </>
