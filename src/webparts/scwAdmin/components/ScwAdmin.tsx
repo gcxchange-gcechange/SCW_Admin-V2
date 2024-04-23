@@ -66,7 +66,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
   const LIST_NAME: string = 'Request';
   const _sp:SPFI = getSP(props.context);
-  const BATCH_SIZE = 100;
+  const BATCH_SIZE = 900;
 
   const [requestList, setRequestList] = useState< ISCWList [] >( [] );
   const [selectedRowData, setSelectedRowData] = useState<any>();
@@ -186,9 +186,23 @@ const ScwAdmin = (props: IScwAdminProps) => {
     let items: PagedItemCollection<any[]> = undefined;
 
     do {
-      if(!items) items = await _sp.web.lists.getByTitle(LIST_NAME).items.top(BATCH_SIZE).orderBy("Created", false).getPaged();
+      if(!items) items = await _sp.web.lists.getByTitle(LIST_NAME).items.select(
+        "ID",
+        "Title",
+        "SpaceNameFR", 
+        "SpaceDescription",
+        "SpaceDescriptionFR",
+        "RequesterName",
+        "RequesterEmail",
+        "Members",
+        "Owner1",
+        "BusinessJustification",
+        "Created", 
+        "Status",
+        "TemplateTitle",
+        "SiteUrl",
+        "Comment").top(BATCH_SIZE).orderBy("Status", false).getPaged();
       else items = await items.getNext();
-
       if ( items.results.length > 0 ) {
         pagedItems = pagedItems.concat(items.results);
       }
@@ -196,7 +210,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
     
     setRequestList((pagedItems).map((item) => {
-
+      console.log("pagedItems", pagedItems);
       if(item.Comment === null ) {
         item.Comment = ''
       }
@@ -405,9 +419,9 @@ const ScwAdmin = (props: IScwAdminProps) => {
  
     setShowModal(false);
 
-    // if (selectedRowData.decisionStatus){
-    //   setCurrentStep(step - 1);
-    // }
+    if (selectedRowData.decisionStatus){
+      setCurrentStep(step - 1);
+    }
     
   }
   
