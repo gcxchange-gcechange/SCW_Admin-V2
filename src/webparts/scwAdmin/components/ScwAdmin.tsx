@@ -40,6 +40,7 @@ import ItemFormDetails from './ItemFormDetails';
 import { getTheme } from '@fluentui/react/lib/Styling';
 import { HttpClientResponse, IHttpClientOptions, AadHttpClient }  from "@microsoft/sp-http";
 import Complete from './Complete';
+import { Pagination } from "@pnp/spfx-controls-react/lib/pagination";
 
 
 export interface ISCWList {
@@ -75,6 +76,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [isError, setIsError] = useState<number>(0);
   const [searchInput, setSearchInput] = useState("");
+  const [page, setPage] = useState<number>(1);
 
   
 
@@ -430,6 +432,11 @@ const ScwAdmin = (props: IScwAdminProps) => {
     setSearchInput(event.target.value.toLowerCase());
 
   }
+
+  const getPage = (page: number):void  =>  {
+    console.log(page);
+    setPage(page)
+  } 
   
   const sectionStackTokens: IStackTokens = { childrenGap: 10 };
 
@@ -438,6 +445,19 @@ const ScwAdmin = (props: IScwAdminProps) => {
       marginTop:'18px'
     },
   };
+
+  const startIndex:number = (page - 1) * 100;
+  const endIndex: number = Math.min(startIndex + 100, requestList.length);
+
+  const displayItemsPerPage = requestList.slice(startIndex, endIndex);
+
+  const searchItemsDisplay =  searchInput ? displayItemsPerPage.filter(item => 
+    Object.values(item).some(val => 
+        typeof val === 'string' && val.toLowerCase().includes(searchInput.toLowerCase())
+    )
+  ) : displayItemsPerPage
+
+
 
   return (
     <>
@@ -448,24 +468,30 @@ const ScwAdmin = (props: IScwAdminProps) => {
       <>
         <h2>SCW communities requests</h2>
         <h3>Total Items {requestList.length}</h3>
-          <div>
-            <input
-              type="text"
-              placeholder='Search'
-              onChange={handleSearchInput}
-              value={searchInput}
-              width={"500"}
-              height={"50"}
-            />
-          </div>
+              <div className={styles.search}>
+                <span><Icon className={styles.searchIcon} iconName="Search"/></span>
+                <input
+                  type="text"
+                  className={styles.searchInput}
+                  placeholder='Search'
+                  onChange={handleSearchInput}
+                  value={searchInput}
+                />
+              </div>
+            <div>
+              <Pagination
+                  currentPage={1}
+                  totalPages={Math.ceil(requestList.length /100)} 
+                  onChange={(page) => getPage(page)}
+                  limiter={3} // Optional - default value 3
+                  hideFirstPageJump // Optional
+                  hideLastPageJump // Optional
+              />
+            </div>
           <ScrollablePane scrollbarVisibility= { ScrollbarVisibility.auto} styles= { scrollablePaneStyles} >
             <DetailsList 
               styles={ headerStyle }
-              items={ searchInput ? requestList.filter(item => 
-                Object.values(item).some(val => 
-                    typeof val === 'string' && val.toLowerCase().includes(searchInput.toLowerCase())
-                )
-            ) : requestList }
+              items={searchItemsDisplay}
               columns ={ columns }
               layoutMode={ DetailsListLayoutMode.justified }
               onRenderRow={ _onRenderRow }
