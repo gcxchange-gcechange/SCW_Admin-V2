@@ -114,6 +114,38 @@
   }
 
 }
- 
+
+.search{
+  --padding: 14px;
+  display: flex;
+  align-items: center;
+  width:50%;
+  border-radius: 28px;
+  background: #f6f6f6;
+  padding: var(--padding);
+  transition: box-shadow 0.25s;
+  margin-bottom: 14px;
+
+}
+
+.search:focus-within {
+  box-shadow: 0 0 0 2px rgb(0,0,0, 0.75);
+}
+
+.searchInput {
+  font-size: 16px;
+  font-family: 'Lexend', sans-serif;
+  color: #333333;
+  margin-left: var(--padding);
+  outline: none;
+  background: transparent;
+  border: none;
+
+}
+
+.searchIcon {
+  font-size: 20px;
+  pointer-events: none;
+}
 
 
