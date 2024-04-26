@@ -481,7 +481,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
             <div>
               <Pagination
                   currentPage={1}
-                  totalPages={Math.ceil(requestList.length /100)} 
+                  totalPages={searchInput ? Math.ceil(searchItemsDisplay.length /100) : Math.ceil(requestList.length /100)} 
                   onChange={(page) => getPage(page)}
                   limiter={3} // Optional - default value 3
                   hideFirstPageJump // Optional
