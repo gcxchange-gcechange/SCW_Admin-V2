@@ -40,6 +40,8 @@ import ItemFormDetails from './ItemFormDetails';
 import { getTheme } from '@fluentui/react/lib/Styling';
 import { HttpClientResponse, IHttpClientOptions, AadHttpClient }  from "@microsoft/sp-http";
 import Complete from './Complete';
+//import { Pagination } from "@pnp/spfx-controls-react/lib/pagination";
+
 
 
 export interface ISCWList {
@@ -64,7 +66,7 @@ export interface ISCWList {
 
 const ScwAdmin = (props: IScwAdminProps) => {
 
-  const LIST_NAME: string = 'Request';
+  //const LIST_NAME: string = props.list;
   const _sp:SPFI = getSP(props.context);
   const BATCH_SIZE = 100;
 
@@ -73,8 +75,9 @@ const ScwAdmin = (props: IScwAdminProps) => {
   const [step, setCurrentStep] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [isError, setIsError] = useState<number>(0
-    );
+  const [isError, setIsError] = useState<number>(0);
+  const [page, _setPage] = useState<number>(1);
+
 
   
 
@@ -179,20 +182,36 @@ const ScwAdmin = (props: IScwAdminProps) => {
     setCurrentStep(previousPage);
 
   }
-  
+ let nextPageUrl:PagedItemCollection<any[]>= undefined;
+
   const getList = async () => {
     
-    let pagedItems: any[] = [];
+    const pagedItems: any[] = [];
     let items: PagedItemCollection<any[]> = undefined;
 
-    do {
-      if(!items) items = await _sp.web.lists.getByTitle(LIST_NAME).items.top(BATCH_SIZE).orderBy("Created", false).getPaged();
-      else items = await items.getNext();
+    // do {
+    //   if(!items) items = await _sp.web.lists.getById(props.list).items.top(BATCH_SIZE).orderBy("Created", false).getPaged();
+    //   else items = await items.getNext();
 
-      if ( items.results.length > 0 ) {
-        pagedItems = pagedItems.concat(items.results);
-      }
-    } while (items.hasNext);  
+    //   if ( items.results.length > 0 ) {
+    //     pagedItems = pagedItems.concat(items.results);
+    //   }
+    // } while (items.hasNext);  
+
+    items = await _sp.web.lists.getById(props.list).items.top(BATCH_SIZE).orderBy("Created", false).getPaged();
+
+    if( items.results.length > 0 ) {
+      console.log(items)
+      nextPageUrl = items
+      
+      
+      items.results.map(async (item) => {
+        pagedItems.push(item);
+
+      })
+      
+      console.log(items.results)
+    }
 
     
     setRequestList((pagedItems).map((item) => {
@@ -225,12 +244,13 @@ const ScwAdmin = (props: IScwAdminProps) => {
   
 
   useEffect(() => {
-    
-
+    console.log("List",props.list);
+    if (props.list && props.list !== '') {
       getList();
+    }
 
 
-  }, [step])
+  }, [step, props])
 
   const theme = getTheme();
 
@@ -280,6 +300,10 @@ const ScwAdmin = (props: IScwAdminProps) => {
     setSelectedRowData(item);
   }
 
+  const startIndex:number = (page - 1) * 100;
+  const endIndex: number = Math.min(startIndex + 100, requestList.length);
+
+  const displayItemsPerPage = requestList.slice(startIndex, endIndex);
 
 
   const scrollStyles = mergeStyleSets ({
@@ -410,6 +434,16 @@ const ScwAdmin = (props: IScwAdminProps) => {
     // }
     
   }
+
+  const getNext = (e: any):void => {
+    console.log("hello", e)
+    console.log(nextPageUrl)
+
+  
+  // const getNextPage = (page: number):void  =>  {
+  //   console.log(page);
+  //   setPage(page)
+  // } 
   
   const sectionStackTokens: IStackTokens = { childrenGap: 10 };
 
@@ -428,10 +462,21 @@ const ScwAdmin = (props: IScwAdminProps) => {
       <>
         <h2>SCW communities requests</h2>
         <h3>Total Items {requestList.length}</h3>
+        <div>
+          <button onClick={getNext}>Next</button>
+        {/* <Pagination
+                  currentPage={1}
+                  totalPages={Math.ceil(requestList.length /100)} 
+                  onChange={(page) => getPage(page)}
+                  limiter={3} // Optional - default value 3
+                  hideFirstPageJump // Optional
+                  hideLastPageJump // Optional
+              /> */}
+        </div>
           <ScrollablePane scrollbarVisibility= { ScrollbarVisibility.auto} styles= { scrollablePaneStyles} >
             <DetailsList 
               styles={ headerStyle }
-              items={ requestList }
+              items={ displayItemsPerPage}
               columns ={ columns }
               layoutMode={ DetailsListLayoutMode.justified }
               onRenderRow={ _onRenderRow }
@@ -479,8 +524,6 @@ const ScwAdmin = (props: IScwAdminProps) => {
   )
 
 
+  }
 }
-
-export default ScwAdmin
-
-
+export default ScwAdmin;
