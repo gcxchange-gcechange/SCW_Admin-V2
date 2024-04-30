@@ -182,33 +182,26 @@ const ScwAdmin = (props: IScwAdminProps) => {
     setCurrentStep(previousPage);
 
   }
- let nextPageUrl:PagedItemCollection<any[]>= undefined;
+  let nextPageUrl:PagedItemCollection<any[]>= undefined;
+  let items: PagedItemCollection<any[]> = undefined;
+
 
   const getList = async () => {
     
-    const pagedItems: any[] = [];
-    let items: PagedItemCollection<any[]> = undefined;
+    let pagedItems: any[] = [];
+  
+    // const items2 = await _sp.web.lists.getById(props.list).items.getAll();
+    // console.log("all",items2);
 
-    // do {
-    //   if(!items) items = await _sp.web.lists.getById(props.list).items.top(BATCH_SIZE).orderBy("Created", false).getPaged();
-    //   else items = await items.getNext();
+   items = await _sp.web.lists.getById(props.list).items.top(BATCH_SIZE).orderBy("Created", false).getPaged();
 
-    //   if ( items.results.length > 0 ) {
-    //     pagedItems = pagedItems.concat(items.results);
-    //   }
-    // } while (items.hasNext);  
+   
 
-    items = await _sp.web.lists.getById(props.list).items.top(BATCH_SIZE).orderBy("Created", false).getPaged();
 
     if( items.results.length > 0 ) {
       console.log(items)
-      nextPageUrl = items
-      
-      
-      items.results.map(async (item) => {
-        pagedItems.push(item);
-
-      })
+     nextPageUrl = items
+     pagedItems = pagedItems.concat(items.results);
       
       console.log(items.results)
     }
@@ -239,8 +232,19 @@ const ScwAdmin = (props: IScwAdminProps) => {
       }
 
     }))
-     
-  };   
+
+     getNextPage(nextPageUrl)
+  };  
+  
+
+    const getNextPage = async (nextPageUrl:any ):Promise<void> => {
+      console.log("NPU",nextPageUrl)
+      if (nextPageUrl.hasNext ) {
+        items = await items.getNext();
+        console.log(items);
+
+      }
+  } 
   
 
   useEffect(() => {
@@ -435,11 +439,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
     
   }
 
-  const getNext = (e: any):void => {
-    console.log("hello", e)
-    console.log(nextPageUrl)
-
-  
+ 
   // const getNextPage = (page: number):void  =>  {
   //   console.log(page);
   //   setPage(page)
@@ -463,7 +463,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
         <h2>SCW communities requests</h2>
         <h3>Total Items {requestList.length}</h3>
         <div>
-          <button onClick={getNext}>Next</button>
+          <button onClick={() => getNextPage(nextPageUrl)}>Next</button>
         {/* <Pagination
                   currentPage={1}
                   totalPages={Math.ceil(requestList.length /100)} 
@@ -523,7 +523,5 @@ const ScwAdmin = (props: IScwAdminProps) => {
     
   )
 
-
-  }
 }
 export default ScwAdmin;
