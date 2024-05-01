@@ -6,4 +6,5 @@ export interface IScwAdminProps {
   environmentMessage: string;
   hasTeamsContext: boolean;
   context: WebPartContext;
+  list: string;
 }

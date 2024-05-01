@@ -12,11 +12,13 @@ import { IReadonlyTheme } from '@microsoft/sp-component-base';
 import * as strings from 'ScwAdminWebPartStrings';
 import ScwAdmin from './components/ScwAdmin';
 import { IScwAdminProps } from './components/IScwAdminProps';
-// import { getSP } from '../../pnpjsConfig';
+import { PropertyFieldListPickerOrderBy, PropertyFieldListPicker } from '@pnp/spfx-property-controls/lib/PropertyFieldListPicker';
+import { getSP } from '../../pnpjsConfig';
 
 
 export interface IScwAdminWebPartProps {
   description: string;
+  list: string;
 }
 
 export default class ScwAdminWebPart extends BaseClientSideWebPart<IScwAdminWebPartProps> {
@@ -33,6 +35,7 @@ export default class ScwAdminWebPart extends BaseClientSideWebPart<IScwAdminWebP
         environmentMessage: this._environmentMessage,
         hasTeamsContext: !!this.context.sdks.microsoftTeams,
         context: this.context,
+        list: this.properties.list
 
       }
     );
@@ -43,11 +46,9 @@ export default class ScwAdminWebPart extends BaseClientSideWebPart<IScwAdminWebP
   protected async onInit(): Promise<void> {
     this._environmentMessage = this._getEnvironmentMessage();
    
-   return  super.onInit();
+    await super.onInit();
+    getSP(this.context);
 
-    //Initialize our _sp object that we can then use in other packages without having to pass around the context.
-    //  Check out pnpjsConfig.ts for an example of a project setup file.
-  
   }
 
 
@@ -117,6 +118,19 @@ export default class ScwAdminWebPart extends BaseClientSideWebPart<IScwAdminWebP
               groupFields: [
                 PropertyPaneTextField('description', {
                   label: strings.DescriptionFieldLabel
+                }),
+                PropertyFieldListPicker('list', {
+                  label: 'Select a list',
+                  selectedList: this.properties.list,
+                  includeHidden: false,
+                  orderBy: PropertyFieldListPickerOrderBy.Title,
+                  disabled: false,
+                  onPropertyChange: this.onPropertyPaneFieldChanged.bind(this),
+                  properties: this.properties,
+                  context: this.context as any,
+                  onGetErrorMessage: null,
+                  deferredValidationTime: 0,
+                  key: 'listPickerFieldId'
                 })
               ]
             }
@@ -126,3 +140,4 @@ export default class ScwAdminWebPart extends BaseClientSideWebPart<IScwAdminWebP
     };
   }
 }
+

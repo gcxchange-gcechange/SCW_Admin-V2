@@ -65,7 +65,6 @@ export interface ISCWList {
 
 const ScwAdmin = (props: IScwAdminProps) => {
 
-  const LIST_NAME: string = 'Request';
   const _sp:SPFI = getSP(props.context);
   const BATCH_SIZE = 1000;
 
@@ -188,7 +187,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
     let items: PagedItemCollection<any[]> = undefined;
 
     do {
-      if(!items) items = await _sp.web.lists.getByTitle(LIST_NAME).items.select(
+      if(!items) items = await _sp.web.lists.getById(props.list).items.select(
         "ID",
         "Title",
         "SpaceNameFR", 
@@ -451,11 +450,39 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
   const displayItemsPerPage = requestList.slice(startIndex, endIndex);
 
-  const searchItemsDisplay =  searchInput ? displayItemsPerPage.filter(item => 
-    Object.values(item).some(val => 
-        typeof val === 'string' && val.toLowerCase().includes(searchInput.toLowerCase())
+  // const searchItems = displayItemsPerPage.map((item) => {
+  //   return {
+  //     id: item.id, 
+  //     spaceName: item.spaceName,
+  //     spaceNameFr: item.spaceNameFr,
+  //     owner: item.owner1,
+  //     requestorEmail: item.requesterEmail,
+  //     requestorName: item.requesterName
+
+  //   }
+  // })
+
+  //console.log("SI",searchItems)
+
+  const searchItemsDisplay = searchInput 
+  ? displayItemsPerPage.filter(item => 
+      Object.entries(item).some(([key, val]) => 
+          ['id', 'spaceName', 'spaceNameFr', 'owner1', 'requesterEmail', 'requesterName']
+          .includes(key) &&
+          val.toString().toLowerCase().includes(searchInput.toLowerCase())
+      )
     )
-  ) : displayItemsPerPage
+    : displayItemsPerPage;
+
+console.log(searchItemsDisplay);
+
+
+  // const searchItemsDisplay =  searchInput ? displayItemsPerPage.filter(item => 
+
+  //   Object.values(item).some(val => 
+  //       typeof val === 'string' && val.toLowerCase().includes(searchInput.toLowerCase())
+  //   )
+  // ) : displayItemsPerPage
 
 
 
