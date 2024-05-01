@@ -494,7 +494,7 @@ console.log(searchItemsDisplay);
       { step === 1 &&
       <>
         <h2>SCW communities requests</h2>
-        <h3>Total Items {requestList.length}</h3>
+        <h3>Total Items {searchInput? searchItemsDisplay.length : requestList.length}</h3>
               <div className={styles.search}>
                 <span><Icon className={styles.searchIcon} iconName="Search"/></span>
                 <input
