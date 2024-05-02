@@ -58,6 +58,8 @@ export interface ISCWList {
   status: string;
   siteUrl: string;
   comment: string;
+  approvedDate: string;
+
  
 
 }
@@ -165,6 +167,8 @@ const ScwAdmin = (props: IScwAdminProps) => {
       }
    },
     { key: 'Col4', name: 'Created Date', fieldName: 'created', minWidth: 70, maxWidth: 90 },
+    { key: 'Col5', name: 'Approved Date', fieldName: 'approvedDate', minWidth: 70, maxWidth: 90 },
+
   ];
   
 
@@ -213,10 +217,12 @@ const ScwAdmin = (props: IScwAdminProps) => {
         owner1: item.Owner1,
         businessJustification: item.BusinessJustification,
         created: new Date(item.Created).toLocaleDateString("en-CA"),
+        approvedDate: new Date(item.ApprovedDate).toLocaleDateString("en-CA"),
         status: item.Status,
         template: item.TemplateTitle,
         siteUrl: item.SiteUrl,
         comment: item.Comment,
+
       }
 
     }))
@@ -224,11 +230,9 @@ const ScwAdmin = (props: IScwAdminProps) => {
   };   
   
 
-  useEffect(() => {
-    
+  useEffect(() => {    
 
       getList();
-
 
   }, [step])
 
