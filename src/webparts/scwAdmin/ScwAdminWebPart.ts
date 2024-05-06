@@ -130,7 +130,8 @@ export default class ScwAdminWebPart extends BaseClientSideWebPart<IScwAdminWebP
                   context: this.context as any,
                   onGetErrorMessage: null,
                   deferredValidationTime: 0,
-                  key: 'listPickerFieldId'
+                  key: 'listPickerFieldId',
+                  filter: "Hidden eq false and BaseType eq 0"
                 })
               ]
             }
