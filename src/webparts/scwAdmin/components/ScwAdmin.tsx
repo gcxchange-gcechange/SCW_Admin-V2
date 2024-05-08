@@ -245,7 +245,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
       getList();
 
 
-  }, [step])
+  }, [step,props])
 
   const theme = getTheme();
 
