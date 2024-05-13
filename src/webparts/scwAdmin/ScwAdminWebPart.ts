@@ -44,8 +44,7 @@ export default class ScwAdminWebPart extends BaseClientSideWebPart<IScwAdminWebP
   }
 
   protected async onInit(): Promise<void> {
-    this._environmentMessage = this._getEnvironmentMessage();
-   
+    this._environmentMessage = this._getEnvironmentMessage();   
     await super.onInit();
     getSP(this.context);
 

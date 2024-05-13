@@ -1,7 +1,10 @@
+/* eslint-disable dot-notation */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import * as React from 'react';
 import styles from './ScwAdmin.module.scss';
 import { IScwAdminProps } from './IScwAdminProps';
@@ -41,6 +44,19 @@ import { getTheme } from '@fluentui/react/lib/Styling';
 import { HttpClientResponse, IHttpClientOptions, AadHttpClient }  from "@microsoft/sp-http";
 import Complete from './Complete';
 import { Pagination } from "@pnp/spfx-controls-react/lib/pagination";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
+import { FilterMatchMode, PrimeReactProvider } from 'primereact/api';
+import { MultiSelect } from 'primereact/multiselect';
+import { Tag } from 'primereact/tag';
+import { Dropdown } from 'primereact/dropdown';
+import "primeicons/primeicons.css";
+import "primeflex/primeflex.css";
+import "primereact/resources/primereact.css";
+import "primereact/resources/themes/lara-light-indigo/theme.css";
+import { IconField } from "primereact/iconfield";
+import { InputIcon } from "primereact/inputicon";
+import { InputText } from 'primereact/inputtext';
 
 
 export interface ISCWList {
@@ -59,14 +75,13 @@ export interface ISCWList {
   status: string;
   siteUrl: string;
   comment: string;
- 
-
+  approvedDate: string;
 }
 
 const ScwAdmin = (props: IScwAdminProps) => {
 
   const _sp:SPFI = getSP(props.context);
-  const BATCH_SIZE = 1000;
+  const BATCH_SIZE = 500;
 
   const [requestList, setRequestList] = useState< ISCWList [] >( [] );
   const [selectedRowData, setSelectedRowData] = useState<any>();
@@ -76,9 +91,28 @@ const ScwAdmin = (props: IScwAdminProps) => {
   const [isError, setIsError] = useState<number>(0);
   const [searchInput, setSearchInput] = useState("");
   const [page, setPage] = useState<number>(1);
+        const [globalFilterValue, setGlobalFilterValue] = useState("");
 
-  
 
+  const [loading, setLoading] = useState(true);
+  const [filters, setFilters] = useState({
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    id: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    created: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    spaceName: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    status: { value: null, matchMode: FilterMatchMode.EQUALS },
+    template: { value: null, matchMode: FilterMatchMode.IN },
+    approvedDate: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  }); 
+  const onGlobalFilterChange = (e: any): void => {
+    const value = e.target.value;
+    const _filters = { ...filters };
+
+    _filters["global"].value = value;
+
+    setFilters(_filters);
+    setGlobalFilterValue(value);
+  }; 
   const columns: IColumn[] = [
     { key: 'Col0', name: 'ID', fieldName: 'id', minWidth: 40, maxWidth: 80},
     { key: 'Col1', name: 'Community Name', fieldName: 'spaceName', minWidth: 210, maxWidth: 400,  flexGrow: 1, isResizable: true },
@@ -167,7 +201,96 @@ const ScwAdmin = (props: IScwAdminProps) => {
    },
     { key: 'Col4', name: 'Created Date', fieldName: 'created', minWidth: 70, maxWidth: 90 },
   ];
-  
+  const columns2 = [
+    { field: "id", header: "ID" },
+    { field: "spaceName", header: "Community Name" },
+    { field: "template", header: "Template" },
+    { field: "status", header: "Status" },
+    { field: "created", header: "Created Date" },
+    { field: "approvedDate", header: "Approved Date" },
+  ];
+ 
+  // const header = (
+    
+    
+  // );
+// const [templates] = useState(["Generic", "Generic Template", "Default"]);
+// const templateItemTemplate = (option: any) => {
+//   return (
+//     <div>
+//       <span>{option}</span>
+//     </div>
+//   );
+// };
+//   const templateRowFilterTemplate = (options: any) => {
+//     return (
+//       <MultiSelect
+//         value={options.value}
+//         options={templates}
+//         itemTemplate={templateItemTemplate}
+//         onChange={(e) => options.filterApplyCallback(e.value)}
+//         //optionLabel={options.value}
+//         placeholder="Any"
+//         //className="p-column-filter"
+//         maxSelectedLabels={1}
+//         style={{ minWidth: "14rem" }}
+//       />
+//     );
+//   };
+ const getSeverity = (status: string): any => {
+   switch (status) {
+     case "Submitted":
+       return "info";
+     case "Approved":
+       return "success";
+     case "Complete":
+       return "success";
+     case "Site Exists":
+       return "warning";
+     case "No Owner":
+       return "warning";
+     case "Rejected":
+       return "danger";
+     case "Failed":
+       return "danger";
+     default:
+       return null;
+   }
+ };
+  const statusBodyTemplate = (requestList: ISCWList): JSX.Element => {
+    return (
+      <Tag
+        value={requestList.status}
+        severity={getSeverity(requestList.status)}
+      />
+    );
+  };
+  const [statuses] = useState([
+    "Submitted",
+    "Approved",
+    "Complete",
+    "Site Exists",
+    "No Owner",
+    "Rejected",
+    "Failed",
+  ]);
+  const statusItemTemplate = (option: any): JSX.Element => {
+    return <Tag value={option} severity={getSeverity(option)} />;
+  };
+  const statusRowFilterTemplate = (options: any): JSX.Element => {
+    return (
+      <Dropdown
+        value={options.value}
+        options={statuses}
+        onChange={(e) => options.filterApplyCallback(e.value)}
+        itemTemplate={statusItemTemplate}
+        placeholder="Select One"
+        // className="p-column-filter"
+        showClear
+        style={{ minWidth: "12rem" }}
+      />
+    );
+  };
 
  const goToNextStep = (step:any):void => {
     const nextPage = step + 1;
@@ -187,22 +310,30 @@ const ScwAdmin = (props: IScwAdminProps) => {
     let items: PagedItemCollection<any[]> = undefined;
 
     do {
-      if(!items) items = await _sp.web.lists.getById(props.list).items.select(
-        "ID",
-        "Title",
-        "SpaceNameFR", 
-        "SpaceDescription",
-        "SpaceDescriptionFR",
-        "RequesterName",
-        "RequesterEmail",
-        "Members",
-        "Owner1",
-        "BusinessJustification",
-        "Created", 
-        "Status",
-        "TemplateTitle",
-        "SiteUrl",
-        "Comment").top(BATCH_SIZE).orderBy("Status", false).orderBy("Created", false).getPaged();
+      if(!items) items = await _sp.web.lists
+        .getById(props.list)
+        .items.select(
+          "ID",
+          "Title",
+          "SpaceNameFR",
+          "SpaceDescription",
+          "SpaceDescriptionFR",
+          "RequesterName",
+          "RequesterEmail",
+          "Members",
+          "Owner1",
+          "BusinessJustification",
+          "Created",
+          "ApprovedDate",
+          "Status",
+          "TemplateTitle",
+          "SiteUrl",
+          "Comment"
+        )
+        .top(BATCH_SIZE)
+        .orderBy("Status", false)
+        .orderBy("Created", false)
+        .getPaged();
       else items = await items.getNext();
       if ( items.results.length > 0 ) {
         pagedItems = pagedItems.concat(items.results);
@@ -228,23 +359,21 @@ const ScwAdmin = (props: IScwAdminProps) => {
         owner1: item.Owner1,
         businessJustification: item.BusinessJustification,
         created: new Date(item.Created).toLocaleDateString("en-CA"),
+        approvedDate: new Date(item.ApprovedDate).toLocaleDateString("en-CA"),
         status: item.Status,
         template: item.TemplateTitle,
         siteUrl: item.SiteUrl,
         comment: item.Comment,
-      }
+      };
 
     }))
      
   };   
   
 
-  useEffect(() => {
-    
-
+  useEffect(() => {  
       getList();
-
-
+      setLoading(false);
   }, [step,props])
 
   const theme = getTheme();
@@ -447,7 +576,6 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
   const startIndex:number = (page - 1) * 100;
   const endIndex: number = Math.min(startIndex + 100, requestList.length);
-
   const displayItemsPerPage = requestList.slice(startIndex, endIndex);
 
   // const searchItems = displayItemsPerPage.map((item) => {
@@ -467,7 +595,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
   const searchItemsDisplay = searchInput 
   ? displayItemsPerPage.filter(item => 
       Object.entries(item).some(([key, val]) => 
-          ['id', 'spaceName', 'spaceNameFr', 'owner1', 'requesterEmail', 'requesterName']
+          ['id', 'spaceName', 'spaceNameFr', 'owner1', 'requesterEmail', 'requesterName','status']
           .includes(key) &&
           val.toString().toLowerCase().includes(searchInput.toLowerCase())
       )
@@ -483,88 +611,206 @@ console.log(searchItemsDisplay);
   //       typeof val === 'string' && val.toLowerCase().includes(searchInput.toLowerCase())
   //   )
   // ) : displayItemsPerPage
-
+const renderHeader = (): JSX.Element => {
+  return (
+    <>
+      {" "}
+      <div className="flex justify-content-start">
+        <h2>SCW communities requests</h2>
+      </div>      
+      <div className="flex justify-content-end">
+        <IconField iconPosition="left">
+          <InputIcon className="pi pi-search" />
+          <InputText
+            value={globalFilterValue}
+            onChange={onGlobalFilterChange}
+            placeholder="Keyword Search"
+          />
+        </IconField>
+      </div>
+    </>
+  );
+};
+const header = renderHeader();
 
 
   return (
     <>
-     
-    <div className={styles.container}>
-      
-      { step === 1 &&
-      <>
-        <h2>SCW communities requests</h2>
-        <h3>Total Items {searchInput? searchItemsDisplay.length : requestList.length}</h3>
-              <div className={styles.search}>
-                <span><Icon className={styles.searchIcon} iconName="Search"/></span>
-                <input
-                  type="text"
-                  className={styles.searchInput}
-                  placeholder='Search'
-                  onChange={handleSearchInput}
-                  value={searchInput}
-                />
-              </div>
-            <div>
-              <Pagination
-                  currentPage={1}
-                  totalPages={searchInput ? Math.ceil(searchItemsDisplay.length /100) : Math.ceil(requestList.length /100)} 
-                  onChange={(page) => getPage(page)}
-                  limiter={3} // Optional - default value 3
-                  hideFirstPageJump // Optional
-                  hideLastPageJump // Optional
+      <div className={styles.container}>
+        {step === 1 && (
+          <>
+            {/* <div className={styles.search}>
+              <span>
+                <Icon className={styles.searchIcon} iconName="Search" />
+              </span>
+              <input
+                type="text"
+                className={styles.searchInput}
+                placeholder="Search"
+                onChange={handleSearchInput}
+                value={searchInput}
               />
             </div>
-          <ScrollablePane scrollbarVisibility= { ScrollbarVisibility.auto} styles= { scrollablePaneStyles} >
-            <DetailsList 
-              styles={ headerStyle }
-              items={searchItemsDisplay}
-              columns ={ columns }
-              layoutMode={ DetailsListLayoutMode.justified }
-              onRenderRow={ _onRenderRow }
-              isHeaderVisible={true}
-              onRenderDetailsHeader={ onRenderDetailsHeader}
-              onItemInvoked={onItemInvoked}
-              
-            />
-          </ScrollablePane>
-      </>
-      }
+            <div>
+              <Pagination
+                currentPage={1}
+                totalPages={
+                  searchInput
+                    ? Math.ceil(searchItemsDisplay.length / 100)
+                    : Math.ceil(requestList.length / 100)
+                }
+                onChange={(page) => getPage(page)}
+                limiter={3} // Optional - default value 3
+                hideFirstPageJump // Optional
+                hideLastPageJump // Optional
+              />
+            </div>
+            <ScrollablePane
+              scrollbarVisibility={ScrollbarVisibility.auto}
+              styles={scrollablePaneStyles}>
+              <DetailsList
+                styles={headerStyle}
+                items={searchItemsDisplay}
+                columns={columns}
+                layoutMode={DetailsListLayoutMode.justified}
+                onRenderRow={_onRenderRow}
+                isHeaderVisible={true}
+                onRenderDetailsHeader={onRenderDetailsHeader}
+                onItemInvoked={onItemInvoked}
+              />
+            </ScrollablePane> */}
 
+            <section className={`${styles.dataTable}`}>
+              <div className={`${styles.card}`}>
+                <PrimeReactProvider>
+                  <DataTable
+                    value={requestList}
+                    paginator
+                    rows={5}
+                    rowsPerPageOptions={[5, 10, 25, 50, 500]}
+                    paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} records"
+                    dataKey="id"
+                    loading={loading}
+                    filters={filters}
+                    filterDisplay="row"
+                    globalFilterFields={[
+                      "id",
+                      "status",
+                      "created",
+                      "spaceName",
+                      "requesterName",
+                      "requesterEmail",
+                      "template",
+                      "approvedDate",
+                    ]}
+                    emptyMessage="No data found."
+                    scrollable
+                    sortField="created"
+                    sortOrder={-1}
+                    removableSort
+                    stripedRows
+                    header={header}
+                    selectionMode="single"
+                    selection={selectedRowData}
+                    onSelectionChange={(e: any) => setSelectedRowData(e.value)}
+                    onRowSelect={onItemInvoked}>
+                    {columns2.map((col: any, i: any) =>
+                      col.field === "status" ? (
+                        <Column
+                          sortable
+                          field="status"
+                          header="Status"
+                          showFilterMenu={false}
+                          //filterMenuStyle={{ width: "14rem" }}
+                          style={{ minWidth: "12rem" }}
+                          body={statusBodyTemplate}
+                          filter
+                          filterElement={statusRowFilterTemplate}
+                        />
+                      ) : col.field === "created" ||
+                        col.field === "approvedDate" ? (
+                        <Column
+                          sortable
+                          key={col.field}
+                          field={col.field}
+                          header={col.header}
+                          style={{ minWidth: "12rem" }}
+                          filter
+                          filterPlaceholder="Search"
+                          filterMenuStyle={{ minWidth: "25rem" }}
+                        />
+                      ) : (
+                        <Column
+                          sortable
+                          key={col.field}
+                          field={col.field}
+                          header={col.header}
+                        />
+                      )
+                    )}
+                  </DataTable>
+                </PrimeReactProvider>
+              </div>
+            </section>
+          </>
+        )}
 
-      { isLoading === true ?
-        (<Spinner size={SpinnerSize.large} />) 
+        {isLoading === true ? (
+          <Spinner size={SpinnerSize.large} />
+        ) : (
+          step === 2 && (
+            <>
+              <ItemFormDetails
+                selectedRowData={selectedRowData}
+                confirmationComments={confirmationComments}
+                context={props.context}
+                decisionChoiceCallback={decisionChoiceCallback}
+                requestList={requestList}
+              />
 
-        : step === 2 &&
-        <>
-          <ItemFormDetails  selectedRowData={selectedRowData} confirmationComments={confirmationComments} context= {props.context} decisionChoiceCallback={decisionChoiceCallback} requestList={requestList}/>
-            
-            <Stack horizontal horizontalAlign="center" tokens={sectionStackTokens} styles={stackStyles}>
-
-            { selectedRowData.status === "Submitted" 
-              ?
-              <>
-              <DefaultButton styles={buttonStyle} text='Previous' onClick={() => goToPreviousStep(step)}/> 
-              <PrimaryButton text={'Submit decision'} onClick={onConfirm}/>
-              </>
-              :
-              <PrimaryButton text="Back to Communities List Page" onClick={() => goToPreviousStep(step)}/>
-            }
-              
-            </Stack>
-        </>
-      }
-      { showModal && 
-       <Complete data={ selectedRowData.id } spaceName={selectedRowData.spaceName} spaceNameFr={ selectedRowData.spaceNameFr } status={ selectedRowData.decisionStatus } comment={ selectedRowData.comment} showModal={showModal} onClose={closeModal} isError={isError} /> 
-      }
-
-  
-    </div>
-      
-      
+              <Stack
+                horizontal
+                horizontalAlign="center"
+                tokens={sectionStackTokens}
+                styles={stackStyles}>
+                {selectedRowData.status === "Submitted" ? (
+                  <>
+                    <DefaultButton
+                      styles={buttonStyle}
+                      text="Previous"
+                      onClick={() => goToPreviousStep(step)}
+                    />
+                    <PrimaryButton
+                      text={"Submit decision"}
+                      onClick={onConfirm}
+                    />
+                  </>
+                ) : (
+                  <PrimaryButton
+                    text="Back to Communities List Page"
+                    onClick={() => goToPreviousStep(step)}
+                  />
+                )}
+              </Stack>
+            </>
+          )
+        )}
+        {showModal && (
+          <Complete
+            data={selectedRowData.id}
+            spaceName={selectedRowData.spaceName}
+            spaceNameFr={selectedRowData.spaceNameFr}
+            status={selectedRowData.decisionStatus}
+            comment={selectedRowData.comment}
+            showModal={showModal}
+            onClose={closeModal}
+            isError={isError}
+          />
+        )}
+      </div>
     </>
-    
-  )
+  );
 
 
 }
