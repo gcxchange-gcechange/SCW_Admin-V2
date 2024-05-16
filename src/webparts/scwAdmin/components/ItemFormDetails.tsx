@@ -119,6 +119,7 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
                     <Stack wrap {...columnProps}>
                         <TextField label="Request id:" styles= {customFieldStyles} underlined disabled defaultValue={selectedRowData.id} />
                         <TextField label="Status:" styles= {customFieldStyles} underlined disabled prefix={renderIcon()} defaultValue={selectedItem[0].status}/>
+                        <TextField label="Approved Date:" styles= {customFieldStyles} underlined disabled defaultValue={selectedRowData.approvedDate ? selectedRowData.approvedDate: "Not yet created"} />
                         { selectedItem[0].status !== 'Submitted' && 
                             <TextField styles= {customFieldStyles} label="Decision comments" underlined multiline rows={5} disabled defaultValue={selectedRowData.comment}/>
                         }
@@ -126,8 +127,7 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
                         <TextField label="Community sharepoint url:" styles= {customFieldStyles} underlined disabled defaultValue={selectedRowData.siteUrl ? selectedRowData.siteUrl : "Not yet created"} />
                     </Stack>
                 </Stack>
-            </div>
-             
+            </div>             
             <div className={styles.formContainer}>
                 <TextField styles={textFieldBackground} label="Community purpose" readOnly defaultValue={ selectedRowData.businessJustification } multiline rows={5}/>
                 <TextField styles={textFieldBackground} label="English community name" readOnly defaultValue={selectedRowData.spaceName} multiline rows={2}/>
