@@ -204,6 +204,11 @@ const ScwAdmin = (props: IScwAdminProps) => {
       if(item.Comment === null ) {
         item.Comment = ''
       }
+      // if(item.ApprovedDate
+      //   === null ) {
+      //   item.ApprovedDate
+      //   = ''
+      // }
 
       return {
         id: item.ID,
@@ -217,7 +222,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
         owner1: item.Owner1,
         businessJustification: item.BusinessJustification,
         created: new Date(item.Created).toLocaleDateString("en-CA"),
-        approvedDate: new Date(item.ApprovedDate).toLocaleDateString("en-CA"),
+        approvedDate: item.ApprovedDate?new Date(item.ApprovedDate).toLocaleDateString("en-CA"):"Not yet created",
         status: item.Status,
         template: item.TemplateTitle,
         siteUrl: item.SiteUrl,

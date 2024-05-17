@@ -144,7 +144,6 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
                     showHiddenInUI={false}
                     principalTypes={[PrincipalType.User]}
                 />
-
             </div>
             {   selectedItem[0].status === 'Submitted' &&
                 <>
