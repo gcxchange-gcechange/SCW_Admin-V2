@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-floating-promises */
@@ -41,6 +42,13 @@ import { getTheme } from '@fluentui/react/lib/Styling';
 import { HttpClientResponse, IHttpClientOptions, AadHttpClient }  from "@microsoft/sp-http";
 import Complete from './Complete';
 import { Pagination } from "@pnp/spfx-controls-react/lib/pagination";
+import {
+  Dropdown,
+  DropdownMenuItemType,
+  IDropdownStyles,
+  IDropdownOption,
+} from "@fluentui/react/lib/Dropdown";
+
 
 
 export interface ISCWList {
@@ -74,6 +82,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [isError, setIsError] = useState<number>(0);
+  const [filterInput, setFilterInput] = useState<IDropdownOption>();  
   const [searchInput, setSearchInput] = useState("");
   const [page, setPage] = useState<number>(1);
 
@@ -428,9 +437,32 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
   const handleSearchInput = (event: React.ChangeEvent<HTMLInputElement> ):void => {
     console.log("What DId I type",event.target.value)
+        setPage(1);
+
     setSearchInput(event.target.value.toLowerCase());
+    setPage(1);
 
   }
+  
+// const handleFilter = (
+//   event: React.FormEvent<HTMLDivElement>,
+//   item?: IDropdownOption
+// ) => {
+//   if (item) {
+//     const updatedSelectedItems = item.selected
+//       ? [...filterInput, item]
+//       : filterInput.filter((i) => i.key !== item.key);
+//     setFilterInput(updatedSelectedItems);
+//     console.log(updatedSelectedItems);
+//   }
+// };
+  const handleFilter = (
+    event: React.FormEvent<HTMLDivElement>,
+    option?: IDropdownOption
+  ) => {
+    setFilterInput(option);
+  };
+
 
   const getPage = (page: number):void  =>  {
     console.log(page);
@@ -448,7 +480,8 @@ const ScwAdmin = (props: IScwAdminProps) => {
   const startIndex:number = (page - 1) * 100;
   const endIndex: number = Math.min(startIndex + 100, requestList.length);
 
-  const displayItemsPerPage = requestList.slice(startIndex, endIndex);
+  //let searchItemsDisplay = requestList.slice(startIndex, endIndex);
+
 
   // const searchItems = displayItemsPerPage.map((item) => {
   //   return {
@@ -464,17 +497,34 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
   //console.log("SI",searchItems)
 
-  const searchItemsDisplay = searchInput 
-  ? displayItemsPerPage.filter(item => 
-      Object.entries(item).some(([key, val]) => 
-          ['id', 'spaceName', 'spaceNameFr', 'owner1', 'requesterEmail', 'requesterName']
-          .includes(key) &&
-          val.toString().toLowerCase().includes(searchInput.toLowerCase())
+  const searchItemsDisplay = searchInput
+    ? requestList.filter((item) =>
+        Object.entries(item).some(
+          ([key, val]) =>
+            [
+              "id",
+              "spaceName",
+              "spaceNameFr",
+              "owner1",
+              "requesterEmail",
+              "requesterName",
+            ].includes(key) &&
+            val.toString().toLowerCase().includes(searchInput.toLowerCase())
+        )
       )
-    )
-    : displayItemsPerPage;
+    : filterInput
+    ? requestList.filter((item) =>
+        Object.entries(item).some(
+          ([key, val]) =>
+            ["status"].includes(key) &&
+            val.toString().toLowerCase().includes(filterInput.key)
+        )
+      )
+    : requestList;
 
 console.log(searchItemsDisplay);
+console.log(filterInput);
+const displayItemsPerPage = searchItemsDisplay.slice(startIndex, endIndex);
 
 
   // const searchItemsDisplay =  searchInput ? displayItemsPerPage.filter(item => 
@@ -483,88 +533,147 @@ console.log(searchItemsDisplay);
   //       typeof val === 'string' && val.toLowerCase().includes(searchInput.toLowerCase())
   //   )
   // ) : displayItemsPerPage
+const dropdownStyles: Partial<IDropdownStyles> = {
+  dropdown: { width: 200 },
+};
 
+const options: IDropdownOption[] = [
+  {
+    key: "status",
+    text: "Status",
+    itemType: DropdownMenuItemType.Header,
+  },
+  { key: "submitted", text: "Submitted" },
+  { key: "approved", text: "Approved" },
+  { key: "complete", text: "Complete" },
+  { key: "site exists", text: "Site Exists" },
+  { key: "no owner", text: "No Owner" },
+  { key: "rejected", text: "Rejected" },
+  { key: "failed", text: "Failed" },
 
+  { key: "divider_1", text: "-", itemType: DropdownMenuItemType.Divider },
+  {
+    key: "vegetablesHeader",
+    text: "Vegetables",
+    itemType: DropdownMenuItemType.Header,
+  },
+  { key: "broccoli", text: "Broccoli" },
+  { key: "carrot", text: "Carrot" },
+  { key: "lettuce", text: "Lettuce" },
+];
+
+const stackTokens: IStackTokens = { childrenGap: 20 };
 
   return (
     <>
-     
-    <div className={styles.container}>
-      
-      { step === 1 &&
-      <>
-        <h2>SCW communities requests</h2>
-        <h3>Total Items {searchInput? searchItemsDisplay.length : requestList.length}</h3>
-              <div className={styles.search}>
-                <span><Icon className={styles.searchIcon} iconName="Search"/></span>
-                <input
-                  type="text"
-                  className={styles.searchInput}
-                  placeholder='Search'
-                  onChange={handleSearchInput}
-                  value={searchInput}
-                />
-              </div>
-            <div>
-              <Pagination
-                  currentPage={1}
-                  totalPages={searchInput ? Math.ceil(searchItemsDisplay.length /100) : Math.ceil(requestList.length /100)} 
-                  onChange={(page) => getPage(page)}
-                  limiter={3} // Optional - default value 3
-                  hideFirstPageJump // Optional
-                  hideLastPageJump // Optional
+      <div className={styles.container}>
+        {step === 1 && (
+          <>
+            <h2>SCW communities requests</h2>
+            <h3>Total Items {searchItemsDisplay.length}</h3>
+            <div className={styles.search}>
+              <span>
+                <Icon className={styles.searchIcon} iconName="Search" />
+              </span>
+              <input
+                type="text"
+                className={styles.searchInput}
+                placeholder="Search"
+                onChange={handleSearchInput}
+                value={searchInput}
               />
             </div>
-          <ScrollablePane scrollbarVisibility= { ScrollbarVisibility.auto} styles= { scrollablePaneStyles} >
-            <DetailsList 
-              styles={ headerStyle }
-              items={searchItemsDisplay}
-              columns ={ columns }
-              layoutMode={ DetailsListLayoutMode.justified }
-              onRenderRow={ _onRenderRow }
-              isHeaderVisible={true}
-              onRenderDetailsHeader={ onRenderDetailsHeader}
-              onItemInvoked={onItemInvoked}
-              
-            />
-          </ScrollablePane>
-      </>
-      }
-
-
-      { isLoading === true ?
-        (<Spinner size={SpinnerSize.large} />) 
-
-        : step === 2 &&
-        <>
-          <ItemFormDetails  selectedRowData={selectedRowData} confirmationComments={confirmationComments} context= {props.context} decisionChoiceCallback={decisionChoiceCallback} requestList={requestList}/>
-            
-            <Stack horizontal horizontalAlign="center" tokens={sectionStackTokens} styles={stackStyles}>
-
-            { selectedRowData.status === "Submitted" 
-              ?
-              <>
-              <DefaultButton styles={buttonStyle} text='Previous' onClick={() => goToPreviousStep(step)}/> 
-              <PrimaryButton text={'Submit decision'} onClick={onConfirm}/>
-              </>
-              :
-              <PrimaryButton text="Back to Communities List Page" onClick={() => goToPreviousStep(step)}/>
-            }
-              
+            <div>
+              <Pagination
+                currentPage={page}
+                totalPages={Math.ceil(searchItemsDisplay.length / 100)}
+                onChange={(page) => getPage(page)}
+                limiter={3} // Optional - default value 3
+                hideFirstPageJump // Optional
+                hideLastPageJump // Optional
+              />
+            </div>
+            <Stack horizontal={true} tokens={stackTokens}>
+              <Dropdown
+                placeholder="Select options"
+                label="Filter By"
+                options={options}
+                styles={dropdownStyles}
+                onChange={handleFilter}
+              />
             </Stack>
-        </>
-      }
-      { showModal && 
-       <Complete data={ selectedRowData.id } spaceName={selectedRowData.spaceName} spaceNameFr={ selectedRowData.spaceNameFr } status={ selectedRowData.decisionStatus } comment={ selectedRowData.comment} showModal={showModal} onClose={closeModal} isError={isError} /> 
-      }
+            <ScrollablePane
+              scrollbarVisibility={ScrollbarVisibility.auto}
+              styles={scrollablePaneStyles}>
+              <DetailsList
+                styles={headerStyle}
+                items={displayItemsPerPage}
+                columns={columns}
+                layoutMode={DetailsListLayoutMode.justified}
+                onRenderRow={_onRenderRow}
+                isHeaderVisible={true}
+                onRenderDetailsHeader={onRenderDetailsHeader}
+                onItemInvoked={onItemInvoked}
+              />
+            </ScrollablePane>
+          </>
+        )}
 
-  
-    </div>
-      
-      
+        {isLoading === true ? (
+          <Spinner size={SpinnerSize.large} />
+        ) : (
+          step === 2 && (
+            <>
+              <ItemFormDetails
+                selectedRowData={selectedRowData}
+                confirmationComments={confirmationComments}
+                context={props.context}
+                decisionChoiceCallback={decisionChoiceCallback}
+                requestList={requestList}
+              />
+
+              <Stack
+                horizontal
+                horizontalAlign="center"
+                tokens={sectionStackTokens}
+                styles={stackStyles}>
+                {selectedRowData.status === "Submitted" ? (
+                  <>
+                    <DefaultButton
+                      styles={buttonStyle}
+                      text="Previous"
+                      onClick={() => goToPreviousStep(step)}
+                    />
+                    <PrimaryButton
+                      text={"Submit decision"}
+                      onClick={onConfirm}
+                    />
+                  </>
+                ) : (
+                  <PrimaryButton
+                    text="Back to Communities List Page"
+                    onClick={() => goToPreviousStep(step)}
+                  />
+                )}
+              </Stack>
+            </>
+          )
+        )}
+        {showModal && (
+          <Complete
+            data={selectedRowData.id}
+            spaceName={selectedRowData.spaceName}
+            spaceNameFr={selectedRowData.spaceNameFr}
+            status={selectedRowData.decisionStatus}
+            comment={selectedRowData.comment}
+            showModal={showModal}
+            onClose={closeModal}
+            isError={isError}
+          />
+        )}
+      </div>
     </>
-    
-  )
+  );
 
 
 }
