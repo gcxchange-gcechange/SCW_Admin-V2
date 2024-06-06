@@ -437,8 +437,6 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
   const handleSearchInput = (event: React.ChangeEvent<HTMLInputElement> ):void => {
     console.log("What DId I type",event.target.value)
-        setPage(1);
-
     setSearchInput(event.target.value.toLowerCase());
     setPage(1);
 
@@ -461,8 +459,9 @@ const ScwAdmin = (props: IScwAdminProps) => {
     option?: IDropdownOption
   ) => {
     setFilterInput(option);
-  };
+    setPage(1);
 
+  };
 
   const getPage = (page: number):void  =>  {
     console.log(page);
@@ -511,20 +510,21 @@ const ScwAdmin = (props: IScwAdminProps) => {
             ].includes(key) &&
             val.toString().toLowerCase().includes(searchInput.toLowerCase())
         )
-      )
-    : filterInput
-    ? requestList.filter((item) =>
-        Object.entries(item).some(
-          ([key, val]) =>
-            ["status"].includes(key) &&
-            val.toString().toLowerCase().includes(filterInput.key)
-        )
-      )
+      )    
     : requestList;
 
+const filterItemsDisplay = filterInput
+  ? searchItemsDisplay.filter((item) =>
+      Object.entries(item).some(
+        ([key, val]) =>
+          ["status"].includes(key) &&
+          val.toString().toLowerCase().includes(filterInput.key)
+      )
+    )
+  : searchItemsDisplay;
 console.log(searchItemsDisplay);
 console.log(filterInput);
-const displayItemsPerPage = searchItemsDisplay.slice(startIndex, endIndex);
+const displayItemsPerPage = filterItemsDisplay.slice(startIndex, endIndex);
 
 
   // const searchItemsDisplay =  searchInput ? displayItemsPerPage.filter(item => 
@@ -538,11 +538,7 @@ const dropdownStyles: Partial<IDropdownStyles> = {
 };
 
 const options: IDropdownOption[] = [
-  {
-    key: "status",
-    text: "Status",
-    itemType: DropdownMenuItemType.Header,
-  },
+  {key:"",text:"Select a status"},
   { key: "submitted", text: "Submitted" },
   { key: "approved", text: "Approved" },
   { key: "complete", text: "Complete" },
@@ -550,16 +546,6 @@ const options: IDropdownOption[] = [
   { key: "no owner", text: "No Owner" },
   { key: "rejected", text: "Rejected" },
   { key: "failed", text: "Failed" },
-
-  { key: "divider_1", text: "-", itemType: DropdownMenuItemType.Divider },
-  {
-    key: "vegetablesHeader",
-    text: "Vegetables",
-    itemType: DropdownMenuItemType.Header,
-  },
-  { key: "broccoli", text: "Broccoli" },
-  { key: "carrot", text: "Carrot" },
-  { key: "lettuce", text: "Lettuce" },
 ];
 
 const stackTokens: IStackTokens = { childrenGap: 20 };
@@ -570,7 +556,7 @@ const stackTokens: IStackTokens = { childrenGap: 20 };
         {step === 1 && (
           <>
             <h2>SCW communities requests</h2>
-            <h3>Total Items {searchItemsDisplay.length}</h3>
+            <h3>Total Items {filterItemsDisplay.length}</h3>
             <div className={styles.search}>
               <span>
                 <Icon className={styles.searchIcon} iconName="Search" />
@@ -586,7 +572,7 @@ const stackTokens: IStackTokens = { childrenGap: 20 };
             <div>
               <Pagination
                 currentPage={page}
-                totalPages={Math.ceil(searchItemsDisplay.length / 100)}
+                totalPages={Math.ceil(filterItemsDisplay.length / 100)}
                 onChange={(page) => getPage(page)}
                 limiter={3} // Optional - default value 3
                 hideFirstPageJump // Optional
@@ -595,8 +581,8 @@ const stackTokens: IStackTokens = { childrenGap: 20 };
             </div>
             <Stack horizontal={true} tokens={stackTokens}>
               <Dropdown
-                placeholder="Select options"
-                label="Filter By"
+                placeholder="Select a status"
+                label="Filter By Status"
                 options={options}
                 styles={dropdownStyles}
                 onChange={handleFilter}
