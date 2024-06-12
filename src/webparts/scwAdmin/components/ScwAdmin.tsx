@@ -76,9 +76,6 @@ export interface ISCWList {
   siteUrl: string;
   comment: string;
   approvedDate: string;
-
- 
-
 }
 
 const ScwAdmin = (props: IScwAdminProps) => {
@@ -200,9 +197,22 @@ const ScwAdmin = (props: IScwAdminProps) => {
             );
           default:
         }
-      }
-   },
-    { key: 'Col4', name: 'Created Date', fieldName: 'created', minWidth: 70, maxWidth: 90 },
+      },
+    },
+    {
+      key: "Col4",
+      name: "Created Date",
+      fieldName: "created",
+      minWidth: 70,
+      maxWidth: 90,
+    },
+    {
+      key: "Col5",
+      name: "Approved Date",
+      fieldName: "approvedDate",
+      minWidth: 70,
+      maxWidth: 90,
+    },
   ];
 
   const goToNextStep = (step: any): void => {
@@ -239,7 +249,8 @@ const ScwAdmin = (props: IScwAdminProps) => {
             "Status",
             "TemplateTitle",
             "SiteUrl",
-            "Comment"
+            "Comment",
+            "ApprovedDate"
           )
           .top(BATCH_SIZE)
           .orderBy("Status", false)
@@ -270,6 +281,9 @@ const ScwAdmin = (props: IScwAdminProps) => {
           owner1: item.Owner1,
           businessJustification: item.BusinessJustification,
           created: new Date(item.Created).toLocaleDateString("en-CA"),
+          approvedDate: item.ApprovedDate
+            ? new Date(item.ApprovedDate).toLocaleDateString("en-CA")
+            : "Not yet created",
           status: item.Status,
           template: item.TemplateTitle,
           siteUrl: item.SiteUrl,
@@ -278,42 +292,10 @@ const ScwAdmin = (props: IScwAdminProps) => {
       })
     );
   };
-    
-    setRequestList((pagedItems).map((item) => {
-      console.log("pagedItems", pagedItems);
-      if(item.Comment === null ) {
-        item.Comment = ''
-      }
-      return {
-        id: item.ID,
-        spaceName: item.Title,
-        spaceNameFr: item.SpaceNameFR,
-        spaceDescription: item.SpaceDescription,
-        spaceDescriptionFR: item.SpaceDescriptionFR,
-        requesterName: item.RequesterName,
-        requesterEmail: item.RequesterEmail,
-        members: item.Members,
-        owner1: item.Owner1,
-        businessJustification: item.BusinessJustification,
-        created: new Date(item.Created).toLocaleDateString("en-CA"),
-        approvedDate: item.ApprovedDate?new Date(item.ApprovedDate).toLocaleDateString("en-CA"):"Not yet created",
-        status: item.Status,
-        template: item.TemplateTitle,
-        siteUrl: item.SiteUrl,
-        comment: item.Comment,
 
-      }
-
-    }))
-     
-  };   
-  
-
-  useEffect(() => {    
-
-      getList();
-
-  }, [step])
+  useEffect(() => {
+    getList();
+  }, [step]);
 
   const theme = getTheme();
 
@@ -579,7 +561,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
       )
     : searchItemsDisplay;
 
-    const filterItemsDisplay = "";
+  const filterItemsDisplay = "";
   console.log(searchItemsDisplay);
   console.log(filterStatusInput);
   const displayItemsPerPage = filterStatusItems.slice(startIndex, endIndex);
