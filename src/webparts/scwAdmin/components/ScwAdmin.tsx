@@ -75,6 +75,10 @@ export interface ISCWList {
   status: string;
   siteUrl: string;
   comment: string;
+  approvedDate: string;
+
+ 
+
 }
 
 const ScwAdmin = (props: IScwAdminProps) => {
@@ -196,15 +200,9 @@ const ScwAdmin = (props: IScwAdminProps) => {
             );
           default:
         }
-      },
-    },
-    {
-      key: "Col4",
-      name: "Created Date",
-      fieldName: "created",
-      minWidth: 70,
-      maxWidth: 90,
-    },
+      }
+   },
+    { key: 'Col4', name: 'Created Date', fieldName: 'created', minWidth: 70, maxWidth: 90 },
   ];
 
   const goToNextStep = (step: any): void => {
@@ -280,10 +278,42 @@ const ScwAdmin = (props: IScwAdminProps) => {
       })
     );
   };
+    
+    setRequestList((pagedItems).map((item) => {
+      console.log("pagedItems", pagedItems);
+      if(item.Comment === null ) {
+        item.Comment = ''
+      }
+      return {
+        id: item.ID,
+        spaceName: item.Title,
+        spaceNameFr: item.SpaceNameFR,
+        spaceDescription: item.SpaceDescription,
+        spaceDescriptionFR: item.SpaceDescriptionFR,
+        requesterName: item.RequesterName,
+        requesterEmail: item.RequesterEmail,
+        members: item.Members,
+        owner1: item.Owner1,
+        businessJustification: item.BusinessJustification,
+        created: new Date(item.Created).toLocaleDateString("en-CA"),
+        approvedDate: item.ApprovedDate?new Date(item.ApprovedDate).toLocaleDateString("en-CA"):"Not yet created",
+        status: item.Status,
+        template: item.TemplateTitle,
+        siteUrl: item.SiteUrl,
+        comment: item.Comment,
 
-  useEffect(() => {
-    getList();
-  }, [step]);
+      }
+
+    }))
+     
+  };   
+  
+
+  useEffect(() => {    
+
+      getList();
+
+  }, [step])
 
   const theme = getTheme();
 
