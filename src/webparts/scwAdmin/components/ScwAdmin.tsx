@@ -204,12 +204,6 @@ const ScwAdmin = (props: IScwAdminProps) => {
       if(item.Comment === null ) {
         item.Comment = ''
       }
-      // if(item.ApprovedDate
-      //   === null ) {
-      //   item.ApprovedDate
-      //   = ''
-      // }
-
       return {
         id: item.ID,
         spaceName: item.Title,
