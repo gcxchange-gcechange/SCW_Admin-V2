@@ -551,6 +551,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
       )
     : requestList;
 
+    
   const filterStatusItems = filterStatusInput
     ? searchItemsDisplay.filter((item) =>
         Object.entries(item).some(
@@ -560,11 +561,23 @@ const ScwAdmin = (props: IScwAdminProps) => {
         )
       )
     : searchItemsDisplay;
+     const filterReqNameItems = filterReqNameInput
+       ? filterStatusItems.filter((item) =>
+           Object.entries(item).some(
+             ([key, val]) =>
+               ["requesterName"].includes(key) &&
+               val
+                 .toString()
+                 .toLowerCase()
+                 .includes(filterReqNameInput.toLowerCase())
+           )
+         )
+       : filterStatusItems;
 
-  const filterItemsDisplay = "";
+  const filterItemsDisplay = filterReqNameItems;
   console.log(searchItemsDisplay);
   console.log(filterStatusInput);
-  const displayItemsPerPage = filterStatusItems.slice(startIndex, endIndex);
+  const displayItemsPerPage = filterItemsDisplay.slice(startIndex, endIndex);
 
   // const searchItemsDisplay =  searchInput ? displayItemsPerPage.filter(item =>
 
@@ -595,7 +608,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
         {step === 1 && (
           <>
             <h2>SCW communities requests</h2>
-            <h3>Total Items {filterStatusItems.length}</h3>
+            <h3>Total Items {filterItemsDisplay.length}</h3>
             <div className={styles.search}>
               <span>
                 <Icon className={styles.searchIcon} iconName="Search" />
@@ -611,7 +624,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
             <div>
               <Pagination
                 currentPage={page}
-                totalPages={Math.ceil(filterStatusItems.length / 100)}
+                totalPages={Math.ceil(filterItemsDisplay.length / 100)}
                 onChange={(page) => getPage(page)}
                 limiter={3} // Optional - default value 3
                 hideFirstPageJump // Optional
