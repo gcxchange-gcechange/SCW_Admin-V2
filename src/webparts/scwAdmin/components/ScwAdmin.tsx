@@ -90,6 +90,8 @@ const ScwAdmin = (props: IScwAdminProps) => {
   const [isError, setIsError] = useState<number>(0);
   const [filterStatusInput, setfilterStatusInput] = useState<IDropdownOption>();
   const [filterReqNameInput, setfilterReqNameInput] = useState("");
+  const [filterCDateInput, setfilterCDateInput] = useState("");
+  const [filterADateInput, setfilterADateInput] = useState("");
   const [searchInput, setSearchInput] = useState("");
 
   const [page, setPage] = useState<number>(1);
@@ -497,11 +499,22 @@ const ScwAdmin = (props: IScwAdminProps) => {
   const handleReqNameFilter = (
     event: React.ChangeEvent<HTMLInputElement>
   ): void => {
-    console.log("What DId I type", event.target.value);
     setfilterReqNameInput(event.target.value.toLowerCase());
     setPage(1);
   };
-
+  const handleCDateFilter = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
+    setfilterCDateInput(event.target.value.toLowerCase());
+    setPage(1);
+  };
+  const handleADateFilter = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
+    setfilterADateInput(event.target.value.toLowerCase());
+    setPage(1);
+  };
+  
   const getPage = (page: number): void => {
     console.log(page);
     setPage(page);
@@ -551,7 +564,6 @@ const ScwAdmin = (props: IScwAdminProps) => {
       )
     : requestList;
 
-    
   const filterStatusItems = filterStatusInput
     ? searchItemsDisplay.filter((item) =>
         Object.entries(item).some(
@@ -561,20 +573,44 @@ const ScwAdmin = (props: IScwAdminProps) => {
         )
       )
     : searchItemsDisplay;
-     const filterReqNameItems = filterReqNameInput
-       ? filterStatusItems.filter((item) =>
-           Object.entries(item).some(
-             ([key, val]) =>
-               ["requesterName"].includes(key) &&
-               val
-                 .toString()
-                 .toLowerCase()
-                 .includes(filterReqNameInput.toLowerCase())
-           )
-         )
-       : filterStatusItems;
+  const filterReqNameItems = filterReqNameInput
+    ? filterStatusItems.filter((item) =>
+        Object.entries(item).some(
+          ([key, val]) =>
+            ["requesterName"].includes(key) &&
+            val
+              .toString()
+              .toLowerCase()
+              .includes(filterReqNameInput.toLowerCase())
+        )
+      )
+    : filterStatusItems;
+    const filterCDateItems = filterCDateInput
+      ? filterReqNameItems.filter((item) =>
+          Object.entries(item).some(
+            ([key, val]) =>
+              ["created"].includes(key) &&
+              val
+                .toString()
+                .toLowerCase()
+                .includes(filterCDateInput.toLowerCase())
+          )
+        )
+      : filterReqNameItems;
+      const filterADateItems = filterADateInput
+        ? filterCDateItems.filter((item) =>
+            Object.entries(item).some(
+              ([key, val]) =>
+                ["approvedDate"].includes(key) &&
+                val
+                  .toString()
+                  .toLowerCase()
+                  .includes(filterADateInput.toLowerCase())
+            )
+          )
+        : filterCDateItems;
 
-  const filterItemsDisplay = filterReqNameItems;
+  const filterItemsDisplay = filterADateItems;
   console.log(searchItemsDisplay);
   console.log(filterStatusInput);
   const displayItemsPerPage = filterItemsDisplay.slice(startIndex, endIndex);
@@ -590,7 +626,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
   };
 
   const options: IDropdownOption[] = [
-    { key: "", text: "Select a status" },
+    { key: "", text: "All Status" },
     { key: "submitted", text: "Submitted" },
     { key: "approved", text: "Approved" },
     { key: "complete", text: "Complete" },
@@ -642,6 +678,14 @@ const ScwAdmin = (props: IScwAdminProps) => {
               <TextField
                 label="Filter By Requester Name"
                 onChange={handleReqNameFilter}
+              />
+              <TextField
+                label="Filter By Created Date"
+                onChange={handleCDateFilter}
+              />
+              <TextField
+                label="Filter By Approved Date"
+                onChange={handleADateFilter}
               />
             </Stack>
             <ScrollablePane
