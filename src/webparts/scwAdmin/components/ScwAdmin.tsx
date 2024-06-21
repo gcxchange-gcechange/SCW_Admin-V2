@@ -41,6 +41,8 @@ import { getTheme } from '@fluentui/react/lib/Styling';
 import { HttpClientResponse, IHttpClientOptions, AadHttpClient }  from "@microsoft/sp-http";
 import Complete from './Complete';
 import { Pagination } from "@pnp/spfx-controls-react/lib/pagination";
+import '@cdssnc/gcds-components-react/gcds.css'
+import { GcdsPagination } from '@cdssnc/gcds-components-react';
 
 
 export interface ISCWList {
@@ -488,6 +490,8 @@ console.log(searchItemsDisplay);
   // ) : displayItemsPerPage
 
 
+  const totalPages = searchInput ? Math.ceil(searchItemsDisplay.length /100) : Math.ceil(requestList.length /100);
+
 
   return (
     <>
@@ -516,6 +520,15 @@ console.log(searchItemsDisplay);
                   limiter={3} // Optional - default value 3
                   hideFirstPageJump // Optional
                   hideLastPageJump // Optional
+              />
+            </div>
+            <div style={{width:'100px'}}>
+            <GcdsPagination
+              label="Pagination"
+              totalPages={9} 
+              currentPage={1}
+              lang={"en"}
+
               />
             </div>
           <ScrollablePane scrollbarVisibility= { ScrollbarVisibility.auto} styles= { scrollablePaneStyles} >

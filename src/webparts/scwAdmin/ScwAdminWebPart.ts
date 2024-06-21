@@ -45,6 +45,11 @@ export default class ScwAdminWebPart extends BaseClientSideWebPart<IScwAdminWebP
 
   protected async onInit(): Promise<void> {
     this._environmentMessage = this._getEnvironmentMessage();
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css';
+    link.crossOrigin = 'anonymous';
+    document.head.appendChild(link);
    
     await super.onInit();
     getSP(this.context);
