@@ -12,6 +12,7 @@ import "@pnp/sp/items";
 import "@pnp/sp/items/get-all";
 import { useEffect, useState } from "react";
 import {
+  DatePicker,
   DefaultButton,
   DetailsList,
   DetailsListLayoutMode,
@@ -90,8 +91,12 @@ const ScwAdmin = (props: IScwAdminProps) => {
   const [isError, setIsError] = useState<number>(0);
   const [filterStatusInput, setfilterStatusInput] = useState<IDropdownOption>();
   const [filterReqNameInput, setfilterReqNameInput] = useState("");
-  const [filterCDateInput, setfilterCDateInput] = useState("");
-  const [filterADateInput, setfilterADateInput] = useState("");
+  const [filterCDateInput, setfilterCDateInput] = React.useState<
+    Date | undefined
+  >();
+  const [filterADateInput, setfilterADateInput] = React.useState<
+    Date | undefined
+  >();
   const [searchInput, setSearchInput] = useState("");
 
   const [page, setPage] = useState<number>(1);
@@ -502,18 +507,18 @@ const ScwAdmin = (props: IScwAdminProps) => {
     setfilterReqNameInput(event.target.value.toLowerCase());
     setPage(1);
   };
-  const handleCDateFilter = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ): void => {
-    setfilterCDateInput(event.target.value.toLowerCase());
-    setPage(1);
-  };
-  const handleADateFilter = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ): void => {
-    setfilterADateInput(event.target.value.toLowerCase());
-    setPage(1);
-  };
+  // const handleCDateFilter = (
+  //   event: React.ChangeEvent<HTMLInputElement>
+  // ): void => {
+  //   setfilterCDateInput(event.target.value.toLowerCase());
+  //   setPage(1);
+  // };
+  // const handleADateFilter = (
+  //   event: React.ChangeEvent<HTMLInputElement>
+  // ): void => {
+  //   setfilterADateInput(event.target.value.toLowerCase());
+  //   setPage(1);
+  // };
   
   const getPage = (page: number): void => {
     console.log(page);
@@ -593,7 +598,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
               val
                 .toString()
                 .toLowerCase()
-                .includes(filterCDateInput.toLowerCase())
+                .includes((filterCDateInput.toLocaleDateString("en-CA")).toLowerCase())
           )
         )
       : filterReqNameItems;
@@ -605,7 +610,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
                 val
                   .toString()
                   .toLowerCase()
-                  .includes(filterADateInput.toLowerCase())
+                  .includes((filterADateInput.toLocaleDateString("en-CA")).toLowerCase())
             )
           )
         : filterCDateItems;
@@ -667,28 +672,45 @@ const ScwAdmin = (props: IScwAdminProps) => {
                 hideLastPageJump // Optional
               />
             </div>
-            
-              <Stack horizontal={true} tokens={stackTokens} horizontalAlign="center">
-                <Dropdown
-                  placeholder="Select a status"
-                  label="Filter By Status"
-                  options={options}
-                  styles={dropdownStyles}
-                  onChange={handleStatusFilter}
-                />
-                <TextField
-                  label="Filter By Requester Name"
-                  onChange={handleReqNameFilter}
-                />
-                <TextField
-                  label="Filter By Created Date"
-                  onChange={handleCDateFilter}
-                />
-                <TextField
+
+            <Stack
+              horizontal={true}
+              tokens={stackTokens}
+              horizontalAlign="center">
+              <Dropdown
+                placeholder="Select a status"
+                label="Filter By Status"
+                options={options}
+                styles={dropdownStyles}
+                onChange={handleStatusFilter}
+              />
+              <TextField
+                label="Filter By Requester Name"
+                onChange={handleReqNameFilter}
+              />
+              {/* <TextField
+                label="Filter By Created Date"
+                onChange={handleCDateFilter}
+              /> */}
+              {/* <TextField
                   label="Filter By Approved Date"
                   onChange={handleADateFilter}
-                />
-              </Stack>
+                /> */}
+              <DatePicker
+                label="Filter By Created Date"
+                value={filterCDateInput}
+                onSelectDate={
+                  setfilterCDateInput as (date: Date | null | undefined) => void
+                }
+              />
+              <DatePicker
+                label="Filter By Approved Date"
+                value={filterADateInput}
+                onSelectDate={
+                  setfilterADateInput as (date: Date | null | undefined) => void
+                }
+              />
+            </Stack>
             <ScrollablePane
               scrollbarVisibility={ScrollbarVisibility.auto}
               styles={scrollablePaneStyles}>
