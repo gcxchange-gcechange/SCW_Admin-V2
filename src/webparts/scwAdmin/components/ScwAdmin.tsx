@@ -667,27 +667,28 @@ const ScwAdmin = (props: IScwAdminProps) => {
                 hideLastPageJump // Optional
               />
             </div>
-            <Stack horizontal={true} tokens={stackTokens}>
-              <Dropdown
-                placeholder="Select a status"
-                label="Filter By Status"
-                options={options}
-                styles={dropdownStyles}
-                onChange={handleStatusFilter}
-              />
-              <TextField
-                label="Filter By Requester Name"
-                onChange={handleReqNameFilter}
-              />
-              <TextField
-                label="Filter By Created Date"
-                onChange={handleCDateFilter}
-              />
-              <TextField
-                label="Filter By Approved Date"
-                onChange={handleADateFilter}
-              />
-            </Stack>
+            
+              <Stack horizontal={true} tokens={stackTokens} horizontalAlign="center">
+                <Dropdown
+                  placeholder="Select a status"
+                  label="Filter By Status"
+                  options={options}
+                  styles={dropdownStyles}
+                  onChange={handleStatusFilter}
+                />
+                <TextField
+                  label="Filter By Requester Name"
+                  onChange={handleReqNameFilter}
+                />
+                <TextField
+                  label="Filter By Created Date"
+                  onChange={handleCDateFilter}
+                />
+                <TextField
+                  label="Filter By Approved Date"
+                  onChange={handleADateFilter}
+                />
+              </Stack>
             <ScrollablePane
               scrollbarVisibility={ScrollbarVisibility.auto}
               styles={scrollablePaneStyles}>
