@@ -17,6 +17,7 @@ import {
   DetailsList,
   DetailsListLayoutMode,
   DetailsRow,
+  FontIcon,
   IButtonStyles,
   IColumn,
   IDetailsColumnRenderTooltipProps,
@@ -59,6 +60,8 @@ import {
   IDropdownStyles,
   IDropdownOption,
 } from "@fluentui/react/lib/Dropdown";
+import { mergeStyles } from "@fluentui/react/lib/Styling";
+
 
 export interface ISCWList {
   id: number;
@@ -481,18 +484,6 @@ const ScwAdmin = (props: IScwAdminProps) => {
     setPage(1);
   };
 
-  // const handleStatusFilter = (
-  //   event: React.FormEvent<HTMLDivElement>,
-  //   item?: IDropdownOption
-  // ) => {
-  //   if (item) {
-  //     const updatedSelectedItems = item.selected
-  //       ? [...filterStatusInput, item]
-  //       : filterStatusInput.filter((i) => i.key !== item.key);
-  //     setfilterStatusInput(updatedSelectedItems);
-  //     console.log(updatedSelectedItems);
-  //   }
-  // };
   const handleStatusFilter = (
     event: React.FormEvent<HTMLDivElement>,
     option?: IDropdownOption
@@ -507,19 +498,19 @@ const ScwAdmin = (props: IScwAdminProps) => {
     setfilterReqNameInput(event.target.value.toLowerCase());
     setPage(1);
   };
-  // const handleCDateFilter = (
-  //   event: React.ChangeEvent<HTMLInputElement>
-  // ): void => {
-  //   setfilterCDateInput(event.target.value.toLowerCase());
-  //   setPage(1);
-  // };
-  // const handleADateFilter = (
-  //   event: React.ChangeEvent<HTMLInputElement>
-  // ): void => {
-  //   setfilterADateInput(event.target.value.toLowerCase());
-  //   setPage(1);
-  // };
   
+  const clearADateFilter = (
+    event: React.MouseEvent<HTMLInputElement>
+  ): void => {
+    setfilterADateInput(undefined);
+    setPage(1);
+  };
+  const clearCDateFilter = (
+    event: React.MouseEvent<HTMLInputElement>
+  ): void => {
+    setfilterCDateInput(undefined);
+    setPage(1);
+  };
   const getPage = (page: number): void => {
     console.log(page);
     setPage(page);
@@ -535,23 +526,6 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
   const startIndex: number = (page - 1) * 100;
   const endIndex: number = Math.min(startIndex + 100, requestList.length);
-
-  //let searchItemsDisplay = requestList.slice(startIndex, endIndex);
-
-  // const searchItems = displayItemsPerPage.map((item) => {
-  //   return {
-  //     id: item.id,
-  //     spaceName: item.spaceName,
-  //     spaceNameFr: item.spaceNameFr,
-  //     owner: item.owner1,
-  //     requestorEmail: item.requesterEmail,
-  //     requestorName: item.requesterName
-
-  //   }
-  // })
-
-  //console.log("SI",searchItems)
-
   const searchItemsDisplay = searchInput
     ? requestList.filter((item) =>
         Object.entries(item).some(
@@ -590,42 +564,40 @@ const ScwAdmin = (props: IScwAdminProps) => {
         )
       )
     : filterStatusItems;
-    const filterCDateItems = filterCDateInput
-      ? filterReqNameItems.filter((item) =>
-          Object.entries(item).some(
-            ([key, val]) =>
-              ["created"].includes(key) &&
-              val
-                .toString()
-                .toLowerCase()
-                .includes((filterCDateInput.toLocaleDateString("en-CA")).toLowerCase())
-          )
+  const filterCDateItems = filterCDateInput
+    ? filterReqNameItems.filter((item) =>
+        Object.entries(item).some(
+          ([key, val]) =>
+            ["created"].includes(key) &&
+            val
+              .toString()
+              .toLowerCase()
+              .includes(
+                filterCDateInput.toLocaleDateString("en-CA").toLowerCase()
+              )
         )
-      : filterReqNameItems;
-      const filterADateItems = filterADateInput
-        ? filterCDateItems.filter((item) =>
-            Object.entries(item).some(
-              ([key, val]) =>
-                ["approvedDate"].includes(key) &&
-                val
-                  .toString()
-                  .toLowerCase()
-                  .includes((filterADateInput.toLocaleDateString("en-CA")).toLowerCase())
-            )
-          )
-        : filterCDateItems;
+      )
+    : filterReqNameItems;
+  const filterADateItems = filterADateInput
+    ? filterCDateItems.filter((item) =>
+        Object.entries(item).some(
+          ([key, val]) =>
+            ["approvedDate"].includes(key) &&
+            val
+              .toString()
+              .toLowerCase()
+              .includes(
+                filterADateInput.toLocaleDateString("en-CA").toLowerCase()
+              )
+        )
+      )
+    : filterCDateItems;
 
   const filterItemsDisplay = filterADateItems;
   console.log(searchItemsDisplay);
   console.log(filterStatusInput);
   const displayItemsPerPage = filterItemsDisplay.slice(startIndex, endIndex);
 
-  // const searchItemsDisplay =  searchInput ? displayItemsPerPage.filter(item =>
-
-  //   Object.values(item).some(val =>
-  //       typeof val === 'string' && val.toLowerCase().includes(searchInput.toLowerCase())
-  //   )
-  // ) : displayItemsPerPage
   const dropdownStyles: Partial<IDropdownStyles> = {
     dropdown: { width: 200 },
   };
@@ -642,6 +614,12 @@ const ScwAdmin = (props: IScwAdminProps) => {
   ];
 
   const stackTokens: IStackTokens = { childrenGap: 20 };
+  const iconClass = mergeStyles({
+    fontSize: 25,
+    height: 50,
+    width: 50,
+    margin: "35px 0px",
+  });
 
   return (
     <>
@@ -688,27 +666,37 @@ const ScwAdmin = (props: IScwAdminProps) => {
                 label="Filter By Requester Name"
                 onChange={handleReqNameFilter}
               />
-              {/* <TextField
-                label="Filter By Created Date"
-                onChange={handleCDateFilter}
-              /> */}
-              {/* <TextField
-                  label="Filter By Approved Date"
-                  onChange={handleADateFilter}
-                /> */}
+              
               <DatePicker
                 label="Filter By Created Date"
                 value={filterCDateInput}
                 onSelectDate={
                   setfilterCDateInput as (date: Date | null | undefined) => void
                 }
+                placeholder="Select a date..."
               />
+              <FontIcon
+                aria-label="ClearFilter"
+                title="Clear Filter By Created Date"
+                iconName="ClearFilter"
+                onClick={clearCDateFilter}
+                className={iconClass}
+              />
+
               <DatePicker
                 label="Filter By Approved Date"
                 value={filterADateInput}
                 onSelectDate={
                   setfilterADateInput as (date: Date | null | undefined) => void
                 }
+                placeholder="Select a date..."
+              />
+              <FontIcon
+                aria-label="ClearFilter"
+                title="Clear filter"
+                iconName="ClearFilter"
+                onClick={clearADateFilter}
+                className={iconClass}
               />
             </Stack>
             <ScrollablePane
