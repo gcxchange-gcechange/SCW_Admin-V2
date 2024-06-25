@@ -80,6 +80,8 @@ const ScwAdmin = (props: IScwAdminProps) => {
   const [isError, setIsError] = useState<number>(0);
   const [searchInput, setSearchInput] = useState("");
   const [page, setPage] = useState<number>(1);
+  const [displayItemsPerPage, setDisplayItemsPerPage] = useState([]);
+  const [searchItemsDisplay, setSearchItemsDisplay] = useState([]);
 
   
 
@@ -450,10 +452,30 @@ const ScwAdmin = (props: IScwAdminProps) => {
     },
   };
 
-  const startIndex:number = (page - 1) * 100;
-  const endIndex: number = Math.min(startIndex + 100, requestList.length);
+  useEffect (() => {
+    
+  const searchItemsDisplay = searchInput 
+  ? displayItemsPerPage.filter(item => 
+      Object.entries(item).some(([key, val]) => 
+          ['id', 'spaceName', 'spaceNameFr', 'owner1', 'requesterEmail', 'requesterName']
+          .includes(key) &&
+          val.toString().toLowerCase().includes(searchInput.toLowerCase())
+      )
+    )
+    : displayItemsPerPage;
+    setSearchItemsDisplay(searchItemsDisplay);
 
-  const displayItemsPerPage = requestList.slice(startIndex, endIndex);
+  }, [searchInput])
+
+  
+
+  //const displayItemsPerPage = requestList.slice(startIndex, endIndex);
+
+  useEffect(() => {
+    const startIndex:number = (page - 1) * 100;
+    const endIndex: number = Math.min(startIndex + 100, requestList.length);
+    setDisplayItemsPerPage(requestList.slice(startIndex, endIndex));
+  }, [requestList])
 
   // const searchItems = displayItemsPerPage.map((item) => {
   //   return {
@@ -469,17 +491,17 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
   //console.log("SI",searchItems)
 
-  const searchItemsDisplay = searchInput 
-  ? displayItemsPerPage.filter(item => 
-      Object.entries(item).some(([key, val]) => 
-          ['id', 'spaceName', 'spaceNameFr', 'owner1', 'requesterEmail', 'requesterName']
-          .includes(key) &&
-          val.toString().toLowerCase().includes(searchInput.toLowerCase())
-      )
-    )
-    : displayItemsPerPage;
+//   const searchItemsDisplay = searchInput 
+//   ? displayItemsPerPage.filter(item => 
+//       Object.entries(item).some(([key, val]) => 
+//           ['id', 'spaceName', 'spaceNameFr', 'owner1', 'requesterEmail', 'requesterName']
+//           .includes(key) &&
+//           val.toString().toLowerCase().includes(searchInput.toLowerCase())
+//       )
+//     )
+//     : displayItemsPerPage;
 
-console.log(searchItemsDisplay);
+// console.log(searchItemsDisplay);
 
 
   // const searchItemsDisplay =  searchInput ? displayItemsPerPage.filter(item => 
@@ -490,8 +512,9 @@ console.log(searchItemsDisplay);
   // ) : displayItemsPerPage
 
 
-  const totalPages = searchInput ? Math.ceil(searchItemsDisplay.length /100) : Math.ceil(requestList.length /100);
-
+  //const totalPages: number = searchInput ? Math.ceil(searchItemsDisplay.length /100) : Math.ceil(requestList.length /100);
+  const totalPages: number = displayItemsPerPage.length;
+  console.log("total", totalPages);
 
   return (
     <>
@@ -515,7 +538,7 @@ console.log(searchItemsDisplay);
             <div>
               <Pagination
                   currentPage={1}
-                  totalPages={searchInput ? Math.ceil(searchItemsDisplay.length /100) : Math.ceil(requestList.length /100)} 
+                  totalPages={displayItemsPerPage.length } 
                   onChange={(page) => getPage(page)}
                   limiter={3} // Optional - default value 3
                   hideFirstPageJump // Optional
@@ -525,7 +548,7 @@ console.log(searchItemsDisplay);
             <div style={{width:'100px'}}>
             <GcdsPagination
               label="Pagination"
-              totalPages={9} 
+              totalPages={displayItemsPerPage.length} 
               currentPage={1}
               lang={"en"}
 
@@ -534,7 +557,8 @@ console.log(searchItemsDisplay);
           <ScrollablePane scrollbarVisibility= { ScrollbarVisibility.auto} styles= { scrollablePaneStyles} >
             <DetailsList 
               styles={ headerStyle }
-              items={searchItemsDisplay}
+              items = {searchItemsDisplay}
+              // items={searchItemsDisplay}
               columns ={ columns }
               layoutMode={ DetailsListLayoutMode.justified }
               onRenderRow={ _onRenderRow }
