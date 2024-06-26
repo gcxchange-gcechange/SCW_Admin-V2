@@ -666,7 +666,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
                 label="Filter By Requester Name"
                 onChange={handleReqNameFilter}
               />
-              
+
               <DatePicker
                 label="Filter By Created Date"
                 value={filterCDateInput}
@@ -693,7 +693,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
               />
               <FontIcon
                 aria-label="ClearFilter"
-                title="Clear filter"
+                title="Clear Filter By Approved Date"
                 iconName="ClearFilter"
                 onClick={clearADateFilter}
                 className={iconClass}
