@@ -619,6 +619,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
     height: 50,
     width: 50,
     margin: "35px 0px",
+    cursor:"pointer"
   });
 
   return (
@@ -669,6 +670,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
               <DatePicker
                 label="Filter By Created Date"
+                title="Select a date..."
                 value={filterCDateInput}
                 onSelectDate={
                   setfilterCDateInput as (date: Date | null | undefined) => void
@@ -682,9 +684,9 @@ const ScwAdmin = (props: IScwAdminProps) => {
                 onClick={clearCDateFilter}
                 className={iconClass}
               />
-
               <DatePicker
                 label="Filter By Approved Date"
+                title="Select a date..."
                 value={filterADateInput}
                 onSelectDate={
                   setfilterADateInput as (date: Date | null | undefined) => void
