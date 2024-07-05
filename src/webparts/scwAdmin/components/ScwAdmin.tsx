@@ -615,10 +615,10 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
   const stackTokens: IStackTokens = { childrenGap: 20 };
   const iconClass = mergeStyles({
-    fontSize: 25,
+    fontSize: 20,
     height: 50,
     width: 50,
-    margin: "35px 0px",
+    margin: "35px -30px",
     cursor:"pointer"
   });
 
