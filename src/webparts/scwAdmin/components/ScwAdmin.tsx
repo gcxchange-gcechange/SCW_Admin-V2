@@ -263,7 +263,6 @@ const ScwAdmin = (props: IScwAdminProps) => {
             "ApprovedDate"
           )
           .top(BATCH_SIZE)
-          .orderBy("Status", false)
           .orderBy("Created", false)
           .getPaged();
       else items = await items.getNext();
