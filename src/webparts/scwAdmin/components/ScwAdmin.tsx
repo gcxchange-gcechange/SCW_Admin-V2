@@ -537,6 +537,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
               "requesterEmail",
               "requesterName",
             ].includes(key) &&
+            val !== null &&
             val.toString().toLowerCase().includes(searchInput.toLowerCase())
         )
       )
