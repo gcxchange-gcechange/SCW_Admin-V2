@@ -547,6 +547,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
         Object.entries(item).some(
           ([key, val]) =>
             ["status"].includes(key) &&
+            val !== null &&
             val.toString().toLowerCase().includes(filterStatusInput.key)
         )
       )
@@ -556,6 +557,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
         Object.entries(item).some(
           ([key, val]) =>
             ["requesterName"].includes(key) &&
+            val !== null &&
             val
               .toString()
               .toLowerCase()
@@ -568,6 +570,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
         Object.entries(item).some(
           ([key, val]) =>
             ["created"].includes(key) &&
+            val !== null &&
             val
               .toString()
               .toLowerCase()
@@ -582,6 +585,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
         Object.entries(item).some(
           ([key, val]) =>
             ["approvedDate"].includes(key) &&
+            val !== null &&
             val
               .toString()
               .toLowerCase()
