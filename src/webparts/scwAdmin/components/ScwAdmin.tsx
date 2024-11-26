@@ -669,6 +669,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
               />
               <TextField
                 label="Filter By Requester Name"
+                value={filterReqNameInput}
                 onChange={handleReqNameFilter}
               />
 
