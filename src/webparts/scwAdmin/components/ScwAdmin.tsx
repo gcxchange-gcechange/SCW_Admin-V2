@@ -260,7 +260,8 @@ const ScwAdmin = (props: IScwAdminProps) => {
             "TemplateTitle",
             "SiteUrl",
             "Comment",
-            "ApprovedDate"
+            "ApprovedDate",
+            "SecurityCategory"
           )
           .top(BATCH_SIZE)
           .orderBy("Created", false)
@@ -294,7 +295,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
             ? new Date(item.ApprovedDate).toLocaleDateString("en-CA")
             : "Not yet created",
           status: item.Status,
-          template: item.TemplateTitle,
+          template: item.SecurityCategory,
           siteUrl: item.SiteUrl,
           comment: item.Comment,
         };
