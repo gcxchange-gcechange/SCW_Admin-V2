@@ -421,7 +421,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
       (isApproved && (hasValidComment || selectedRowData.comment === "")) ||
       (isRejected && hasNonEmptyComment)
     ) {
-      const functionUrl: string = "";
+      const functionUrl: string ='';
 
       const requestHeaders: Headers = new Headers();
       requestHeaders.append("Content-type", "application/json");
