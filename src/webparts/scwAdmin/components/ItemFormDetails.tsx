@@ -119,6 +119,7 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
                     <Stack wrap {...columnProps}>
                         <TextField label="Request id:" styles= {customFieldStyles} underlined disabled defaultValue={selectedRowData.id} />
                         <TextField label="Status:" styles= {customFieldStyles} underlined disabled prefix={renderIcon()} defaultValue={selectedItem[0].status}/>
+                        <TextField label="Security Category:" styles= {customFieldStyles} underlined disabled defaultValue={selectedItem[0].template}/>
                         <TextField label="Approved Date:" styles= {customFieldStyles} underlined disabled defaultValue={selectedRowData.approvedDate ? selectedRowData.approvedDate: "Not yet created"} />
                         { selectedItem[0].status !== 'Submitted' && 
                             <TextField styles= {customFieldStyles} label="Decision comments" underlined multiline rows={5} disabled defaultValue={selectedRowData.comment}/>
