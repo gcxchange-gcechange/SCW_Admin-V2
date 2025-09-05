@@ -7,4 +7,5 @@ export interface IScwAdminProps {
   hasTeamsContext: boolean;
   context: WebPartContext;
   list: string;
+  absoluteUrl: string;
 }

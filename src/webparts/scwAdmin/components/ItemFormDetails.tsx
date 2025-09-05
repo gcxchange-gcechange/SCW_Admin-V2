@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ITextFieldStyles, TextField } from 'office-ui-fabric-react/lib/TextField';
+import { ITextFieldStyles, TextField } from '@fluentui/react';
 import * as React from 'react';
-import { ChoiceGroup, IChoiceGroupOption,  IStackProps, IStackStyles, Icon, Label, Stack, mergeStyleSets } from 'office-ui-fabric-react';
+import { ChoiceGroup, IChoiceGroupOption,  IStackProps, IStackStyles, Icon, Label, Stack, mergeStyleSets } from '@fluentui/react';
 import styles from './ScwAdmin.module.scss';
-import { PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker";
+import { IPeoplePickerContext, PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker";
 import { WebPartContext } from '@microsoft/sp-webpart-base';
+ 
 
 
 interface IItemFormDetailsProps {
@@ -14,13 +15,14 @@ interface IItemFormDetailsProps {
     requestList: any[];
     confirmationComments?:(value: string) => void;
     decisionChoiceCallback?:(option: string) => void;
+    absoluteUrl: any;
 }
 
 
 const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) => {
 
     
-    const { selectedRowData, requestList } = props;  
+    const { selectedRowData, requestList, absoluteUrl } = props;  
 
     const onChangeComments = (event: React.ChangeEvent<HTMLInputElement>):void  => {
 
@@ -109,6 +111,12 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
         { key: 'B', text: 'Reject community creation' },
       ];
 
+    const peoplePickerContext: IPeoplePickerContext = {
+        absoluteUrl: props.absoluteUrl,
+        msGraphClientFactory: props.context.msGraphClientFactory,
+        spHttpClient: props.context.spHttpClient
+    }
+
  
     return (
         <>
@@ -136,7 +144,7 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
                 <TextField styles={textFieldBackground} label="English description" readOnly defaultValue={selectedRowData.spaceDescription}  />
                 <TextField styles={textFieldBackground} label="French description" readOnly defaultValue={selectedRowData.spaceDescriptionFR} />
                 <PeoplePicker
-                    context={props.context}
+                    context={peoplePickerContext}
                     titleText="Owners"
                     personSelectionLimit={3}
                     groupName={""} // Leave this blank in case you want to filter from all users
@@ -145,16 +153,12 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
                     showHiddenInUI={false}
                     principalTypes={[PrincipalType.User]}
                 />
-            </div>
-            {   selectedItem[0].status === 'Submitted' &&
-                <>
-                    <div style={{paddingBottom: '18px'}}>
                         <Stack horizontal verticalAlign='center'>
                             <span className={styles.asteriks}>&#42;</span>
                             <h3>Community creation decision</h3>
                         </Stack>
                         <ChoiceGroup required id='choiceDecision' options={decisionOptions} onChange={onSelectedKey}/>                
-                    </div>
+            </div>
 
                     { selectedRowData.decisionStatus === 'Approved' && (
                         <Stack>
@@ -175,10 +179,6 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
                         </Stack>
                         )
                     }
-                    
-                </>      
-            }
-           
             
         </>
     )

@@ -1,6 +1,6 @@
 import * as React from "react";
 import styles from "./ScwAdmin.module.scss";
-import { IStackTokens, Icon, IconButton, Modal, PrimaryButton, Stack, StackItem } from "office-ui-fabric-react";
+import { IStackTokens, Icon, IconButton, Modal, PrimaryButton, Stack, StackItem } from '@fluentui/react';
 
 
 interface ICompleteProps {
