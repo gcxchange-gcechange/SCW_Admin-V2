@@ -6,7 +6,7 @@ import {
   IPropertyPaneConfiguration,
   PropertyPaneTextField
 } from '@microsoft/sp-property-pane';
-import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
+import { BaseClientSideWebPart} from '@microsoft/sp-webpart-base';
 import { IReadonlyTheme } from '@microsoft/sp-component-base';
 
 import * as strings from 'ScwAdminWebPartStrings';
@@ -35,6 +35,7 @@ export default class ScwAdminWebPart extends BaseClientSideWebPart<IScwAdminWebP
         environmentMessage: this._environmentMessage,
         hasTeamsContext: !!this.context.sdks.microsoftTeams,
         context: this.context,
+        absoluteUrl: this.context.pageContext.web.absoluteUrl,
         list: this.properties.list
 
       }

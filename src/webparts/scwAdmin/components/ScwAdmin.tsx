@@ -9,7 +9,7 @@ import { IScwAdminProps } from "./IScwAdminProps";
 import { getSP } from "../../../pnpjsConfig";
 import { SPFI } from "@pnp/sp";
 import "@pnp/sp/items";
-import "@pnp/sp/items/get-all";
+// import "@pnp/sp/items/get-all";
 import { useEffect, useState } from "react";
 import {
   DatePicker,
@@ -43,8 +43,7 @@ import {
   TextField,
   TooltipHost,
   mergeStyleSets,
-} from "office-ui-fabric-react";
-import { PagedItemCollection } from "@pnp/sp/items";
+} from '@fluentui/react';
 import ItemFormDetails from "./ItemFormDetails";
 import { getTheme } from "@fluentui/react/lib/Styling";
 import {
@@ -61,6 +60,8 @@ import {
   IDropdownOption,
 } from "@fluentui/react/lib/Dropdown";
 import { mergeStyles } from "@fluentui/react/lib/Styling";
+import { WebPartContext } from "@microsoft/sp-webpart-base";
+import { IItems, IPagedResult } from "@pnp/sp/items/types";
 
 
 export interface ISCWList {
@@ -236,41 +237,48 @@ const ScwAdmin = (props: IScwAdminProps) => {
     setCurrentStep(previousPage);
   };
 
-  const getList = async () => {
-    let pagedItems: any[] = [];
-    let items: PagedItemCollection<any[]> = undefined;
+ const getList = async () => {
 
-    do {
-      if (!items)
-        items = await _sp.web.lists
-          .getById(props.list)
-          .items.select(
-            "ID",
-            "Title",
-            "SpaceNameFR",
-            "SpaceDescription",
-            "SpaceDescriptionFR",
-            "RequesterName",
-            "RequesterEmail",
-            "Members",
-            "Owner1",
-            "BusinessJustification",
-            "Created",
-            "Status",
-            "TemplateTitle",
-            "SiteUrl",
-            "Comment",
-            "ApprovedDate",
-            "SecurityCategory"
-          )
-          .top(BATCH_SIZE)
-          .orderBy("Created", false)
-          .getPaged();
-      else items = await items.getNext();
-      if (items.results.length > 0) {
-        pagedItems = pagedItems.concat(items.results);
-      }
-    } while (items.hasNext);
+    const query:any  = await
+    _sp.web.lists
+      .getById(props.list)
+      .items
+      .select(
+        "ID",
+        "Title",
+        "SpaceNameFR",
+        "SpaceDescription",
+        "SpaceDescriptionFR",
+        "RequesterName",
+        "RequesterEmail",
+        "Members",
+        "Owner1",
+        "BusinessJustification",
+        "Created",
+        "Status",
+        "TemplateTitle",
+        "SiteUrl",
+        "Comment",
+        "ApprovedDate",
+        "SecurityCategory"
+      )
+      .orderBy("Created", false)
+      .top(BATCH_SIZE); // page size
+
+
+
+   const pagedItems: any[] = [];
+
+   if (query){
+          console.log("query", query)
+     for await (const page of query) {
+     console.log("PAGE:",page)
+    pagedItems.push(...page);
+   
+  }
+    
+   }
+    
 
     setRequestList(
       pagedItems.map((item) => {
@@ -735,6 +743,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
                 context={props.context}
                 decisionChoiceCallback={decisionChoiceCallback}
                 requestList={requestList}
+                absoluteUrl={props.absoluteUrl}
               />
 
               <Stack
