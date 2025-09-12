@@ -26,8 +26,8 @@
 dgcx_dev_appreg_scw2_auth - user_impersonation
 
 ## Version 
-![SPFx 1.17.1](https://img.shields.io/badge/SPFx-1.17.1-green.svg) 
-![Node.js](https://img.shields.io/badge/Node.js-v16.13+-green.svg)
+![SPFx 1.17.1](https://img.shields.io/badge/SPFx-1.21.1-green.svg) 
+![Node.js](https://img.shields.io/badge/Node.js-v22+-green.svg)
 
 ## Applies to
 
@@ -38,9 +38,10 @@ dgcx_dev_appreg_scw2_auth - user_impersonation
 
 ## Version history
 
-Version|Date|Comments
--------|----|--------
-1.0|Aug 9, 2023|Initial release
+Version |      Date     | Comments
+------- |---------------|----------
+1.0     | Aug 9, 2023   | Initial release
+2.0     | Sep 10, 2025  | SPFX update
 
 ## Minimal Path to Awesome
 - Clone this repository
