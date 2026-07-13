@@ -9,9 +9,9 @@ import "@pnp/sp/items";
 import "@pnp/sp/batching";
 
 // eslint-disable-next-line no-var
-var _sp: SPFI = null;
+let _sp: SPFI | null = null;
 
-export const getSP = (context?: WebPartContext): SPFI => {
+export const getSP = (context?: WebPartContext): SPFI | null => {
   if (_sp === null && context != null) { // eslint-disable-line eqeqeq
     //You must add the @pnp/logging package to include the PnPLogging behavior it is no longer a peer dependency
     // The LogLevel set's at what level a message will be written to the console
