@@ -84,7 +84,7 @@ export interface ISCWList {
 }
 
 const ScwAdmin = (props: IScwAdminProps) => {
-  const _sp: SPFI = getSP(props.context);
+  const _sp: SPFI = getSP(props.context)!;
   const BATCH_SIZE = 1000;
 
   const [requestList, setRequestList] = useState<ISCWList[]>([]);
@@ -448,7 +448,7 @@ const ScwAdmin = (props: IScwAdminProps) => {
 
       props.context.aadHttpClientFactory
         .getClient("")
-        .then((client: AadHttpClient) => {
+        .then((client: AadHttpClient):void => {
           client
             .post(functionUrl, AadHttpClient.configurations.v1, postOptions)
             .then((response: HttpClientResponse) => {
@@ -500,10 +500,8 @@ const ScwAdmin = (props: IScwAdminProps) => {
     setPage(1);
   };
 
-  const handleReqNameFilter = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ): void => {
-    setfilterReqNameInput(event.target.value.toLowerCase());
+  const handleReqNameFilter = (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
+    setfilterReqNameInput(event.currentTarget.value.toLowerCase());
     setPage(1);
   };
   

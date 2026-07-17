@@ -26,7 +26,7 @@
 dgcx_dev_appreg_scw2_auth - user_impersonation
 
 ## Version 
-![SPFx 1.17.1](https://img.shields.io/badge/SPFx-1.21.1-green.svg) 
+![SPFx 1.17.1](https://img.shields.io/badge/SPFx-1.22.2-green.svg) 
 ![Node.js](https://img.shields.io/badge/Node.js-v22+-green.svg)
 
 ## Applies to
@@ -42,11 +42,13 @@ Version |      Date     | Comments
 ------- |---------------|----------
 1.0     | Aug 9, 2023   | Initial release
 2.0     | Sep 10, 2025  | SPFX update
+2.1     | July 13, 2026 | SPFX Update
 
 ## Minimal Path to Awesome
 - Clone this repository
 - Ensure that you are at the solution folder
 - To install the dependencies, in the command-line run:
+  - **npm install -g @rushstack/heft**
   - **npm install**
 - To debug in the front end:
   - go to the `serve.json` file and update `initialPage` to `https://your-domain-name.sharepoint.com/_layouts/15/workbench.aspx`
@@ -54,9 +56,9 @@ Version |      Date     | Comments
     - **gulp serve**
 - To deploy:
   - In the command-line run:
-    - **gulp clean**
-    - **gulp bundle --ship**
-    - **gulp package-solution --ship**
+    - **heft clean**
+    - **heft build --production**
+    - **heft package-solution --production**
   - Add the webpart to your tenant app store
 - Approve the web API permissions
 - Add the Webpart to a page

@@ -7,7 +7,7 @@
       "@microsoft/microsoft-graph-client": "3.0.2",
       "@microsoft/teams-js": "2.24.0"
     },
-    "version": "1.21.1",
+    "version": "1.22.2",
     "libraryName": "scw-admin",
     "libraryId": "2448996b-0040-4203-aae9-6b8c55c9b2c3",
     "environment": "spo",

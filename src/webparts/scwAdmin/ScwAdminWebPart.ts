@@ -129,7 +129,6 @@ export default class ScwAdminWebPart extends BaseClientSideWebPart<IScwAdminWebP
                   onPropertyChange: this.onPropertyPaneFieldChanged.bind(this),
                   properties: this.properties,
                   context: this.context as any,
-                  onGetErrorMessage: null,
                   deferredValidationTime: 0,
                   key: 'listPickerFieldId',
                   filter: "Hidden eq false and BaseType eq 0"

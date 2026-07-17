@@ -11,7 +11,7 @@ import { WebPartContext } from '@microsoft/sp-webpart-base';
 
 interface IItemFormDetailsProps {
     selectedRowData: any;
-    context?: WebPartContext;
+    context: WebPartContext;
     requestList: any[];
     confirmationComments?:(value: string) => void;
     decisionChoiceCallback?:(option: string) => void;
@@ -24,9 +24,9 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
     
     const { selectedRowData, requestList, absoluteUrl } = props;  
 
-    const onChangeComments = (event: React.ChangeEvent<HTMLInputElement>):void  => {
+    const onChangeComments = (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>):void  => {
 
-            const inputData = event.target.value;
+            const inputData = event.currentTarget.value;
             let trimmedValue = inputData.trim();
             const invalidInput = '';
 
@@ -35,14 +35,14 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
                 trimmedValue = invalidInput;
             }
 
-            props.confirmationComments(trimmedValue)
+            props.confirmationComments?.(trimmedValue)
              
     }
 
-    const onSelectedKey = ( event: React.ChangeEvent<HTMLInputElement>, option: IChoiceGroupOption):void => {
-
-        props.decisionChoiceCallback(option.key)
-        
+    const onSelectedKey = (event?: React.FormEvent<HTMLElement | HTMLInputElement>, option?: IChoiceGroupOption): void => {
+        if (option) {
+            props.decisionChoiceCallback?.(option.key);
+        }
     }
 
     const getErrorMessage = (value: string):string => {
@@ -113,8 +113,8 @@ const ItemFormDetails: React.FunctionComponent<IItemFormDetailsProps> = (props) 
 
     const peoplePickerContext: IPeoplePickerContext = {
         absoluteUrl: props.absoluteUrl,
-        msGraphClientFactory: props.context.msGraphClientFactory,
-        spHttpClient: props.context.spHttpClient
+        msGraphClientFactory: props.context.msGraphClientFactory as any,
+        spHttpClient: props.context.spHttpClient as any,
     }
 
  
